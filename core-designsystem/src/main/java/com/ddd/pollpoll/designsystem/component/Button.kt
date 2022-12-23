@@ -13,6 +13,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,12 +37,12 @@ fun PollLoginButton(
         enabled = enabled,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = PollPollTheme.colors.gray_700,
-            containerColor = PollPollTheme.colors.gray_200
+            containerColor = Color.White
         ),
         border = BorderStroke(
             width = PollButtonDefaults.OutlinedButtonBorderWidth,
             color = if (enabled) {
-                PollPollTheme.colors.gray_700
+                PollPollTheme.colors.gray_200
             } else {
                 MaterialTheme.colorScheme.onSurface.copy(
                     alpha = PollButtonDefaults.DisabledOutlinedButtonBorderAlpha
