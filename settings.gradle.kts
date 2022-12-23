@@ -28,7 +28,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Multimodule template"
+rootProject.name = "PollPoll"
 
 include(":app")
 include(":core-data")
@@ -36,3 +36,6 @@ include(":core-database")
 include(":core-testing")
 include(":core-ui")
 include(":feature-login")
+include(":core-network")
+include(":core-designsystem")
+include(":core-model")
