@@ -1,85 +1,55 @@
 package com.ddd.pollpoll.designsystem.component
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.progressSemantics
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @Composable
-fun PollProgressBar() {
-    LinearProgressIndicator(progress = a)
-//    val infiniteTransition = rememberInfiniteTransition()
-//    // Fractional position of the 'head' and 'tail' of the two lines drawn, i.e. if the head is 0.8
-//    // and the tail is 0.2, there is a line drawn from beteen 20% along to 80% along the total
-//    // width.
-//    val firstLineHead = infiniteTransition.animateFloat(
-//        0f,
-//        1f,
-//        infiniteRepeatable(
-//            animation = keyframes {
-//                durationMillis = LinearAnimationDuration
-//                0f at FirstLineHeadDelay with FirstLineHeadEasing
-//                1f at FirstLineHeadDuration + FirstLineHeadDelay
-//            }
-//        )
-//    )
-//    val firstLineTail = infiniteTransition.animateFloat(
-//        0f,
-//        1f,
-//        infiniteRepeatable(
-//            animation = keyframes {
-//                durationMillis = LinearAnimationDuration
-//                0f at FirstLineTailDelay with FirstLineTailEasing
-//                1f at FirstLineTailDuration + FirstLineTailDelay
-//            }
-//        )
-//    )
-//    val secondLineHead = infiniteTransition.animateFloat(
-//        0f,
-//        1f,
-//        infiniteRepeatable(
-//            animation = keyframes {
-//                durationMillis = LinearAnimationDuration
-//                0f at SecondLineHeadDelay with SecondLineHeadEasing
-//                1f at SecondLineHeadDuration + SecondLineHeadDelay
-//            }
-//        )
-//    )
-//    val secondLineTail = infiniteTransition.animateFloat(
-//        0f,
-//        1f,
-//        infiniteRepeatable(
-//            animation = keyframes {
-//                durationMillis = LinearAnimationDuration
-//                0f at SecondLineTailDelay with SecondLineTailEasing
-//                1f at SecondLineTailDuration + SecondLineTailDelay
-//            }
-//        )
-//    )
+fun PollProgressBar(
+    progress: Float = 0.5f,
+    color: androidx.compose.ui.graphics.Color = PollPollTheme.colors.primary_500,
+    trackColor: androidx.compose.ui.graphics.Color = PollPollTheme.colors.gray_300
+) {
     Canvas(
         Modifier
             .progressSemantics()
-            .size(LinearIndicatorWidth, LinearIndicatorHeight)
+            .fillMaxWidth()
+            .height(4.dp)
     ) {
-        val strokeWidth = size.height
-        drawLinearIndicatorTrack(trackColor, strokeWidth)
-        if (firstLineHead.value - firstLineTail.value > 0) {
-            drawLinearIndicator(
-                firstLineHead.value,
-                firstLineTail.value,
-                color,
-                strokeWidth
-            )
-        }
-        if (secondLineHead.value - secondLineTail.value > 0) {
-            drawLinearIndicator(
-                secondLineHead.value,
-                secondLineTail.value,
-                color,
-                strokeWidth
-            )
-        }
+        require(progress < 1f && progress > 0f, { "해당 프로그레스 바는 0f과 1f 사이여야합니다." })
+        val strokeWidth = size.width
+        val strokeHeight = size.height
+
+        val endFraction = progress * strokeWidth
+        drawLine(
+            color = trackColor,
+            start = Offset(0f, strokeHeight),
+            end = Offset(strokeWidth, strokeHeight),
+            strokeWidth = strokeWidth
+        )
+
+        drawLine(
+            color = color,
+            start = Offset(0f, strokeHeight),
+            end = Offset(endFraction, strokeHeight),
+            strokeWidth = strokeWidth
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PollProgressBarPreview() {
+    val animatedProgress: Float by animateFloatAsState(targetValue = )
+    PollPollTheme() {
+        PollProgressBar()
     }
 }
