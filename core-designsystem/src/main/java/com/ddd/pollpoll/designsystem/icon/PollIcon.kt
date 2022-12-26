@@ -4,11 +4,11 @@ import com.example.core_designsystem.R
 
 object PollIcon {
     val Google = R.drawable.ic_google_logo
+
     val Buy = R.drawable.ic_buy
     val Carrier = R.drawable.ic_carrier
     val Carrier2 = R.drawable.ic_carrier2
     val Group = R.drawable.ic_group
     val Love = R.drawable.ic_love
     val Worry = R.drawable.ic_worry
-
 }
