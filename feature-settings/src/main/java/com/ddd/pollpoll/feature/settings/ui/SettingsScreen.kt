@@ -34,7 +34,7 @@ fun SettingsScreen(modifier: Modifier = Modifier, viewModel: SettingsViewModel =
 fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
-    
+
 }
 
 
