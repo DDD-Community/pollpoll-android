@@ -17,12 +17,22 @@
 package com.ddd.pollpoll.feature.settings.ui
 
 
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.pollpoll.core.ui.MyApplicationTheme
+import com.ddd.pollpoll.designsystem.icon.PollIcon
+import com.ddd.pollpoll.designsystem.theme.PollPollColors
+import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier, viewModel: SettingsViewModel = hiltViewModel()) {
@@ -32,12 +42,106 @@ fun SettingsScreen(modifier: Modifier = Modifier, viewModel: SettingsViewModel =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    modifier: Modifier = Modifier
-) {
 
+) {
+    Column(
+        modifier = Modifier
+            .background(color = PollPollTheme.colors.gray_050)
+            .padding(horizontal = 20.dp)
+    ) {
+        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+            SettingCardItem(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                PollIcon.Question,
+                "자주 묻는 질문",
+                null
+            )
+        }
+        Spacer(modifier = Modifier.size(10.dp))
+        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+            SettingCardItem(
+                modifier = Modifier
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
+                    .fillMaxWidth(), PollIcon.Privacy, "개인정보 처리방침", null
+            )
+            SettingCardItem(
+                modifier = Modifier
+                    .padding(top = (12.5).dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+                    .fillMaxWidth(), PollIcon.TermsOfService, "이용약관", null
+            )
+        }
+        Spacer(modifier = Modifier.size(10.dp))
+        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+            SettingCardItem(
+                modifier = Modifier
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
+                    .fillMaxWidth(), PollIcon.VersionInfo, "버전정보", "1.0.0"
+            )
+            SettingCardItem(
+                modifier = Modifier
+                    .padding(top = (12.5).dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+                    .fillMaxWidth(), PollIcon.TermsOfService, "오픈소스 라이선스", null
+            )
+        }
+        Spacer(modifier = Modifier.size(10.dp))
+        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+            SettingCardItem(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                PollIcon.Question,
+                "로그아웃",
+                null
+            )
+        }
+    }
 }
 
+@Composable
+fun SettingsCard(modifier: Modifier, content: @Composable ColumnScope.() -> Unit) {
+    Card(
+        modifier = modifier, shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
+        content = content
+    )
+}
 
+@Composable
+fun SettingCardItem(
+    modifier: Modifier,
+    icResId: Int,
+    label: String,
+    subLabel: String?,
+    onClick: () -> Unit = {}
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = icResId),
+            contentDescription = "",
+            tint = PollPollTheme.colors.gray_300
+        )
+        Spacer(modifier = Modifier.size(15.dp))
+        Text(text = label)
+        Spacer(modifier = Modifier.weight(1f))
+        subLabel?.let {
+            Text(text = subLabel, color = PollPollTheme.colors.primary_500)
+            Spacer(modifier = Modifier.size(15.dp))
+        }
+        Icon(
+            painter = painterResource(id = PollIcon.ChevronRight),
+            contentDescription = "",
+            tint = PollPollTheme.colors.gray_400
+        )
+
+    }
+}
 
 
 // Previews
