@@ -11,4 +11,7 @@ object PollIcon {
     val Group = R.drawable.ic_group
     val Love = R.drawable.ic_love
     val Worry = R.drawable.ic_worry
+
+    val LeftArrow = R.drawable.ic_left_arrow
+    val Close = R.drawable.ic_close
 }

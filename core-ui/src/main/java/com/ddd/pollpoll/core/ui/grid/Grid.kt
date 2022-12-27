@@ -1,6 +1,7 @@
 package com.ddd.pollpoll.core.ui.grid
 
 import android.util.Log
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
@@ -11,6 +12,7 @@ import kotlin.math.roundToInt
 fun VerticalGrid(
     modifier: Modifier = Modifier,
     columns: Int = 2,
+    cellPadding: PaddingValues = PaddingValues(bottom = 15.dp),
     content: @Composable () -> Unit
 ) {
     Layout(
@@ -35,28 +37,27 @@ fun VerticalGrid(
             val column = index % columns
             columnHeights[column] += placeable.height
         }
-        val height = (columnHeights.maxOrNull() ?: constraints.minHeight)
-            .coerceAtMost(constraints.maxHeight)
+        val height = (columnHeights.maxOrNull() ?: constraints.minHeight).coerceAtMost(constraints.maxHeight)
         layout(
             width = constraints.maxWidth,
-            height = height
+            height = constraints.maxHeight
         ) {
             // Track the Y co-ord per column we have placed up to
             val columnY = Array(columns) { 0 }
             placeables.forEachIndexed { index, placeable ->
                 val column = index % columns
 
-                Log.d(
-                    "test",
-                    (column * itemWidth + 80.dp.toPx().roundToInt()).toFloat().toDp().toString()
-                )
                 // 이건 조금더 생각해보자
                 placeable.placeRelative(
                     x = column * itemWidth + 80.dp.toPx().roundToInt(),
 
                     y = columnY[column]
                 )
-                columnY[column] += placeable.height
+
+                columnY[column] += placeable.height + cellPadding.calculateBottomPadding().toPx()
+                    .roundToInt()
+
+                Log.d("test", columnY[column].toString())
             }
         }
     }

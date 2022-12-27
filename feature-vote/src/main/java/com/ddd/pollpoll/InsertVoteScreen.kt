@@ -4,20 +4,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddd.pollpoll.core.ui.grid.VerticalGrid
-import com.ddd.pollpoll.designsystem.component.PollIconButton
 import com.ddd.pollpoll.designsystem.component.PollIconButtonText
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
 import com.ddd.pollpoll.designsystem.component.PollTopBar
+import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,7 +24,25 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 fun InsertVoteScreen() {
     Scaffold(topBar = {
         Column() {
-            PollTopBar(title = "투표작성")
+            PollTopBar(
+                title = {
+                    Text(text = "투표 작성")
+                },
+                navigationIconColor = Color.Black,
+                titleContentColor = PollPollTheme.colors.gray_900,
+                actionIconColor = Color.Black,
+
+                navigationIcon = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(painter = painterResource(id = PollIcon.LeftArrow), contentDescription = "")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(painter = painterResource(id = PollIcon.Close), contentDescription = "")
+                    }
+                }
+            )
             PollProgressBar()
         }
     }) {
@@ -70,7 +87,6 @@ fun ChoiceCategoryScreenPreview() {
         ChoiceCategoryScreen()
     }
 }
-
 
 @Preview(showBackground = true, widthDp = 480)
 @Composable

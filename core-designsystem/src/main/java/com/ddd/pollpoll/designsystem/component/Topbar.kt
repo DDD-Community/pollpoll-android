@@ -1,48 +1,43 @@
 package com.ddd.pollpoll.designsystem.component
 
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.ddd.pollpoll.core.ui.topbar.CustomTopBar
+import com.ddd.pollpoll.designsystem.component.PollTopBarDefaults.TopBarBaseHeight
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
-import com.example.core_designsystem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PollTopBar(
-    modifier: Modifier = Modifier,
-    title: String,
-    leftIcon: @Composable () -> Unit = {
-        Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_left_arrow), contentDescription = null)
-    },
-    rightIcon: @Composable RowScope.() -> Unit = {
-        Icon(imageVector = ImageVector.vectorResource(id = R.drawable.ic_close), contentDescription = null)
-    }
-
+    title: @Composable () -> Unit = {},
+    style: TextStyle = PollPollTheme.typography.heading05,
+    navigationIconColor: Color,
+    titleContentColor: Color,
+    actionIconColor: Color,
+    height: Dp = TopBarBaseHeight,
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable () -> Unit = {}
 ) {
-    CenterAlignedTopAppBar(
-        modifier = modifier,
-        title = { Text(text = title) },
-        navigationIcon = leftIcon,
-        actions = rightIcon
+    val context = LocalContext.current
+
+    CustomTopBar(
+        navigationIconContentColor = navigationIconColor,
+        titleContentColor = titleContentColor,
+        actionIconContentColor = actionIconColor,
+        titleTextStyle = style,
+        title = title,
+        heightPx = with(Density(context)) { height.toPx() },
+        navigationIcon = navigationIcon,
+        actions = actions
     )
 }
 
-@Preview
-@Composable
-fun TopAppBarPreview() {
-    PollPollTheme() {
-        PollTopBar(title = "투표작성")
-    }
+object PollTopBarDefaults {
+    val TopBarBaseHeight = 88.dp
 }
