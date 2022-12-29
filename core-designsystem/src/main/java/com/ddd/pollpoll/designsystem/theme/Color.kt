@@ -13,8 +13,7 @@ internal val Secondary500 = Color(0xFF531FE9)
 internal val Secondary300 = Color(0xFF8477F8)
 internal val Secondary050 = Color(0xFFF1F1F3)
 
-
-//Gray
+// Gray
 
 internal val Gray050 = Color(0xFFF8F8F8)
 internal val Gray100 = Color(0xFFEEEEEE)
@@ -24,3 +23,5 @@ internal val Gray400 = Color(0xFF9E9E9E)
 internal val Gray500 = Color(0xFF757575)
 internal val Gray700 = Color(0xFF424242)
 internal val Gray900 = Color(0xFF0A0A0A)
+
+internal val Shadow = Color(0x33A0A0A0)
