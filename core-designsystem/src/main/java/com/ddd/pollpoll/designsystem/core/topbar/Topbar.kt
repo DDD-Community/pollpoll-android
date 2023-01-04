@@ -1,4 +1,4 @@
-package com.ddd.pollpoll.core.ui.topbar
+package com.ddd.pollpoll.designsystem.core.topbar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

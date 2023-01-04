@@ -1,8 +1,9 @@
-package com.ddd.pollpoll.core.ui.textfield
+package com.ddd.pollpoll.designsystem.core.textfield
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,21 +27,23 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.ddd.pollpoll.designsystem.theme.Gray900
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PollCoreTextField(
-    text: String,
+    value: String,
+    onValueChange: (String) -> Unit,
     placeholderText: String,
     textStyle: TextStyle,
     textFieldColors: TextFieldColors = TextFieldDefaults.textFieldColors(),
-    onValueChange: (String) -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    maxLength: Int = 0
 ) {
     PollCoreTextField(
         colors = textFieldColors,
         textStyle = textStyle,
-        value = text,
+        value = value,
         onValueChange = onValueChange,
         placeholder = { Text(text = placeholderText) },
         contentPadding = paddingValues
@@ -75,7 +78,7 @@ internal fun PollCoreTextField(
     contentPadding: PaddingValues
 ) {
     val textColor = textStyle.color.takeOrElse {
-        rememberUpdatedState(if (enabled) Color.Black else Color.White).value
+        rememberUpdatedState(if (enabled) Gray900 else Color.White).value
     }
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor))
 
@@ -84,8 +87,9 @@ internal fun PollCoreTextField(
         BasicTextField(
             value = value,
             modifier = modifier
+                .width(320.dp)
                 .defaultMinSize(
-                    minWidth = 0.dp,
+                    minWidth = 320.dp,
                     minHeight = 0.dp
                 ),
             onValueChange = onValueChange,
@@ -100,9 +104,10 @@ internal fun PollCoreTextField(
             singleLine = singleLine,
             maxLines = maxLines,
             minLines = minLines,
-            decorationBox = @Composable { innerTextField ->
+            decorationBox =
+            @Composable { innerTextField ->
                 // places leading icon, text field with label and placeholder, trailing icon
-                TextFieldDefaults.TextFieldDecorationBox(
+                TextFieldDecorationBox(
                     value = value,
                     visualTransformation = visualTransformation,
                     innerTextField = innerTextField,

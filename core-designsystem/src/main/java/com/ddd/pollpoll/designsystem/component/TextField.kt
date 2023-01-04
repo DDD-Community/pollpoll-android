@@ -2,13 +2,18 @@ package com.ddd.pollpoll.designsystem.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ddd.pollpoll.core.ui.textfield.PollCoreTextField
+import com.ddd.pollpoll.designsystem.core.textfield.PollCoreTextField
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 /**
@@ -27,11 +32,11 @@ fun PollTextField(
     placeholderText: String,
     onValueChange: (String) -> Unit = {},
     textStyle: TextStyle = PollPollTheme.typography.heading05,
-    contextPadding: PaddingValues = PaddingValues(horizontal = 0.dp, 6.dp)
+    contextPadding: PaddingValues = PaddingValues(top = 6.dp, bottom = 20.dp)
 
 ) {
     PollCoreTextField(
-        text = text,
+        value = text,
         placeholderText = placeholderText,
         textStyle = textStyle,
         onValueChange = onValueChange,
@@ -44,31 +49,23 @@ fun PollTextField(
     )
 }
 
-// colors = TextFieldDefaults.textFieldColors(
-// containerColor = Color.White,
-// focusedIndicatorColor = PollPollTheme.colors.gray_900
-// ),
-//
-// textStyle = PollPollTheme.typography.heading05,
-
-// @Immutable
-// data class PollColors(
-//    val containerColor: Color,
-//    val textColor: Color,
-//    val focusedColor: Color
-// ){
-//    fun PollColorsDefault(){
-//        PollColors(
-//            containerColor = Color.White,
-//            textColor
-//        )
-//    }
-// }
-
 @Preview
 @Composable
 fun PollTextFieldPreview() {
     PollPollTheme() {
-        PollTextField("개발자분들 사용하시는 모니터 해상도가 어떻게 되시나요??", placeholderText = "제목을 입력해주세요")
+        var text by remember { mutableStateOf("") }
+
+        PollTextField(text, onValueChange = { text = it }, placeholderText = "제목을 입력해주세요")
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun GeneralTextFieldPreview() {
+    PollPollTheme() {
+        var text by remember { mutableStateOf("") }
+
+        TextField(text, onValueChange = { text = it })
     }
 }
