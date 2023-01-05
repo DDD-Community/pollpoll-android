@@ -62,13 +62,15 @@ fun InsertVoteScreen() {
         }
     }) {
         Surface(modifier = Modifier.padding(it)) {
-            ChoiceCategoryScreen()
+            ChoiceCategoryScreen(
+                onClick = {}
+            )
         }
     }
 }
 
 @Composable
-fun ChoiceCategoryScreen() {
+fun ChoiceCategoryScreen(onClick: (Category) -> Unit = {}) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(24.dp))
         Text(text = "카테고리를 설정해주세요")
@@ -79,7 +81,7 @@ fun ChoiceCategoryScreen() {
                     iconRes = it.iconDrawable,
                     contentDes = "",
                     isClicked = false,
-                    onClick = {},
+                    onClick = { onClick(it) },
                     text = it.text
                 )
             }

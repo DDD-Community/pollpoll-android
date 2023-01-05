@@ -106,7 +106,7 @@ internal fun PollCoreTextField(
             minLines = minLines,
             decorationBox =
             @Composable { innerTextField ->
-                // places leading icon, text field with label and placeholder, trailing icon
+
                 TextFieldDecorationBox(
                     value = value,
                     visualTransformation = visualTransformation,
