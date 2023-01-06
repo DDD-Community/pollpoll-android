@@ -18,21 +18,17 @@ package com.ddd.pollpoll.feature.login.ui
 
 import android.app.Activity
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -42,12 +38,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle.State.STARTED
-import androidx.lifecycle.repeatOnLifecycle
 import com.ddd.pollpoll.designsystem.component.PollLoginButton
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.R
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Success
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -56,32 +49,10 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel = hiltViewModel()) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val items by produceState<LoginUiState>(
-        initialValue = LoginUiState.Loading,
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = STARTED) {
-            viewModel.uiState.collect { value = it }
-        }
-    }
-    if (items is Success) {
-        LoginScreen(
-            items = (items as Success).data,
-            onSave = { name -> viewModel.addLogin(name) },
-            modifier = modifier
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun LoginScreen(
-    items: List<String>,
-    onSave: (name: String) -> Unit,
-    modifier: Modifier = Modifier.fillMaxSize()
+internal fun LoginRoute(
+    modifier: Modifier = Modifier.fillMaxSize(),
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateToMain: () -> Unit
 ) {
     val localView = LocalView.current
     val googleSignInClient = getGoogleLoginAuth(localView.context as Activity)
@@ -98,39 +69,46 @@ internal fun LoginScreen(
             }
         }
 
-    Surface(modifier) {
-        Box(contentAlignment = Alignment.TopCenter) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Spacer(modifier = Modifier.height(80.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.img_speech_bubble),
-                    contentDescription = ""
-                )
-                Text(
+    LoginScreen(
+        modifier = modifier,
+        loginClick = {
+//            startForResult.launch(googleSignInClient?.signInIntent)
+            navigateToMain()
+        }
+    )
+}
 
-                    style = PollPollTheme.typography.heading01,
-                    text = buildAnnotatedString {
-                        append("고민이 있나요?")
-                        withStyle(
-                            SpanStyle(
-                                color = PollPollTheme.colors.primary_500
-                            )
-                        ) {
-                            append("\n폴폴")
-                        }
-                        append("이 도와줄게요.")
-                    },
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(15.dp))
-                Text(text = "모든 고민거리는 투표를 통해 해결해요", style = PollPollTheme.typography.body02)
-            }
-            Column(Modifier.align(Alignment.BottomCenter)) {
-                PollLoginButton(text = "구글 ID 로그인", onClick = {
-                    startForResult.launch(googleSignInClient?.signInIntent)
-                })
-                Spacer(modifier = Modifier.height(100.dp))
-            }
+@Composable
+internal fun LoginScreen(
+    modifier: Modifier = Modifier.fillMaxSize(),
+    loginClick: () -> Unit = {}
+) {
+    Surface(modifier) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(80.dp))
+            Image(
+                painter = painterResource(id = R.drawable.img_speech_bubble),
+                contentDescription = ""
+            )
+            Text(
+                style = PollPollTheme.typography.heading01,
+                text = buildAnnotatedString {
+                    append("고민이 있나요?")
+                    withStyle(
+                        SpanStyle(
+                            color = PollPollTheme.colors.primary_500
+                        )
+                    ) {
+                        append("\n폴폴")
+                    }
+                    append("이 도와줄게요.")
+                },
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+            Text(text = "모든 고민거리는 투표를 통해 해결해요", style = PollPollTheme.typography.body02)
+            Spacer(modifier = Modifier.height(153.dp))
+            PollLoginButton(text = "구글 ID 로그인", onClick = loginClick)
         }
     }
 }
@@ -159,7 +137,7 @@ private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
 @Composable
 private fun DefaultPreview() {
     PollPollTheme {
-        LoginScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        LoginScreen(modifier = Modifier)
     }
 }
 
@@ -167,6 +145,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     PollPollTheme() {
-        LoginScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        LoginScreen(modifier = Modifier)
     }
 }
