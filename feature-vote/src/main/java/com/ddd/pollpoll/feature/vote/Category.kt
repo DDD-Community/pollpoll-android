@@ -1,4 +1,4 @@
-package com.ddd.pollpoll
+package com.ddd.pollpoll.feature.vote
 
 import androidx.annotation.DrawableRes
 import com.ddd.pollpoll.designsystem.icon.PollIcon
@@ -13,3 +13,5 @@ val CategoryList = listOf<Category>(
     Category(PollIcon.Group, "호불호"),
     Category(PollIcon.Worry, "고민")
 )
+
+internal val defalutCategory = Category(PollIcon.Buy, "구매")
