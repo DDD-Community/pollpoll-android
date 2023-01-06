@@ -38,6 +38,7 @@ fun PollCoreTextField(
     textStyle: TextStyle,
     textFieldColors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     paddingValues: PaddingValues,
+    keyboardActions: KeyboardActions,
     maxLength: Int = 0
 ) {
     PollCoreTextField(
@@ -46,7 +47,8 @@ fun PollCoreTextField(
         value = value,
         onValueChange = onValueChange,
         placeholder = { Text(text = placeholderText) },
-        contentPadding = paddingValues
+        contentPadding = paddingValues,
+        keyboardActions = keyboardActions
     )
 }
 
@@ -67,7 +69,7 @@ internal fun PollCoreTextField(
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardActions: KeyboardActions,
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,

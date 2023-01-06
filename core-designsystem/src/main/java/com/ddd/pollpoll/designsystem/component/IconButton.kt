@@ -63,7 +63,7 @@ fun PollIconButton(
                 canvas.drawCircle(center.x, center.y, center.x, paint)
             }
         },
-        onClick = { onClick },
+        onClick = onClick,
         colors = IconButtonDefaults.outlinedIconButtonColors(
             containerColor = if (isClicked) PollPollTheme.colors.primary_100 else Color.White
 
