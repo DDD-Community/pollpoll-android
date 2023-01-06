@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -14,6 +15,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,7 +50,8 @@ internal fun InsertVoteRoute(
         textFormData = textState,
         uiState = uiState,
         chooseCategory = viewModel::selectCategory,
-        titleValueChange = viewModel::insertTitle
+        titleValueChange = viewModel::insertTitle,
+        contentValueChange = viewModel::insertContent
     )
 }
 
@@ -57,7 +62,8 @@ fun InsertVoteScreen(
     textFormData: FormData,
     uiState: InsertVoteUiState,
     chooseCategory: (Category) -> Unit,
-    titleValueChange: (String) -> Unit
+    titleValueChange: (String) -> Unit,
+    contentValueChange: (String) -> Unit
 ) {
     Scaffold(modifier = modifier, topBar = { VoteTopBar() }) {
         Surface(modifier = Modifier.padding(it)) {
@@ -69,7 +75,8 @@ fun InsertVoteScreen(
                     InsertContentScreen(
                         textFormData.category,
                         textFormData.title,
-                        titleValueChange = titleValueChange
+                        titleValueChange = titleValueChange,
+                        contentValueChange = contentValueChange
                     )
                 }
             }
@@ -116,12 +123,14 @@ fun ChoiceCategoryScreen(onClick: (Category) -> Unit = {}) {
         Text(text = "카테고리를 설정해주세요")
         Spacer(modifier = Modifier.height(48.dp))
         VerticalGrid() {
-            CategoryList.forEach { it ->
+            CategoryList.forEach {
                 PollIconButtonText(
                     iconRes = it.iconDrawable,
                     contentDes = "",
                     isClicked = false,
-                    onClick = { onClick(it) },
+                    onClick = {
+                        onClick(it)
+                    },
                     text = it.text
                 )
             }
@@ -130,7 +139,14 @@ fun ChoiceCategoryScreen(onClick: (Category) -> Unit = {}) {
 }
 
 @Composable
-fun InsertContentScreen(category: Category = defalutCategory, title: String = "테스트 입니당", titleValueChange: (String) -> Unit = {}) {
+fun InsertContentScreen(
+    category: Category = defalutCategory,
+    title: String = "테스트 입니당",
+    content: String = "콘텐츠 테스트 입니당",
+    titleValueChange: (String) -> Unit = {},
+    contentValueChange: (String) -> Unit = {}
+) {
+    var isContent by remember { mutableStateOf(false) }
     Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(36.dp))
         Row(
@@ -141,7 +157,24 @@ fun InsertContentScreen(category: Category = defalutCategory, title: String = "�
             Text(text = category.text)
         }
         Spacer(modifier = Modifier.height(24.dp))
-        PollTextField(text = title, placeholderText = "", onValueChange = titleValueChange)
+        PollTextField(
+            text = title,
+            placeholderText = "제목을 입력해주세요",
+            onValueChange = titleValueChange,
+            keyboardActions = KeyboardActions {
+                if (this == KeyboardActions.Default.onDone) isContent = true
+            }
+        )
+        if (isContent) {
+            PollTextField(
+                text = content,
+                placeholderText = "내용을 입력해주세요",
+                onValueChange = contentValueChange,
+                keyboardActions = KeyboardActions {
+                    if (this == KeyboardActions.Default.onDone) isContent = true
+                }
+            )
+        }
     }
 }
 
@@ -153,7 +186,7 @@ fun InsertVoteScreenPreview() {
     }
 }
 
-@Preview
+@Preview(showBackground = trueㅋ)
 @Composable
 fun InsertContentScreenPreview() {
     PollPollTheme() {

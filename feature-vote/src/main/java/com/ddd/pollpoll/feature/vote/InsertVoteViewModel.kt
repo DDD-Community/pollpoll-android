@@ -30,8 +30,11 @@ class InsertVoteViewModel @Inject constructor() : ViewModel() {
 //        _uiState.content = content
 //    }
 
-    fun selectCategory(category: Category) = _textField.update {
-        it.copy(category = category)
+    fun selectCategory(category: Category) {
+        _textField.update {
+            it.copy(category = category)
+        }
+        _uiState.value = InsertVoteUiState.InsertTitle
     }
 
     fun insertTitle(title: String) = _textField.update {
@@ -59,5 +62,5 @@ sealed interface InsertVoteUiState {
 
     object SelectCategory : InsertVoteUiState
 
-    data class InsertTitle(val category: Category, val title: String) : InsertVoteUiState
+    object InsertTitle : InsertVoteUiState
 }
