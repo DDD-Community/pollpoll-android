@@ -14,30 +14,15 @@
  * limitations under the License.
  */
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-rootProject.name = "PollPoll"
+package com.ddd.pollpoll.feature.settings.ui
 
-include(":app")
-include(":core-data")
-include(":core-database")
-include(":core-testing")
-include(":core-ui")
-include(":feature-login")
-include(":core-network")
-include(":core-designsystem")
-include(":core-model")
-include(":feature-vote")
-include(":feature-settings")
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+
+import javax.inject.Inject
+
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+) : ViewModel() {
+
+}
