@@ -8,7 +8,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ddd.pollpoll.core.ui.topbar.CustomTopBar
+import com.ddd.pollpoll.designsystem.core.topbar.CustomTopBar
 import com.ddd.pollpoll.designsystem.component.PollTopBarDefaults.TopBarBaseHeight
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 

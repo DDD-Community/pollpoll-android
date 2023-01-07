@@ -47,6 +47,8 @@ fun PollProgressBar(
     }
 }
 
+
+
 @Preview
 @Composable
 fun PollProgressBarPreview() {

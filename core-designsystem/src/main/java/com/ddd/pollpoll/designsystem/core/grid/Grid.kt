@@ -1,4 +1,4 @@
-package com.ddd.pollpoll.core.ui.grid
+package com.ddd.pollpoll.designsystem.core.grid
 
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues

@@ -1,10 +1,18 @@
 package com.ddd.pollpoll
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,10 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ddd.pollpoll.core.ui.grid.VerticalGrid
 import com.ddd.pollpoll.designsystem.component.PollIconButtonText
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
+import com.ddd.pollpoll.designsystem.component.PollTextField
 import com.ddd.pollpoll.designsystem.component.PollTopBar
+import com.ddd.pollpoll.designsystem.core.grid.VerticalGrid
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
@@ -34,12 +43,18 @@ fun InsertVoteScreen() {
 
                 navigationIcon = {
                     IconButton(onClick = { /*TODO*/ }) {
-                        Icon(painter = painterResource(id = PollIcon.LeftArrow), contentDescription = "")
+                        Icon(
+                            painter = painterResource(id = PollIcon.LeftArrow),
+                            contentDescription = ""
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { /*TODO*/ }) {
-                        Icon(painter = painterResource(id = PollIcon.Close), contentDescription = "")
+                        Icon(
+                            painter = painterResource(id = PollIcon.Close),
+                            contentDescription = ""
+                        )
                     }
                 }
             )
@@ -72,6 +87,22 @@ fun ChoiceCategoryScreen() {
     }
 }
 
+@Composable
+fun InsertContentScreen(@DrawableRes selectIcon: Int = PollIcon.Buy) {
+    Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(36.dp))
+        Row(
+            modifier = Modifier.align(Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(painter = painterResource(id = selectIcon), contentDescription = "")
+            Text(text = "이직")
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        PollTextField(text = "하하하하하하하하하하", placeholderText = "")
+    }
+}
+
 @Preview
 @Composable
 fun InsertVoteScreenPreview() {
@@ -82,9 +113,9 @@ fun InsertVoteScreenPreview() {
 
 @Preview
 @Composable
-fun ChoiceCategoryScreenPreview() {
-    PollPollTheme {
-        ChoiceCategoryScreen()
+fun InsertContentScreenPreview() {
+    PollPollTheme() {
+        InsertContentScreen(PollIcon.Buy)
     }
 }
 
