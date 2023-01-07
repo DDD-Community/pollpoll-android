@@ -12,28 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ */ // ktlint-disable filename
 
 package com.ddd.pollpoll.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ddd.pollpoll.feature.login.ui.LoginScreen
+import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
+import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
+import com.ddd.pollpoll.feature.vote.navigation.navigateToVote
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
+    val currentBackStack by navController.currentBackStackEntryAsState()
 
-    NavHost(navController = navController, startDestination = "main") {
-        composable("main") {
-            LoginScreen(modifier = Modifier.padding(16.dp))
-
-        }
-        // TODO: Add more destinations
+    NavHost(navController = navController, startDestination = "login_route") {
+        loginScreen(navigateToMain = { navController.navigateToVote() })
+        insertVoteScreen {}
     }
 }

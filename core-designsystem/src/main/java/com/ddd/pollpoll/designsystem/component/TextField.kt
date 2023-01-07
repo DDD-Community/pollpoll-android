@@ -1,6 +1,7 @@
 package com.ddd.pollpoll.designsystem.component
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -32,8 +33,8 @@ fun PollTextField(
     placeholderText: String,
     onValueChange: (String) -> Unit = {},
     textStyle: TextStyle = PollPollTheme.typography.heading05,
-    contextPadding: PaddingValues = PaddingValues(top = 6.dp, bottom = 20.dp)
-
+    contextPadding: PaddingValues = PaddingValues(top = 6.dp, bottom = 20.dp),
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     PollCoreTextField(
         value = text,
@@ -45,7 +46,8 @@ fun PollTextField(
             containerColor = Color.White,
             unfocusedIndicatorColor = PollPollTheme.colors.gray_300,
             focusedIndicatorColor = PollPollTheme.colors.gray_900
-        )
+        ),
+        keyboardActions = keyboardActions
     )
 }
 
