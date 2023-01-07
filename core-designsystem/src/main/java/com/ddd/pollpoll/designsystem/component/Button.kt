@@ -63,7 +63,7 @@ fun PollLoginButton(
     )
 }
 
-@@Composable
+@Composable
 fun PollButton() {
     Button(shape = RoundedCornerShape(0.dp), onClick = { /*TODO*/ }) {
 

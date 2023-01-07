@@ -186,7 +186,7 @@ fun InsertVoteScreenPreview() {
     }
 }
 
-@Preview(showBackground = trueㅋ)
+@Preview(showBackground = true)
 @Composable
 fun InsertContentScreenPreview() {
     PollPollTheme() {
