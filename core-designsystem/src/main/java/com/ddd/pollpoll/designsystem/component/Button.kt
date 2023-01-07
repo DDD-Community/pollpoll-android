@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -62,6 +63,13 @@ fun PollLoginButton(
     )
 }
 
+@@Composable
+fun PollButton() {
+    Button(shape = RoundedCornerShape(0.dp), onClick = { /*TODO*/ }) {
+
+    }
+}
+
 object PollButtonDefaults {
     // TODO: File bug
     // OutlinedButton border color doesn't respect disabled state by default
@@ -70,4 +78,14 @@ object PollButtonDefaults {
     // TODO: File bug
     // OutlinedButton default border width isn't exposed via ButtonDefaults
     val OutlinedButtonBorderWidth = 1.dp
+}
+
+
+
+@Preview
+@Composable
+fun PollButtonPreview() {
+    PollPollTheme {
+        PollButton()
+    }
 }

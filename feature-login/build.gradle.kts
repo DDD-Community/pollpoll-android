@@ -58,6 +58,7 @@ android {
 dependencies {
     implementation(project(":core-data"))
     implementation(project(":core-ui"))
+    implementation(project(":core-designsystem"))
     androidTestImplementation(project(":core-testing"))
 
     // Core Android dependencies
@@ -95,4 +96,7 @@ dependencies {
     // Instrumented tests: jUnit rules and runners
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
+
+    //google auth
+    implementation(libs.google.auth)
 }

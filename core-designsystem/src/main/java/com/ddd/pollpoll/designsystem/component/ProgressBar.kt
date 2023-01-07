@@ -19,7 +19,7 @@ fun PollProgressBar(
     color: androidx.compose.ui.graphics.Color = PollPollTheme.colors.primary_500,
     trackColor: androidx.compose.ui.graphics.Color = PollPollTheme.colors.gray_300
 ) {
-    require(progress < 1f && progress > 0f, { "해당 프로그레스 바는 0f과 1f 사이여야합니다." })
+    require(progress in 0f..1f, { "해당 프로그레스 바는 0f과 1f 사이여야합니다." })
     val animatedProgress: Float by animateFloatAsState(targetValue = progress)
     Canvas(
         Modifier
@@ -46,6 +46,8 @@ fun PollProgressBar(
         )
     }
 }
+
+
 
 @Preview
 @Composable

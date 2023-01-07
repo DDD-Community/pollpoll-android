@@ -12,6 +12,9 @@ object PollIcon {
     val Love = R.drawable.ic_love
     val Worry = R.drawable.ic_worry
 
+    val LeftArrow = R.drawable.ic_left_arrow
+    val Close = R.drawable.ic_close
+
     val Logout = R.drawable.ic_logout
     val OpenSourceLicense = R.drawable.ic_open_source_license
     val Privacy = R.drawable.ic_privacy

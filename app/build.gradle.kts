@@ -80,7 +80,9 @@ dependencies {
     implementation(project(":core-ui"))
     implementation(project(":core-data"))
     implementation(project(":feature-login"))
+    implementation(project(":feature-vote"))
     androidTestImplementation(project(":core-testing"))
+    implementation(project(":core-designsystem"))
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
