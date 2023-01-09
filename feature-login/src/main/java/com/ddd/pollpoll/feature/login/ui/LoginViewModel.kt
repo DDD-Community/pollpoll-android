@@ -18,6 +18,10 @@ package com.ddd.pollpoll.feature.login.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ddd.pollpoll.core.data.LoginRepository
+import com.ddd.pollpoll.feature.login.ui.LoginUiState.Error
+import com.ddd.pollpoll.feature.login.ui.LoginUiState.Loading
+import com.ddd.pollpoll.feature.login.ui.LoginUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +29,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Error
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Loading
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Success
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,3 +53,5 @@ sealed interface LoginUiState {
     data class Error(val throwable: Throwable) : LoginUiState
     data class Success(val data: List<String>) : LoginUiState
 }
+
+
