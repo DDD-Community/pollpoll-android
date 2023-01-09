@@ -19,6 +19,7 @@ ksp = "1.7.20-1.0.8"
 splashscreen = "1.0.0"
 benManes = "0.44.0"
 googleAuth= "19.2.0"
+kotest = "5.5.4"
 
 
 [libraries]
