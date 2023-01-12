@@ -23,19 +23,14 @@ import com.ddd.pollpoll.core.database.LoginDao
 import javax.inject.Inject
 
 interface LoginRepository {
-    val logins: Flow<List<String>>
-
-    suspend fun add(name: String)
+    suspend fun postLogin()
 }
 
-class DefaultLoginRepository @Inject constructor(
-    private val loginDao: LoginDao
+class LoginRepositoryImp @Inject constructor(
+    private val loginSource
 ) : LoginRepository {
 
-    override val logins: Flow<List<String>> =
-        loginDao.getLogins().map { items -> items.map { it.name } }
+    override suspend fun postLogin() {
 
-    override suspend fun add(name: String) {
-        loginDao.insertLogin(Login(name = name))
     }
 }

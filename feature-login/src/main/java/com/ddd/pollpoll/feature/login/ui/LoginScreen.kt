@@ -72,8 +72,8 @@ internal fun LoginRoute(
     LoginScreen(
         modifier = modifier,
         loginClick = {
-//            startForResult.launch(googleSignInClient?.signInIntent)
-            navigateToMain()
+            startForResult.launch(googleSignInClient?.signInIntent)
+//            navigateToMain()
         }
     )
 }
@@ -116,7 +116,7 @@ internal fun LoginScreen(
 private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        .requestIdToken("182245619639-76brm9g3jqin7772gn8cke7a1jltsoo0.apps.googleusercontent.com")
+        .requestIdToken("182245619639-91irinookimtn557n057f2vcg9pn7okb.apps.googleusercontent.com")
         .requestId()
         .requestProfile()
         .build()
@@ -126,7 +126,6 @@ private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
 private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
     try {
         val account = completedTask.getResult(ApiException::class.java)
-        Log.d("Test", "account $account")
     } catch (e: ApiException) {
         Log.w("Test", "signInResult:failed code=" + e.getStatusCode())
     }
