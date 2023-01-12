@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
@@ -64,7 +63,7 @@ internal fun LoginRoute(
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    handleSignInResult(task)
+                    handleSignInResult(task, viewModel)
                 }
             }
         }
@@ -72,8 +71,8 @@ internal fun LoginRoute(
     LoginScreen(
         modifier = modifier,
         loginClick = {
-//            startForResult.launch(googleSignInClient?.signInIntent)
-            navigateToMain()
+            startForResult.launch(googleSignInClient?.signInIntent)
+//            navigateToMain()
         }
     )
 }
@@ -116,17 +115,19 @@ internal fun LoginScreen(
 private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        .requestIdToken("182245619639-76brm9g3jqin7772gn8cke7a1jltsoo0.apps.googleusercontent.com")
         .requestId()
         .requestProfile()
         .build()
     return GoogleSignIn.getClient(activity, gso)
 }
 
-private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+private fun handleSignInResult(
+    completedTask: Task<GoogleSignInAccount>,
+    viewModel: LoginViewModel
+) {
     try {
         val account = completedTask.getResult(ApiException::class.java)
-        Log.d("Test", "account $account")
+        account.idToken?.let { token -> viewModel.addLogin(token) }
     } catch (e: ApiException) {
         Log.w("Test", "signInResult:failed code=" + e.getStatusCode())
     }
