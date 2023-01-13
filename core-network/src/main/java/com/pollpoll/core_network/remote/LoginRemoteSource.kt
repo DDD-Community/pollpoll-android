@@ -8,7 +8,6 @@ interface LoginRemoteSource {
     fun loginGoogle(token: String): String
 }
 
-
 class LoginRemoteSourceImp @Inject constructor(
     private val pollAPI: PollAPI
 ) : LoginRemoteSource {

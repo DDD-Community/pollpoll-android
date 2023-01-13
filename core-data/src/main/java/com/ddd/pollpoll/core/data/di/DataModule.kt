@@ -16,6 +16,8 @@
 
 package com.ddd.pollpoll.core.data.di
 
+import com.ddd.pollpoll.core.data.LoginRepository
+import com.ddd.pollpoll.core.data.LoginRepositoryImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

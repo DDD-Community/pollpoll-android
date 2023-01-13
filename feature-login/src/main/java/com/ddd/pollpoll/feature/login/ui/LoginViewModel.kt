@@ -37,6 +37,7 @@ class LoginViewModel @Inject constructor(
 
     fun addLogin(token: String) {
         viewModelScope.launch {
+
             loginRepository.loginGoogle(token)
         }
     }

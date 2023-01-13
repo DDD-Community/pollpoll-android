@@ -18,15 +18,14 @@ kotlin = "1.7.20"
 ksp = "1.7.20-1.0.8"
 splashscreen = "1.0.0"
 benManes = "0.44.0"
-<<<<<<< Updated upstream
+
 googleAuth= "19.2.0"
 kotest = "5.5.4"
-=======
-googleAuth = "19.2.0"
+
 retrofit = "2.9.0"
 retrofitKotlinxSerializationJson = "0.8.0"
 okhttp = "4.10.0"
->>>>>>> Stashed changes
+
 
 
 [libraries]
