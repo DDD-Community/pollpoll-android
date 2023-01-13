@@ -20,17 +20,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import com.ddd.pollpoll.core.database.Login
 import com.ddd.pollpoll.core.database.LoginDao
+import com.pollpoll.core_network.remote.LoginRemoteSource
+import com.pollpoll.core_network.retrofit.PollAPI
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface LoginRepository {
-    suspend fun postLogin()
+    suspend fun loginGoogle(token: String): Flow<String>
 }
 
 class LoginRepositoryImp @Inject constructor(
-    private val loginSource
+    private val loginRemoteSource: LoginRemoteSource
 ) : LoginRepository {
 
-    override suspend fun postLogin() {
-
+    override suspend fun loginGoogle(token: String): Flow<String> = flow {
+        emit(loginRemoteSource.loginGoogle(token))
     }
+
 }

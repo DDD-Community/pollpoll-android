@@ -64,7 +64,7 @@ internal fun LoginRoute(
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    handleSignInResult(task)
+                    handleSignInResult(task, viewModel)
                 }
             }
         }
@@ -123,9 +123,13 @@ private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
     return GoogleSignIn.getClient(activity, gso)
 }
 
-private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+private fun handleSignInResult(
+    completedTask: Task<GoogleSignInAccount>,
+    viewModel: LoginViewModel
+) {
     try {
         val account = completedTask.getResult(ApiException::class.java)
+        account.idToken?.let { token -> viewModel.addLogin(token) }
     } catch (e: ApiException) {
         Log.w("Test", "signInResult:failed code=" + e.getStatusCode())
     }

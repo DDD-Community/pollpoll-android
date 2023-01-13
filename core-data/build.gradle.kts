@@ -52,7 +52,7 @@ android {
 
 dependencies {
     implementation(project(":core-database"))
-
+    implementation(project(":core-network"))
     // Arch Components
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

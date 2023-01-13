@@ -16,8 +16,6 @@
 
 package com.ddd.pollpoll.core.data.di
 
-import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.core.data.LoginRepositoryImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,14 +31,6 @@ interface DataModule {
     fun bindsLoginRepository(
         loginRepository: LoginRepositoryImp
     ): LoginRepository
+
 }
 
-//class FakeLoginRepository @Inject constructor() : LoginRepository {
-//    override val logins: Flow<List<String>> = flowOf(fakeLogins)
-//
-//    override suspend fun add(name: String) {
-//        throw NotImplementedError()
-//    }
-//}
-//
-//val fakeLogins = listOf("One", "Two", "Three")

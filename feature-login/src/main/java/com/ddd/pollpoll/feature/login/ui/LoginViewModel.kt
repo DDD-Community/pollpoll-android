@@ -23,11 +23,7 @@ import com.ddd.pollpoll.feature.login.ui.LoginUiState.Error
 import com.ddd.pollpoll.feature.login.ui.LoginUiState.Loading
 import com.ddd.pollpoll.feature.login.ui.LoginUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,19 +32,19 @@ class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<LoginUiState> = loginRepository
-        .logins.map { Success(data = it) }
-        .catch { Error(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
+    private val _uiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState.Empty)
+    val uiState = _uiState.asStateFlow()
 
-    fun addLogin(name: String) {
+    fun addLogin(token: String) {
         viewModelScope.launch {
-            loginRepository.add(name)
+            loginRepository.loginGoogle(token)
         }
     }
 }
 
 sealed interface LoginUiState {
+
+    object Empty : LoginUiState
     object Loading : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
     data class Success(val data: List<String>) : LoginUiState
