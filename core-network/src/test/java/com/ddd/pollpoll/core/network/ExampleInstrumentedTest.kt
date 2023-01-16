@@ -1,4 +1,4 @@
-package com.pollpoll.core_network
+package com.ddd.pollpoll.core.network
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

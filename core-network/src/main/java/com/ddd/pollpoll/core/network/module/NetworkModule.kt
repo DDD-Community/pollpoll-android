@@ -1,7 +1,7 @@
-package com.pollpoll.core_network.module
+package com.ddd.pollpoll.core.network.module
 
-import com.pollpoll.core_network.HttpRequestInterceptor
-import com.pollpoll.core_network.retrofit.PollAPI
+import com.ddd.pollpoll.core.network.HttpRequestInterceptor
+import com.ddd.pollpoll.core.network.retrofit.PollAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,11 +12,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
 
     @Provides
     @Singleton
@@ -41,8 +39,6 @@ object NetworkModule {
     @Singleton
     @Provides
     fun providePollAPI(
-        retrofit: Retrofit,
-    ): PollAPI =
-        retrofit.create(PollAPI::class.java)
-
+        retrofit: Retrofit
+    ): PollAPI = retrofit.create(PollAPI::class.java)
 }

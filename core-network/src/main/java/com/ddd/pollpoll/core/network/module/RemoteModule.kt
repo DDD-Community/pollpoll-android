@@ -1,7 +1,7 @@
-package com.pollpoll.core_network.module
+package com.ddd.pollpoll.core.network.module
 
-import com.pollpoll.core_network.remote.LoginRemoteSource
-import com.pollpoll.core_network.remote.LoginRemoteSourceImp
+import com.ddd.pollpoll.core.network.remote.LoginRemoteSource
+import com.ddd.pollpoll.core.network.remote.LoginRemoteSourceImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

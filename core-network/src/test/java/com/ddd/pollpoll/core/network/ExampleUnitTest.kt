@@ -1,4 +1,4 @@
-package com.pollpoll.core_network
+package com.ddd.pollpoll.core.network
 
 import org.junit.Test
 

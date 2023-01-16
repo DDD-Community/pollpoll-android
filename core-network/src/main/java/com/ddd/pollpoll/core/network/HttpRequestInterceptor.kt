@@ -1,4 +1,4 @@
-package com.pollpoll.core_network
+package com.ddd.pollpoll.core.network
 
 import okhttp3.Interceptor
 import okhttp3.Response

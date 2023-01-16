@@ -1,4 +1,4 @@
-//package com.pollpoll.core_designsystem
+//package com.ddd.pollpoll.core_designsystem
 //
 //import org.junit.Test
 //
