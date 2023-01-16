@@ -16,7 +16,8 @@
 
 package com.ddd.pollpoll.core.data
 
-import com.pollpoll.core_network.remote.LoginRemoteSource
+
+import com.ddd.pollpoll.core.network.remote.LoginRemoteSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class LoginRepositoryImp @Inject constructor(
 ) : LoginRepository {
 
     override suspend fun loginGoogle(token: String): Flow<String> = flow {
-        emit(loginRemoteSource.loginGoogle(token))
+        val result = loginRemoteSource.loginGoogle(token)
+        emit(result)
     }
-
 }

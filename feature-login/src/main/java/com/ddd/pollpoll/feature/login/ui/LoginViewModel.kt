@@ -19,11 +19,10 @@ package com.ddd.pollpoll.feature.login.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Error
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Loading
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,8 +36,9 @@ class LoginViewModel @Inject constructor(
 
     fun addLogin(token: String) {
         viewModelScope.launch {
-
-            loginRepository.loginGoogle(token)
+            loginRepository.loginGoogle(token).collect { result ->
+                _uiState.update { LoginUiState.Success(result) }
+            }
         }
     }
 }
@@ -48,7 +48,5 @@ sealed interface LoginUiState {
     object Empty : LoginUiState
     object Loading : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
-    data class Success(val data: List<String>) : LoginUiState
+    data class Success(val data: String) : LoginUiState
 }
-
-

@@ -13,8 +13,9 @@ class LoginRemoteSourceImp @Inject constructor(
     private val pollAPI: PollAPI
 ) : LoginRemoteSource {
     override fun loginGoogle(token: String): String {
-        val result = pollAPI.loginGoogle(token)
-        if (result.isSuccessful) return result.body() ?: "못찾았다 꾀꼬리"
-        else return throw Exception()
+//        val result = pollAPI.loginGoogle(token)
+//        if (result.isSuccessful) return result.body() ?: "못찾았다 꾀꼬리"
+//        else  throw Exception()
+        return ""
     }
 }

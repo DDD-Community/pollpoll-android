@@ -54,16 +54,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
-        }
-    }
+//    testOptions {
+//        unitTests.all {
+//            it.useJUnitPlatform()
+//        }
+//    }
 }
 
 dependencies {
+    implementation(project(":core-testing"))
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.arch.core)
 
     // Compose
     implementation(libs.androidx.compose.ui)
@@ -81,10 +83,12 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kaptTest(libs.hilt.android.compiler)
 
-
     implementation(libs.androidx.compose.ui)
+    implementation(libs.kotlinx.coroutines.test)
 
     implementation(libs.retrofit.core)
-    implementation(libs.okhttp.logging)
     implementation(libs.retrofit.converter.gson)
+
+    implementation(libs.okhttp.logging)
+    implementation(libs.okhttp.mockserver)
 }
