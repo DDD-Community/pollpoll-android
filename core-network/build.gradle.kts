@@ -63,6 +63,7 @@ android {
 
 dependencies {
     implementation(project(":core-testing"))
+    implementation(project(":core-model"))
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.arch.core)

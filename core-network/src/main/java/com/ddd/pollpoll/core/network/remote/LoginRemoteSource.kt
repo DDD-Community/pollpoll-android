@@ -1,21 +1,17 @@
 package com.ddd.pollpoll.core.network.remote
 
-
+import com.ddd.pollpoll.core.network.handle.executeHandle
+import com.ddd.pollpoll.core.network.model.LoginResponse
 import com.ddd.pollpoll.core.network.retrofit.PollAPI
 import javax.inject.Inject
 
 interface LoginRemoteSource {
 
-    fun loginGoogle(token: String): String
+    suspend fun loginGoogle(token: String): LoginResponse
 }
 
 class LoginRemoteSourceImp @Inject constructor(
     private val pollAPI: PollAPI
 ) : LoginRemoteSource {
-    override fun loginGoogle(token: String): String {
-//        val result = pollAPI.loginGoogle(token)
-//        if (result.isSuccessful) return result.body() ?: "못찾았다 꾀꼬리"
-//        else  throw Exception()
-        return ""
-    }
+    override suspend fun loginGoogle(token: String): LoginResponse = pollAPI.loginGoogle(token).executeHandle()
 }

@@ -48,5 +48,5 @@ sealed interface LoginUiState {
     object Empty : LoginUiState
     object Loading : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
-    data class Success(val data: String) : LoginUiState
+    data class Success(val data: Test) : LoginUiState
 }
