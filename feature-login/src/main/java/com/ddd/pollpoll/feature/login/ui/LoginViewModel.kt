@@ -37,7 +37,7 @@ class LoginViewModel @Inject constructor(
     fun addLogin(token: String) {
         viewModelScope.launch {
             loginRepository.loginGoogle(token).collect { result ->
-                _uiState.update { LoginUiState.Success(result) }
+                _uiState.update { LoginUiState.Success(result.token) }
             }
         }
     }
@@ -46,7 +46,6 @@ class LoginViewModel @Inject constructor(
 sealed interface LoginUiState {
 
     object Empty : LoginUiState
-    object Loading : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
-    data class Success(val data: Test) : LoginUiState
+    data class Success(val data: String) : LoginUiState
 }

@@ -38,6 +38,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.designsystem.component.PollLoginButton
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.R
@@ -48,12 +50,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun LoginRoute(
     modifier: Modifier = Modifier.fillMaxSize(),
     viewModel: LoginViewModel = hiltViewModel(),
-    navigateToMain: () -> Unit
+    navigateToMain: (String) -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val localView = LocalView.current
     val googleSignInClient = getGoogleLoginAuth(localView.context as Activity)
 
@@ -73,16 +78,25 @@ internal fun LoginRoute(
         modifier = modifier,
         loginClick = {
             startForResult.launch(googleSignInClient?.signInIntent)
-//            navigateToMain()
-        }
+        },
+        uiState,
+        navigateToMain = navigateToMain
     )
 }
 
 @Composable
 internal fun LoginScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
-    loginClick: () -> Unit = {}
+    loginClick: () -> Unit = {},
+    uiState: LoginUiState,
+    navigateToMain: (String) -> Unit
 ) {
+    when (uiState) {
+        is LoginUiState.Success -> navigateToMain(uiState.data)
+        LoginUiState.Empty -> {}
+        is LoginUiState.Error -> {}
+    }
+
     Surface(modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(80.dp))
@@ -140,7 +154,7 @@ private fun handleSignInResult(
 @Composable
 private fun DefaultPreview() {
     PollPollTheme {
-        LoginScreen(modifier = Modifier)
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"))
     }
 }
 
@@ -148,6 +162,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     PollPollTheme() {
-        LoginScreen(modifier = Modifier)
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"))
     }
 }

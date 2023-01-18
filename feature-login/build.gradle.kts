@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":core-data"))
     implementation(project(":core-ui"))
     implementation(project(":core-designsystem"))
+    implementation(project(mapOf("path" to ":core-model")))
     androidTestImplementation(project(":core-testing"))
 
     // Core Android dependencies
@@ -74,6 +75,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.lifecycle.runtime.ktx)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests

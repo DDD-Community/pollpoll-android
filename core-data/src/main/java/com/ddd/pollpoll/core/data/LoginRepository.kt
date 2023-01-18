@@ -18,8 +18,6 @@ package com.ddd.pollpoll.core.data
 
 
 import com.ddd.pollpoll.Login
-import com.ddd.pollpoll.core.database.Login
-import com.ddd.pollpoll.core.network.model.LoginResponse
 import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.network.remote.LoginRemoteSource
 import kotlinx.coroutines.flow.Flow
