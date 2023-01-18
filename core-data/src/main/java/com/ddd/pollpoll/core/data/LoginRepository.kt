@@ -18,6 +18,7 @@ package com.ddd.pollpoll.core.data
 
 
 import com.ddd.pollpoll.Login
+import com.ddd.pollpoll.core.network.model.LoginRequest
 import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.network.remote.LoginRemoteSource
 import kotlinx.coroutines.flow.Flow
@@ -25,14 +26,14 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface LoginRepository {
-    suspend fun loginGoogle(token: String): Flow<Login>
+    suspend fun loginGoogle(token: LoginRequest): Flow<Login>
 }
 
 class LoginRepositoryImp @Inject constructor(
     private val loginRemoteSource: LoginRemoteSource
 ) : LoginRepository {
 
-    override suspend fun loginGoogle(token: String): Flow<Login> = flow {
+    override suspend fun loginGoogle(token: LoginRequest): Flow<Login> = flow {
         val result = loginRemoteSource.loginGoogle(token).asExternalModel()
         emit(result)
     }

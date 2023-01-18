@@ -19,6 +19,7 @@ package com.ddd.pollpoll.feature.login.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.core.data.LoginRepository
+import com.ddd.pollpoll.core.network.model.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,7 +37,7 @@ class LoginViewModel @Inject constructor(
 
     fun addLogin(token: String) {
         viewModelScope.launch {
-            loginRepository.loginGoogle(token).collect { result ->
+            loginRepository.loginGoogle(LoginRequest(token)).collect { result ->
                 _uiState.update { LoginUiState.Success(result.token) }
             }
         }

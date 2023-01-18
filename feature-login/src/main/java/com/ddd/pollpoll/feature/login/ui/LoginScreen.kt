@@ -154,7 +154,7 @@ private fun handleSignInResult(
 @Composable
 private fun DefaultPreview() {
     PollPollTheme {
-        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"))
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
     }
 }
 
@@ -162,6 +162,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     PollPollTheme() {
-        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"))
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
     }
 }
