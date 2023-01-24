@@ -15,6 +15,8 @@ object PollIcon {
     val LeftArrow = R.drawable.ic_left_arrow
     val Close = R.drawable.ic_close
 
+    val AddCircle = R.drawable.ic_add_circle
+
     val Logout = R.drawable.ic_logout
     val OpenSourceLicense = R.drawable.ic_open_source_license
     val Privacy = R.drawable.ic_privacy

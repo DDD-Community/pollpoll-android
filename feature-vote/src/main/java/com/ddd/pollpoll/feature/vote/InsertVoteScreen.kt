@@ -1,11 +1,7 @@
 package com.ddd.pollpoll.feature.vote
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -175,6 +171,26 @@ fun InsertContentScreen(
                 }
             )
         }
+    }
+}
+
+@Composable
+fun AddVoteItemScreen() {
+    Surface(modifier = Modifier.size(320.dp, 62.dp), color = PollPollTheme.colors.primary_100) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(modifier = Modifier.width(13.dp))
+            Image(painter = painterResource(id = PollIcon.AddCircle), contentDescription = "")
+            Spacer(modifier = Modifier.width(11.dp))
+            Text(text = "투표 항목 추가하기")
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AddVoteItemScreenPreview() {
+    PollPollTheme() {
+        AddVoteItemScreen()
     }
 }
 
