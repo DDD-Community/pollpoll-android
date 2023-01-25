@@ -1,7 +1,5 @@
 package com.ddd.pollpoll.feature.vote
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +16,7 @@ class InsertVoteViewModel @Inject constructor() : ViewModel() {
         MutableStateFlow(InsertVoteUiState.SelectCategory)
     val uiState: StateFlow<InsertVoteUiState> = _uiState
 
-    private val _textField: MutableStateFlow<FormData> = MutableStateFlow(FormData())
+    private val _textField: MutableStateFlow<AddingVote> = MutableStateFlow(AddingVote())
 
     val textField = _textField.asStateFlow()
 
@@ -44,9 +42,13 @@ class InsertVoteViewModel @Inject constructor() : ViewModel() {
     fun insertContent(content: String) = _textField.update {
         it.copy(content = content)
     }
+
+    fun navigateAddVoteCategory() {
+        _uiState.value = InsertVoteUiState.SelectCategory
+    }
 }
 
-data class FormData(
+data class AddingVote(
     val category: Category = Category(iconDrawable = PollIcon.Buy, "구매"),
     val title: String = "",
     val content: String = ""
@@ -54,13 +56,10 @@ data class FormData(
 
 // 어떤 화면을 표출할것인가?
 sealed interface InsertVoteUiState {
-//    object Loading : InterestsUiState
-//
-//    data class Interests(
-//        val topics: List<FollowableTopic>
-//    ) : InterestsUiState
 
     object SelectCategory : InsertVoteUiState
 
     object InsertTitle : InsertVoteUiState
+
+    object AddVoteCategory : InsertVoteUiState
 }

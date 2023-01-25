@@ -97,7 +97,6 @@ fun PollTextFieldPreview() {
                 maxLength = 50
             )
         }
-
     }
 }
 
