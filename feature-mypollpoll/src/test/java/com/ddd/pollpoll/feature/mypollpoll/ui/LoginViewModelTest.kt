@@ -14,31 +14,17 @@
  * limitations under the License.
  */
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-rootProject.name = "PollPoll"
+package com.ddd.pollpoll.feature.settings.ui
 
-include(":app")
-include(":core-data")
-include(":core-database")
-include(":core-testing")
-include(":core-ui")
-include(":feature-login")
-include(":core-network")
-include(":core-designsystem")
-include(":core-model")
-include(":feature-vote")
-include(":feature-settings")
-include(":feature-mypollpoll")
+
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
+ */
+@OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
+class SettingsViewModelTest {
+
+}

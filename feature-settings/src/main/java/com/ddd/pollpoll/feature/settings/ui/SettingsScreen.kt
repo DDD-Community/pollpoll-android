@@ -29,7 +29,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddd.pollpoll.core.ui.MyApplicationTheme
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollColors
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
@@ -143,21 +142,3 @@ fun SettingCardItem(
     }
 }
 
-
-// Previews
-
-@Preview(showBackground = true)
-@Composable
-private fun DefaultPreview() {
-    MyApplicationTheme {
-        SettingsScreen()
-    }
-}
-
-@Preview(showBackground = true, widthDp = 480)
-@Composable
-private fun PortraitPreview() {
-    MyApplicationTheme {
-        SettingsScreen()
-    }
-}
