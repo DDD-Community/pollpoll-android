@@ -50,8 +50,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.test)
+
     implementation(libs.androidx.test.runner)
     implementation(libs.hilt.android.testing)
-    testImplementation(libs.junit)
 }

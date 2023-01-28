@@ -34,22 +34,15 @@ import com.ddd.pollpoll.core.database.LoginDao
 class DefaultLoginRepositoryTest {
 
     @Test
-    fun logins_newItemSaved_itemIsReturned() {
+    fun logins_newItemSaved_itemIsReturned() = runTest {
+        val repository = DefaultLoginRepository(FakeLoginDao())
 
-        solution()
+        repository.add("Repository")
+
+        assertEquals(repository.logins.first().size, 1)
     }
 
-    @Test
-    fun solution(lottos: IntArray, win_nums: IntArray): IntArray {
-        var answerNum = lottos.map { win_nums.contains(it) }.filter { it == true }.count().coerceAtLeast(1)
-
-        var zero = lottos.filter { it==0 }.count().coerceAtMost(5)
-
-
-        return intArrayOf(7 - (answerNum + zero), 7 - answerNum)
-    }
 }
-
 
 private class FakeLoginDao : LoginDao {
 
