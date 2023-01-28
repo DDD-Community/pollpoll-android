@@ -48,14 +48,14 @@ class LoginViewModelTest {
     }
 }
 
-//private class FakeLoginRepository : LoginRepository {
-//
-//    private val data = mutableListOf<String>()
-//
-//    override val logins: Flow<List<String>>
-//        get() = flow { emit(data.toList()) }
-//
-//    override suspend fun add(name: String) {
-//        data.add(0, name)
-//    }
-//}
+private class FakeLoginRepository : LoginRepository {
+
+    private val data = mutableListOf<String>()
+
+    override val logins: Flow<List<String>>
+        get() = flow { emit(data.toList()) }
+
+    override suspend fun add(name: String) {
+        data.add(0, name)
+    }
+}
