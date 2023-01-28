@@ -78,6 +78,7 @@ internal fun LoginRoute(
         modifier = modifier,
         loginClick = {
             startForResult.launch(googleSignInClient?.signInIntent)
+            navigateToMain("")
         },
         uiState,
         navigateToMain = navigateToMain

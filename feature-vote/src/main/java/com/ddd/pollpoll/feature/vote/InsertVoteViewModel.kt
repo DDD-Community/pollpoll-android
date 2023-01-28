@@ -1,5 +1,8 @@
 package com.ddd.pollpoll.feature.vote
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,14 +47,15 @@ class InsertVoteViewModel @Inject constructor() : ViewModel() {
     }
 
     fun navigateAddVoteCategory() {
-        _uiState.value = InsertVoteUiState.SelectCategory
+        _uiState.value = InsertVoteUiState.AddVoteCategory
     }
 }
 
 data class AddingVote(
     val category: Category = Category(iconDrawable = PollIcon.Buy, "구매"),
     val title: String = "",
-    val content: String = ""
+    val content: String = "",
+    var voteItemListState : State<List<Pair<String , String>>> =  mutableStateListOf<>()
 )
 
 // 어떤 화면을 표출할것인가?

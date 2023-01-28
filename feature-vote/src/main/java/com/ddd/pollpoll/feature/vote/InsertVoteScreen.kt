@@ -50,7 +50,8 @@ internal fun InsertVoteRoute(
         uiState = uiState,
         chooseCategory = viewModel::selectCategory,
         titleValueChange = viewModel::insertTitle,
-        contentValueChange = viewModel::insertContent
+        contentValueChange = viewModel::insertContent,
+        addVoteClicked = viewModel::navigateAddVoteCategory
     )
 }
 
@@ -62,7 +63,8 @@ fun InsertVoteScreen(
     uiState: InsertVoteUiState,
     chooseCategory: (Category) -> Unit,
     titleValueChange: (String) -> Unit,
-    contentValueChange: (String) -> Unit
+    contentValueChange: (String) -> Unit,
+    addVoteClicked: () -> Unit = {}
 ) {
     var progressState by remember { mutableStateOf(0.0f) }
     Scaffold(modifier = modifier, topBar = { VoteTopBar(progressState) }) {
@@ -81,8 +83,8 @@ fun InsertVoteScreen(
                         contentValueChange = contentValueChange,
                         progressBarChanged = {
                             progressState = it.progressBar
-                        }
-
+                        },
+                        addVoteClicked = addVoteClicked
                     )
                 }
 
@@ -106,6 +108,20 @@ fun AddVoteCategoryScreen(category: Category = defalutCategory) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CategoryScreen(category)
+        Column() {
+            PollTextField(
+                text = "",
+                placeholderText = "항목입력",
+                onValueChange = {}
+            )
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(modifier = Modifier.align(Alignment.Start)) {
+            Image(painter = painterResource(id = PollIcon.AddCircleGray), contentDescription = "")
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(text = "항목 추가", style = PollPollTheme.typography.body02)
+        }
     }
 }
 
@@ -228,14 +244,14 @@ fun AddVoteItemScreen(addVoteClicked: () -> Unit = {}) {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.width(13.dp))
-            Image(painter = painterResource(id = PollIcon.AddCircle), contentDescription = "")
+            Image(painter = painterResource(id = PollIcon.AddCircleRed), contentDescription = "")
             Spacer(modifier = Modifier.width(11.dp))
             Text(text = "투표 항목 추가하기")
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun AddVoteCategoryPreview() {
     PollPollTheme() {
