@@ -31,7 +31,11 @@ fun MainNavigation() {
     val currentBackStack by navController.currentBackStackEntryAsState()
 
     NavHost(navController = navController, startDestination = "login_route") {
-        loginScreen(navigateToMain = { navController.navigateToVote() })
+        loginScreen(
+            navigateToMain = {
+                navController.navigateToVote()
+            }
+        )
         insertVoteScreen {}
     }
 }
