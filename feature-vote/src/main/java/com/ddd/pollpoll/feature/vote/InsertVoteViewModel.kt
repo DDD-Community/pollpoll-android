@@ -3,6 +3,7 @@ package com.ddd.pollpoll.feature.vote
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,11 +56,11 @@ data class AddingVote(
     val category: Category = Category(iconDrawable = PollIcon.Buy, "구매"),
     val title: String = "",
     val content: String = "",
-    var voteItemListState : State<List<Pair<String , String>>> =  mutableStateListOf<>()
+    var voteItemListState: SnapshotStateList<String> = mutableStateListOf<String>()
 )
 
-// 어떤 화면을 표출할것인가?
-sealed interface InsertVoteUiState {
+
+interface InsertVoteUiState {
 
     object SelectCategory : InsertVoteUiState
 

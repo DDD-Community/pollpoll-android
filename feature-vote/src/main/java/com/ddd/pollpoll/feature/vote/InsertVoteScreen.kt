@@ -1,11 +1,8 @@
 package com.ddd.pollpoll.feature.vote
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,7 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,6 +66,7 @@ fun InsertVoteScreen(
     addVoteClicked: () -> Unit = {}
 ) {
     var progressState by remember { mutableStateOf(0.0f) }
+
     Scaffold(modifier = modifier, topBar = { VoteTopBar(progressState) }) {
         Surface(modifier = Modifier.padding(it)) {
             when (uiState) {
@@ -122,6 +122,24 @@ fun AddVoteCategoryScreen(category: Category = defalutCategory) {
             Spacer(modifier = Modifier.width(12.dp))
             Text(text = "항목 추가", style = PollPollTheme.typography.body02)
         }
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(130.dp))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(PollPollTheme.colors.gray_100))
+        Box(modifier = Modifier.fillMaxWidth()){
+            Text(modifier = Modifier.align(Alignment.CenterStart),text = "투표기간" , style = PollPollTheme.typography.heading05 , color = PollPollTheme.colors.gray_900)
+            Row(modifier = Modifier.align(Alignment.TopEnd)) {
+                Text(modifier = Modifier.align(Alignment.CenterVertically), text = "3일", style = PollPollTheme.typography.body02)
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(imageVector = ImageVector.vectorResource(id = PollIcon.ChevronRight), contentDescription ="" )
+                }
+            }
+        }
+        Text(modifier = Modifier.align(alignment = Alignment.Start),text = "투표가 진행되고 있는 시점부터는 투표를 수정할 수 없습니다" , style = PollPollTheme.typography.body04 , color = PollPollTheme.colors.gray_400)
+
     }
 }
 

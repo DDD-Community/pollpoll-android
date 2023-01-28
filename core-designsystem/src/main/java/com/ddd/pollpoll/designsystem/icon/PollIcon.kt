@@ -17,7 +17,6 @@ object PollIcon {
 
     val AddCircleRed = R.drawable.ic_add_circle
     val AddCircleGray = R.drawable.ic_circle_gray400
-
     val Logout = R.drawable.ic_logout
     val OpenSourceLicense = R.drawable.ic_open_source_license
     val Privacy = R.drawable.ic_privacy
