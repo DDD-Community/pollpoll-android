@@ -32,38 +32,77 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ddd.pollpoll.designsystem.component.PollLabel
+import com.ddd.pollpoll.designsystem.component.PollProgressBar
+import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
-
-@Composable
-fun MypollpollScreen(modifier: Modifier = Modifier, viewModel: MypollpollViewModel = hiltViewModel()) {
-
-}
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MypollpollScreen(
-
+    modifier: Modifier = Modifier,
+    viewModel: MypollpollViewModel = hiltViewModel()
 ) {
-    Column(
-        modifier = Modifier
-            .background(color = PollPollTheme.colors.gray_050)
-    ) {
-        MyPollPollHeader()
+    Scaffold(topBar = {
+        Column() {
+            PollTopBar(
+                title = {
+                    Text(text = "마이 페이지")
+                },
+                navigationIconColor = Color.Black,
+                titleContentColor = PollPollTheme.colors.gray_900,
+                actionIconColor = Color.Black,
+
+                navigationIcon = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            painter = painterResource(id = PollIcon.LeftArrow),
+                            contentDescription = ""
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            painter = painterResource(id = PollIcon.Close),
+                            contentDescription = ""
+                        )
+                    }
+                }
+            )
+        }
+    }) {
+        Surface(modifier = Modifier.padding(it)) {
+            Column(
+                modifier = Modifier
+                    .background(color = PollPollTheme.colors.gray_050)
+            ) {
+                MyPollPollHeader()
+                MyPollPollBody()
+            }
+        }
     }
 }
 
 @Composable
 fun MyPollPollHeader() {
     Column(modifier = Modifier) {
-        Row(modifier = Modifier.clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)).background(color = Color.White).padding(horizontal = 20.dp, vertical = 15.dp)) {
+        Row(modifier = Modifier
+            .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .background(color = Color.White)
+            .padding(horizontal = 20.dp, vertical = 15.dp)) {
             PollRecord(true)
-            Spacer(Modifier.size(10.dp))
+            Spacer(Modifier.weight(1f))
             PollRecord()
-            Spacer(Modifier.size(10.dp))
+            Spacer(Modifier.weight(1f))
             PollRecord()
         }
         Image(imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle), contentDescription = null, modifier = Modifier.offset(x = 40.dp, y = (-10).dp))
@@ -121,17 +160,114 @@ fun PollRecord(selected: Boolean = false, onClick: () -> Unit = {}) {
     }
 }
 
+@Composable
+fun MyPollPollBody() {
+    PollCard(Modifier.fillMaxWidth())
+}
 
 @Composable
-fun PollCard(modifier: Modifier) {
+fun PollCard(
+    modifier: Modifier = Modifier,
+    expireDate: Date = Date(),
+    participantsCount: Int = 0,
+    onClick: () -> Unit = {}
+) {
     Card(
         modifier = modifier, shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         )
     ) {
-        
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                PollLabel("초이스")
+                Spacer(modifier = Modifier.size(10.dp))
+                Text(
+                    text = "고민",
+                    color = PollPollTheme.colors.gray_900,
+                    style = PollPollTheme.typography.body04
+                )
+            }
+            Spacer(modifier = Modifier.size(15.dp))
+
+            Text(
+                text = "개발자분들 사용하시는 모니터 해상도가 어떻게 되시나요?",
+                color = PollPollTheme.colors.gray_900,
+                style = PollPollTheme.typography.heading05
+            )
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = "이번에 회사에 맥북에 연결 할 듀얼 모니터를 교체하려고 하는데 개발자에게 고사양의 모니터가 필요할 지 의문이 들어서 투표 올려봅니다! 해상도 좋은 모니터 쓰면 장점이 있나요??",
+                color = PollPollTheme.colors.gray_700,
+                style = PollPollTheme.typography.heading05,
+                fontWeight = FontWeight.Normal,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.size(25.dp))
+
+            Row() {
+                Icon(
+                    painter = painterResource(id = PollIcon.Alarm),
+                    contentDescription = "",
+                    tint = Color(0xff8477F8)
+                )
+                Spacer(modifier = Modifier.size(3.dp))
+                TimeText(expireDate = expireDate)
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+
+            PollProgressBar()
+
+            Spacer(modifier = Modifier.size(32.dp))
+            
+            Button(onClick = { /*TODO*/ }, shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = PollPollTheme.colors.gray_050)) {
+                Text(text = "지금 ", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
+                Text(text = "${participantsCount}명", color = PollPollTheme.colors.primary_500, style = PollPollTheme.typography.body03)
+                Text(text = " 참여 중이에요", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
+            }
+        }
+
     }
+
+}
+
+
+@Composable
+fun TimeText(expireDate: Date) {
+    // date gap millisceond to date
+
+    val expireDateTime = expireDate.time
+    val currentTime = Date().time
+    val diff = currentTime - expireDateTime
+    val sdf = SimpleDateFormat("MM.dd HH:mm")
+
+    val diffSeconds: Long = diff / 1000
+    val diffMinutes: Long = diff / (60 * 1000)
+    val diffHours: Long = diff / (60 * 60 * 1000)
+    val diffDays: Long = diff / (24 * 60 * 60 * 1000)
+
+    val hoursString = if (diffHours < 10) "0$diffHours" else "$diffHours"
+    val minuteString = if (diffMinutes < 10) "0$diffMinutes" else diffMinutes
+    val secondsString = if (diffSeconds < 10) "0$diffSeconds" else diffSeconds
+
+    Text(
+        text = "${diffDays}일 ${hoursString}:${minuteString}:${secondsString} 남았어요!",
+        color = PollPollTheme.colors.gray_400,
+        style = PollPollTheme.typography.body03
+    )
+}
+
+@Composable
+fun HitsText(hits: Int) {
+    Text(
+        text = "조회수 $hits",
+        color = PollPollTheme.colors.gray_400,
+        style = PollPollTheme.typography.body03
+    )
 }
 
 
