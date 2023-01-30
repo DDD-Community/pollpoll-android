@@ -1,9 +1,16 @@
 package com.ddd.pollpoll
 
 data class Vote(
-    val title: String = "",
-    val content: String = "",
-    val voteItem: List<String> = listOf(),
-    val isMultiple: Boolean = false,
-    val voteTime: Int = 0
+    val categoryId: Int,
+    val contents: String,
+    val milliseconds: Int,
+    val multipleChoice: Boolean,
+    val pollItems: List<PollItem>,
+    val title: String
 )
+
+data class PollItem(
+    val name: String
+)
+
+
