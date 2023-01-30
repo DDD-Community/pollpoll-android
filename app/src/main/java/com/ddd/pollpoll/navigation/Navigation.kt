@@ -16,6 +16,7 @@
 
 package com.ddd.pollpoll.ui
 
+import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
@@ -33,6 +34,7 @@ fun MainNavigation() {
     NavHost(navController = navController, startDestination = "login_route") {
         loginScreen(
             navigateToMain = {
+
                 navController.navigateToVote()
             }
         )
