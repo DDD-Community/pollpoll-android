@@ -19,15 +19,11 @@ package com.ddd.pollpoll.feature.login.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Error
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Loading
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Success
+import com.ddd.pollpoll.core.network.model.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,22 +32,21 @@ class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<LoginUiState> = loginRepository
-        .logins.map { Success(data = it) }
-        .catch { Error(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
+    private val _uiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState.Empty)
+    val uiState = _uiState.asStateFlow()
 
-    fun addLogin(name: String) {
+    fun addLogin(token: String) {
         viewModelScope.launch {
-            loginRepository.add(name)
+            loginRepository.loginGoogle(LoginRequest(token)).collect { result ->
+                _uiState.update { LoginUiState.Success(result.token) }
+            }
         }
     }
 }
 
 sealed interface LoginUiState {
-    object Loading : LoginUiState
+
+    object Empty : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
-    data class Success(val data: List<String>) : LoginUiState
+    data class Success(val data: String) : LoginUiState
 }
-
-

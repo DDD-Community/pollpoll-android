@@ -6,7 +6,7 @@ import com.ddd.pollpoll.feature.login.ui.LoginRoute
 
 fun NavGraphBuilder.loginScreen(
 //    onBackClick: () -> Unit,
-    navigateToMain: () -> Unit
+    navigateToMain: (String) -> Unit
 ) {
     composable(
         route = "login_route",

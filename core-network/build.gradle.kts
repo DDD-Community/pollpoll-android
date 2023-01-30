@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 /*
  * Copyright (C) 2022 The Android Open Source Project
  *
@@ -18,6 +20,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -51,11 +54,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+//    testOptions {
+//        unitTests.all {
+//            it.useJUnitPlatform()
+//        }
+//    }
 }
 
 dependencies {
+    implementation(project(":core-testing"))
+    implementation(project(":core-model"))
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.arch.core)
 
     // Compose
     implementation(libs.androidx.compose.ui)
@@ -63,4 +74,22 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    // Hilt and instrumented tests.
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
+    // Hilt and Robolectric tests.
+    testImplementation(libs.hilt.android.testing)
+    kaptTest(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.kotlinx.coroutines.test)
+
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+
+    implementation(libs.okhttp.logging)
+    implementation(libs.okhttp.mockserver)
 }

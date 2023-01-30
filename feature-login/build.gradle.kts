@@ -53,13 +53,17 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
 }
 
 dependencies {
     implementation(project(":core-data"))
     implementation(project(":core-ui"))
     implementation(project(":core-designsystem"))
+    implementation(project(mapOf("path" to ":core-model")))
+    implementation(project(mapOf("path" to ":core-network")))
     androidTestImplementation(project(":core-testing"))
+    androidTestImplementation(project(":core-network"))
 
     // Core Android dependencies
     implementation(libs.androidx.activity.compose)
@@ -73,6 +77,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.lifecycle.runtime.ktx)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests

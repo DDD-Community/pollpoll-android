@@ -38,6 +38,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.designsystem.component.PollLoginButton
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.R
@@ -48,12 +50,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun LoginRoute(
     modifier: Modifier = Modifier.fillMaxSize(),
     viewModel: LoginViewModel = hiltViewModel(),
-    navigateToMain: () -> Unit
+    navigateToMain: (String) -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val localView = LocalView.current
     val googleSignInClient = getGoogleLoginAuth(localView.context as Activity)
 
@@ -64,7 +69,7 @@ internal fun LoginRoute(
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    handleSignInResult(task)
+                    handleSignInResult(task, viewModel)
                 }
             }
         }
@@ -72,17 +77,26 @@ internal fun LoginRoute(
     LoginScreen(
         modifier = modifier,
         loginClick = {
-//            startForResult.launch(googleSignInClient?.signInIntent)
-            navigateToMain()
-        }
+            startForResult.launch(googleSignInClient?.signInIntent)
+        },
+        uiState,
+        navigateToMain = navigateToMain
     )
 }
 
 @Composable
 internal fun LoginScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
-    loginClick: () -> Unit = {}
+    loginClick: () -> Unit = {},
+    uiState: LoginUiState,
+    navigateToMain: (String) -> Unit
 ) {
+    when (uiState) {
+        is LoginUiState.Success -> navigateToMain(uiState.data)
+        LoginUiState.Empty -> {}
+        is LoginUiState.Error -> {}
+    }
+
     Surface(modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(80.dp))
@@ -116,17 +130,20 @@ internal fun LoginScreen(
 private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        .requestIdToken("182245619639-76brm9g3jqin7772gn8cke7a1jltsoo0.apps.googleusercontent.com")
+        .requestIdToken("182245619639-91irinookimtn557n057f2vcg9pn7okb.apps.googleusercontent.com")
         .requestId()
         .requestProfile()
         .build()
     return GoogleSignIn.getClient(activity, gso)
 }
 
-private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+private fun handleSignInResult(
+    completedTask: Task<GoogleSignInAccount>,
+    viewModel: LoginViewModel
+) {
     try {
         val account = completedTask.getResult(ApiException::class.java)
-        Log.d("Test", "account $account")
+        account.idToken?.let { token -> viewModel.addLogin(token) }
     } catch (e: ApiException) {
         Log.w("Test", "signInResult:failed code=" + e.getStatusCode())
     }
@@ -137,7 +154,7 @@ private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
 @Composable
 private fun DefaultPreview() {
     PollPollTheme {
-        LoginScreen(modifier = Modifier)
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
     }
 }
 
@@ -145,6 +162,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     PollPollTheme() {
-        LoginScreen(modifier = Modifier)
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
     }
 }
