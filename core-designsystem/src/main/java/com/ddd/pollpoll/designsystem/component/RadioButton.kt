@@ -1,17 +1,12 @@
 package com.ddd.pollpoll.designsystem.component
 
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.ddd.pollpoll.designsystem.theme.PollPollTheme
-
+import com.ddd.pollpoll.designsystem.core.radioButton.CoreRadioButton
 
 @Composable
-fun PollRadioButton() {
-    RadioButton(selected = true, onClick = { /*TODO*/ }  , colors = RadioButtonDefaults.colors(
-        selectedColor = PollPollTheme.colors.primary_500
-    ))
+fun PollRadioButton(selected: Boolean = false, onClick: (() -> Unit)? = null) {
+    CoreRadioButton(selected = selected, onClick = onClick)
 }
 
 @Preview(showBackground = true)
