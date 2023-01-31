@@ -61,9 +61,7 @@ dependencies {
     implementation(project(":core-ui"))
     implementation(project(":core-designsystem"))
     implementation(project(mapOf("path" to ":core-model")))
-    implementation(project(mapOf("path" to ":core-network")))
     androidTestImplementation(project(":core-testing"))
-    androidTestImplementation(project(":core-network"))
 
     // Core Android dependencies
     implementation(libs.androidx.activity.compose)

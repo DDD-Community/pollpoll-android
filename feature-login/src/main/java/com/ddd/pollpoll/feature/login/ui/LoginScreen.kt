@@ -92,7 +92,9 @@ internal fun LoginScreen(
     navigateToMain: (String) -> Unit
 ) {
     when (uiState) {
-        is LoginUiState.Success -> navigateToMain(uiState.data)
+        is LoginUiState.Success -> {
+            navigateToMain(uiState.data)
+        }
         LoginUiState.Empty -> {}
         is LoginUiState.Error -> {}
     }

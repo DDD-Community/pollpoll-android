@@ -24,7 +24,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.core_network"
+    namespace = "com.ddd.pollpoll.datastore"
     compileSdk = 33
 
     defaultConfig {
@@ -54,11 +54,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-//    testOptions {
-//        unitTests.all {
-//            it.useJUnitPlatform()
-//        }
-//    }
 }
 
 dependencies {

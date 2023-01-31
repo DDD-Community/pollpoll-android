@@ -1,8 +1,10 @@
 package com.ddd.pollpoll.designsystem.component
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -10,8 +12,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddd.pollpoll.designsystem.core.textfield.PollCoreTextField
@@ -32,32 +39,64 @@ fun PollTextField(
     text: String,
     placeholderText: String,
     onValueChange: (String) -> Unit = {},
+    maxLength: Int? = null,
     textStyle: TextStyle = PollPollTheme.typography.heading05,
     contextPadding: PaddingValues = PaddingValues(top = 6.dp, bottom = 20.dp),
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
-    PollCoreTextField(
-        value = text,
-        placeholderText = placeholderText,
-        textStyle = textStyle,
-        onValueChange = onValueChange,
-        paddingValues = contextPadding,
-        textFieldColors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.White,
-            unfocusedIndicatorColor = PollPollTheme.colors.gray_300,
-            focusedIndicatorColor = PollPollTheme.colors.gray_900
-        ),
-        keyboardActions = keyboardActions
-    )
+    var focusState by remember { mutableStateOf(false) }
+    Column() {
+        PollCoreTextField(
+            value = text,
+            placeholderText = placeholderText,
+            textStyle = textStyle,
+            onValueChange = onValueChange,
+            paddingValues = contextPadding,
+            textFieldColors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                unfocusedIndicatorColor = PollPollTheme.colors.gray_300,
+                focusedIndicatorColor = PollPollTheme.colors.gray_900
+            ),
+            keyboardActions = Key,
+            focusedChanged = { focusState = it.isFocused }
+        )
+        maxLength?.let { max ->
+
+            Text(
+                modifier = Modifier.align(Alignment.End),
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = if (text.isNotEmpty()) PollPollTheme.colors.gray_900 else PollPollTheme.colors.gray_400)) {
+                        append("${text.length}자 ")
+                    }
+                    append("/ ${max}자")
+                },
+                color = PollPollTheme.colors.gray_400,
+                style = PollPollTheme.typography.body04
+            )
+        }
+    }
 }
 
 @Preview
 @Composable
 fun PollTextFieldPreview() {
     PollPollTheme() {
-        var text by remember { mutableStateOf("") }
+        var text by remember { mutableStateOf("냐옹맨 ") }
+        Column() {
+            PollTextField(
+                text,
+                onValueChange = { text = it },
+                placeholderText = "제목을 입력해주세요",
+                maxLength = 50
+            )
 
-        PollTextField(text, onValueChange = { text = it }, placeholderText = "제목을 입력해주세요")
+            PollTextField(
+                text,
+                onValueChange = { text = it },
+                placeholderText = "제목을 입력해주세요",
+                maxLength = 50
+            )
+        }
     }
 }
 
