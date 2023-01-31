@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 /*
  * Copyright (C) 2022 The Android Open Source Project
  *
@@ -22,23 +24,19 @@ plugins {
 }
 
 android {
-    namespace = "com.ddd.pollpoll.feature.login"
+    namespace = "com.ddd.pollpoll.datastore"
     compileSdk = 33
 
     defaultConfig {
         minSdk = 21
         targetSdk = 33
 
-        testInstrumentationRunner = "com.ddd.pollpoll.core.testing.HiltTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures {
-        compose = true
-        aidl = false
         buildConfig = false
-        renderScript = false
-        shaders = false
     }
 
     composeOptions {
@@ -49,40 +47,20 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
 }
 
 dependencies {
-    implementation(project(":core-data"))
-    implementation(project(":core-ui"))
-    implementation(project(":core-designsystem"))
-    implementation(project(mapOf("path" to ":core-model")))
-    androidTestImplementation(project(":core-testing"))
-
+    implementation(project(":core-testing"))
+    implementation(project(":core-model"))
     // Core Android dependencies
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.arch.core)
 
-    // Arch Components
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
 
-    // Compose
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.lifecycle.runtime.ktx)
-    // Tooling
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    // Instrumented tests
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // Hilt Dependency Injection
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     // Hilt and instrumented tests.
@@ -92,14 +70,11 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kaptTest(libs.hilt.android.compiler)
 
-    // Local tests: jUnit, coroutines, Android runner
-    testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.kotlinx.coroutines.test)
 
-    // Instrumented tests: jUnit rules and runners
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.runner)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
 
-    //google auth
-    implementation(libs.google.auth)
+    implementation(libs.androidx.datastore)
+
 }

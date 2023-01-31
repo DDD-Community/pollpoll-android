@@ -19,12 +19,13 @@ package com.ddd.pollpoll.feature.login.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.core.network.model.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import result.Result
+import result.asResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,8 +38,12 @@ class LoginViewModel @Inject constructor(
 
     fun addLogin(token: String) {
         viewModelScope.launch {
-            loginRepository.loginGoogle(LoginRequest(token)).collect { result ->
-                _uiState.update { LoginUiState.Success(result.token) }
+            loginRepository.loginGoogle(token).asResult().collect { result ->
+                when (result) {
+                    is Result.Error -> _uiState.update { LoginUiState.Error(result.exception ?: Exception("알수없는 오류")) }
+                    Result.Loading -> _uiState.update { LoginUiState.Loading }
+                    is Result.Success -> _uiState.update { LoginUiState.Success(result.data.token) }
+                }
             }
         }
     }
@@ -49,4 +54,5 @@ sealed interface LoginUiState {
     object Empty : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
     data class Success(val data: String) : LoginUiState
+    object Loading : LoginUiState
 }

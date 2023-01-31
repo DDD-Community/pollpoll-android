@@ -20,6 +20,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
@@ -39,7 +41,8 @@ fun PollCoreTextField(
     textFieldColors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     paddingValues: PaddingValues,
     keyboardActions: KeyboardActions,
-    maxLength: Int = 0
+    maxLength: Int = 0,
+    focusedChanged: (FocusState) -> Unit = {}
 ) {
     PollCoreTextField(
         colors = textFieldColors,
@@ -48,6 +51,7 @@ fun PollCoreTextField(
         onValueChange = onValueChange,
         placeholder = { Text(text = placeholderText) },
         contentPadding = paddingValues,
+        focusedChanged = focusedChanged,
         keyboardActions = keyboardActions
     )
 }
@@ -60,6 +64,7 @@ internal fun PollCoreTextField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    focusedChanged: (FocusState) -> Unit = {},
     textStyle: TextStyle = LocalTextStyle.current,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
@@ -93,7 +98,8 @@ internal fun PollCoreTextField(
                 .defaultMinSize(
                     minWidth = 320.dp,
                     minHeight = 0.dp
-                ),
+                )
+                .onFocusChanged(focusedChanged),
             onValueChange = onValueChange,
             enabled = enabled,
             readOnly = readOnly,

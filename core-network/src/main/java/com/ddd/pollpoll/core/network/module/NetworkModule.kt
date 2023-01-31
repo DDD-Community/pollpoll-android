@@ -2,6 +2,7 @@ package com.ddd.pollpoll.core.network.module
 
 import com.ddd.pollpoll.core.network.HttpRequestInterceptor
 import com.ddd.pollpoll.core.network.retrofit.PollAPI
+import com.ddd.pollpoll.datastore.PollPollDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,9 +19,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(PollPreference: PollPollDataStore): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(HttpRequestInterceptor())
+            .addInterceptor(HttpRequestInterceptor(PollPreference))
             .connectTimeout(3, TimeUnit.SECONDS)
             .callTimeout(3, TimeUnit.SECONDS)
             .build()

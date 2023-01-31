@@ -36,7 +36,6 @@ android {
     }
 
     buildFeatures {
-        compose = true
         aidl = false
         buildConfig = false
         renderScript = false
@@ -64,16 +63,12 @@ android {
 dependencies {
     implementation(project(":core-testing"))
     implementation(project(":core-model"))
+    implementation(project(":core-datastore"))
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.arch.core)
 
-    // Compose
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    // Tooling
-    debugImplementation(libs.androidx.compose.ui.tooling)
+
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
@@ -84,7 +79,6 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kaptTest(libs.hilt.android.compiler)
 
-    implementation(libs.androidx.compose.ui)
     implementation(libs.kotlinx.coroutines.test)
 
     implementation(libs.retrofit.core)
@@ -92,4 +86,5 @@ dependencies {
 
     implementation(libs.okhttp.logging)
     implementation(libs.okhttp.mockserver)
+    implementation(libs.androidx.datastore)
 }
