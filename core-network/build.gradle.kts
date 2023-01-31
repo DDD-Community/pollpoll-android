@@ -36,7 +36,6 @@ android {
     }
 
     buildFeatures {
-        compose = true
         aidl = false
         buildConfig = false
         renderScript = false
@@ -64,6 +63,7 @@ android {
 dependencies {
     implementation(project(":core-testing"))
     implementation(project(":core-model"))
+    implementation(project(":core-datastore"))
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.arch.core)
@@ -86,4 +86,5 @@ dependencies {
 
     implementation(libs.okhttp.logging)
     implementation(libs.okhttp.mockserver)
+    implementation(libs.androidx.datastore)
 }
