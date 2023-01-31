@@ -36,11 +36,7 @@ android {
     }
 
     buildFeatures {
-        compose = true
-        aidl = false
         buildConfig = false
-        renderScript = false
-        shaders = false
     }
 
     composeOptions {
@@ -79,6 +75,6 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.gson)
 
-    implementation(libs.okhttp.logging)
-    implementation(libs.okhttp.mockserver)
+    implementation(libs.androidx.datastore)
+
 }

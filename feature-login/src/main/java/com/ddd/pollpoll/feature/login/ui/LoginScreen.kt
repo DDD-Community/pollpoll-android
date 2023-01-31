@@ -97,6 +97,7 @@ internal fun LoginScreen(
         }
         LoginUiState.Empty -> {}
         is LoginUiState.Error -> {}
+        LoginUiState.Loading -> {}
     }
 
     Surface(modifier) {

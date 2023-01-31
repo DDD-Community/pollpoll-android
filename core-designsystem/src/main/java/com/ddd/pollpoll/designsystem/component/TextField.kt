@@ -57,7 +57,7 @@ fun PollTextField(
                 unfocusedIndicatorColor = PollPollTheme.colors.gray_300,
                 focusedIndicatorColor = PollPollTheme.colors.gray_900
             ),
-            keyboardActions = Key,
+            keyboardActions = keyboardActions,
             focusedChanged = { focusState = it.isFocused }
         )
         maxLength?.let { max ->
