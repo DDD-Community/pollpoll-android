@@ -41,6 +41,9 @@ import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
 import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
+import com.ddd.pollpoll.designsystem.icon.PollIcon.Cloud
+import com.ddd.pollpoll.designsystem.icon.PollIcon.Fire
+import com.ddd.pollpoll.designsystem.icon.PollIcon.Writing
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import java.text.SimpleDateFormat
 import java.util.*
@@ -99,11 +102,11 @@ fun MyPollPollHeader() {
             .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
             .background(color = Color.White)
             .padding(horizontal = 20.dp, vertical = 15.dp)) {
-            PollRecord(true)
+            PollRecord(Writing,"내가 쓴 투표", true)
             Spacer(Modifier.weight(1f))
-            PollRecord()
+            PollRecord(Fire, "참여한 투표")
             Spacer(Modifier.weight(1f))
-            PollRecord()
+            PollRecord(Cloud, "구경한 투표")
         }
         Image(imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle), contentDescription = null, modifier = Modifier.offset(x = 40.dp, y = (-10).dp))
 
@@ -111,7 +114,13 @@ fun MyPollPollHeader() {
 }
 
 @Composable
-fun PollRecord(selected: Boolean = false, onClick: () -> Unit = {}) {
+fun PollRecord(
+    iconRes: Int,
+    title: String,
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
+
+) {
     Box(modifier = Modifier
         .clip(
             RoundedCornerShape(12.dp)
@@ -132,7 +141,7 @@ fun PollRecord(selected: Boolean = false, onClick: () -> Unit = {}) {
             .background(color = bgColor),
             horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.size(32.dp))
-            Text(text = "내가 쓴 투표", style = PollPollTheme.typography.body02, color = contentColor)
+            Text(text = title, style = PollPollTheme.typography.body02, color = contentColor)
             Spacer(Modifier.size(5.dp))
             Row() {
                 Text(text = "0", style = PollPollTheme.typography.heading05,
@@ -149,7 +158,7 @@ fun PollRecord(selected: Boolean = false, onClick: () -> Unit = {}) {
             .background(color = contentColor)
             .align(Alignment.TopCenter)) {
             Icon(
-                painter = painterResource(id = PollIcon.Close),
+                painter = painterResource(id = iconRes),
                 contentDescription = "",
                 tint = Color.White,
                 modifier = Modifier
@@ -162,7 +171,26 @@ fun PollRecord(selected: Boolean = false, onClick: () -> Unit = {}) {
 
 @Composable
 fun MyPollPollBody() {
-    PollCard(Modifier.fillMaxWidth())
+    PollCard(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp))
+    Spacer(modifier = Modifier.size(20.dp))
+    PollCard(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp))
+    Spacer(modifier = Modifier.size(20.dp))
+    PollCard(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp))
+    Spacer(modifier = Modifier.size(20.dp))
+    PollCard(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp))
+    Spacer(modifier = Modifier.size(20.dp))
 }
 
 @Composable
