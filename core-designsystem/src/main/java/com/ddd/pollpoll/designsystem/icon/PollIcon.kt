@@ -24,4 +24,6 @@ object PollIcon {
     val TermsOfService = R.drawable.ic_terms_of_service
     val VersionInfo = R.drawable.ic_version_info
     val ChevronRight = R.drawable.ic_chevron_right
+
+    val VoteModification = R.drawable.ic_vote_modifcation
 }

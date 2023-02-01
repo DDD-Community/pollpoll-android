@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.PollItem
+import com.ddd.pollpoll.Vote
 import com.ddd.pollpoll.designsystem.component.*
 import com.ddd.pollpoll.designsystem.core.bottomseat.PollModalBottomSheetLayout
 import com.ddd.pollpoll.designsystem.core.grid.VerticalGrid
@@ -36,16 +38,23 @@ internal fun InsertVoteRoute(
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val textState: AddingVote by viewModel.textField.collectAsStateWithLifecycle()
+    val voteState: Vote by viewModel.vote.collectAsStateWithLifecycle()
 
     InsertVoteScreen(
         modifier = modifier,
-        textFormData = textState,
+        vote = voteState,
         uiState = uiState,
         chooseCategory = viewModel::selectCategory,
-        titleValueChange = viewModel::insertTitle,
-        contentValueChange = viewModel::insertContent,
-        addVoteClicked = viewModel::navigateAddVoteCategory
+        titleValueChange = viewModel::changeTitle,
+        contentValueChange = viewModel::changeContent,
+        addVoteClicked = viewModel::navigateAddVoteCategory,
+        onTextChanged = { index: Int, text: String ->
+            viewModel.changeVoteList(
+                index,
+                PollItem(text)
+            )
+        },
+        onAddCategory = viewModel::addVoteList
     )
 }
 
@@ -53,12 +62,14 @@ internal fun InsertVoteRoute(
 @Composable
 fun InsertVoteScreen(
     modifier: Modifier,
-    textFormData: AddingVote,
+    vote: Vote,
     uiState: InsertVoteUiState,
     chooseCategory: (Category) -> Unit,
     titleValueChange: (String) -> Unit,
     contentValueChange: (String) -> Unit,
-    addVoteClicked: () -> Unit = {}
+    addVoteClicked: () -> Unit = {},
+    onAddCategory: () -> Unit,
+    onTextChanged: (index: Int, String) -> Unit
 ) {
     var progressState by remember { mutableStateOf(0.0f) }
     var bottomSheetState =
@@ -67,7 +78,7 @@ fun InsertVoteScreen(
     val coroutineScope = rememberCoroutineScope()
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(VoteRadioList[2]) }
 
-    val test = remember { mutableStateListOf<String>("", "") }
+    var isWriteEnabled by remember { mutableStateOf(false) }
 
     Scaffold(modifier = modifier, topBar = { VoteTopBar(progressState) }) { scaffoldPadding ->
         PollModalBottomSheetLayout(
@@ -88,31 +99,33 @@ fun InsertVoteScreen(
 
                     is InsertVoteUiState.InsertTitle -> {
                         InsertContentScreen(
-                            textFormData.category,
-                            textFormData.title,
-                            textFormData.content,
+                            vote.category.toCategory(),
+                            vote.title,
+                            vote.contents,
                             titleValueChange = titleValueChange,
                             contentValueChange = contentValueChange,
                             progressBarChanged = {
                                 progressState = it.progressBar
                             },
-                            addVoteClicked = addVoteClicked
+                            addVoteClicked = addVoteClicked,
+                            isWriteEnabled = isWriteEnabled
                         )
                     }
 
-                    InsertVoteUiState.AddVoteCategory -> {
+                    is InsertVoteUiState.AddVoteCategory -> {
                         AddVoteCategoryScreen(
-                            textFormData.category,
+                            vote.category.toCategory(),
                             onDialogClick = {
                                 coroutineScope.launch {
                                     bottomSheetState.show()
                                 }
                             },
                             selectedDate = selectedOption,
-                            onaddCategory = { test.add("") },
-                            onTextChanged = { index, text -> test[index] = text },
-                            test.toList()
-
+                            onAddCategory = onAddCategory,
+                            onTextChanged = onTextChanged,
+                            voteList = vote.pollItems,
+                            isWriteEnabled = isWriteEnabled,
+                            WriteButtonEnabled = { isWriteEnabled = it }
                         )
                     }
                 }
@@ -126,75 +139,79 @@ fun AddVoteCategoryScreen(
     category: Category = defalutCategory,
     onDialogClick: () -> Unit = {},
     selectedDate: VoteRadioButton,
-    onaddCategory: () -> Unit = {},
+    onAddCategory: () -> Unit = {},
     onTextChanged: (index: Int, String) -> Unit,
-    test: List<String>
+    voteList: List<PollItem> = listOf(),
+    isWriteEnabled: Boolean = false,
+    WriteButtonEnabled: (Boolean) -> Unit = {}
 ) {
+    if (voteList.contains(PollItem(""))) WriteButtonEnabled(false) else WriteButtonEnabled(true)
+
     val scrollState = rememberScrollState()
     Column(
-        Modifier
-            .padding(20.dp)
-            .verticalScroll(scrollState),
+        Modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CategoryScreen(category)
-        Column() {
-            test.forEachIndexed { index, it ->
-                PollTextField(
-                    text = it,
-                    placeholderText = "항목입력",
-                    onValueChange = {
-                        onTextChanged(index, it)
-                    }
-                )
+        Column(Modifier.padding(20.dp)) {
+            CategoryScreen(category)
+            voteList.forEachIndexed { index, it ->
+                PollTextField(text = it.name, placeholderText = "항목입력", onValueChange = {
+                    onTextChanged(index, it)
+                })
                 Spacer(modifier = Modifier.height(20.dp))
             }
-        }
-        Spacer(modifier = Modifier.height(30.dp))
 
-        Row(modifier = Modifier.align(Alignment.Start).clickable { onaddCategory() }) {
-            Image(painter = painterResource(id = PollIcon.AddCircleGray), contentDescription = "")
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(text = "항목 추가", style = PollPollTheme.typography.body02)
-        }
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(130.dp)
-        )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(PollPollTheme.colors.gray_100)
-        )
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier.align(Alignment.CenterStart),
-                text = "투표기간",
-                style = PollPollTheme.typography.heading05,
-                color = PollPollTheme.colors.gray_900
-            )
-            Row(modifier = Modifier.align(Alignment.TopEnd)) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    text = selectedDate.date,
-                    style = PollPollTheme.typography.body02
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Row(modifier = Modifier.align(Alignment.Start).clickable { onAddCategory() }) {
+                Image(
+                    painter = painterResource(id = PollIcon.AddCircleGray),
+                    contentDescription = ""
                 )
-                IconButton(onClick = { onDialogClick() }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = PollIcon.ChevronRight),
-                        contentDescription = ""
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(text = "항목 추가", style = PollPollTheme.typography.body02)
+            }
+            Spacer(
+                modifier = Modifier.fillMaxWidth().height(130.dp)
+            )
+            Spacer(
+                modifier = Modifier.fillMaxWidth().height(1.dp)
+                    .background(PollPollTheme.colors.gray_100)
+            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    text = "투표기간",
+                    style = PollPollTheme.typography.heading05,
+                    color = PollPollTheme.colors.gray_900
+                )
+                Row(modifier = Modifier.align(Alignment.TopEnd)) {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        text = selectedDate.date,
+                        style = PollPollTheme.typography.body02
                     )
+                    IconButton(onClick = { onDialogClick() }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = PollIcon.ChevronRight),
+                            contentDescription = ""
+                        )
+                    }
                 }
             }
+            Text(
+                modifier = Modifier.align(alignment = Alignment.Start),
+                text = "투표가 진행되고 있는 시점부터는 투표를 수정할 수 없습니다",
+                style = PollPollTheme.typography.body04,
+                color = PollPollTheme.colors.gray_400
+            )
         }
-        Text(
-            modifier = Modifier.align(alignment = Alignment.Start),
-            text = "투표가 진행되고 있는 시점부터는 투표를 수정할 수 없습니다",
-            style = PollPollTheme.typography.body04,
-            color = PollPollTheme.colors.gray_400
-        )
+        PollButton(
+            Modifier.fillMaxWidth().heightIn(min = 60.dp),
+            enabled = isWriteEnabled
+        ) {
+            Text(text = "작성완료", style = PollPollTheme.typography.heading05)
+        }
     }
 }
 
@@ -261,36 +278,43 @@ fun InsertContentScreen(
     titleValueChange: (String) -> Unit = {},
     contentValueChange: (String) -> Unit = {},
     progressBarChanged: (VoteScreenEnum) -> Unit = {},
-    addVoteClicked: () -> Unit = {}
+    addVoteClicked: () -> Unit = {},
+    isWriteEnabled: Boolean
 ) {
     val scrollState = rememberScrollState()
-    Column(
-        Modifier
-            .padding(20.dp)
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CategoryScreen(category)
-        Spacer(modifier = Modifier.height(24.dp))
-        PollTextField(
-            text = title,
-            placeholderText = "제목을 입력해주세요",
-            onValueChange = titleValueChange,
-            maxLength = 50
-        )
-        if (title.isNotEmpty()) {
-            progressBarChanged(VoteScreenEnum.Title)
+    Box(Modifier.fillMaxSize()) {
+        Column(
+            Modifier.padding(20.dp).verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CategoryScreen(category)
+            Spacer(modifier = Modifier.height(24.dp))
             PollTextField(
-                text = content,
-                placeholderText = "내용을 입력해주세요",
-                onValueChange = contentValueChange,
-                maxLength = 200
+                text = title,
+                placeholderText = "제목을 입력해주세요",
+                onValueChange = titleValueChange,
+                maxLength = 50
             )
+            if (title.isNotEmpty()) {
+                progressBarChanged(VoteScreenEnum.Title)
+                PollTextField(
+                    text = content,
+                    placeholderText = "내용을 입력해주세요",
+                    onValueChange = contentValueChange,
+                    maxLength = 200
+                )
+            }
+            if (content.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(40.dp))
+                AddVoteItemScreen(addVoteClicked = addVoteClicked)
+                progressBarChanged(VoteScreenEnum.Content)
+            }
         }
-        if (content.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(40.dp))
-            AddVoteItemScreen(addVoteClicked = addVoteClicked)
-            progressBarChanged(VoteScreenEnum.Content)
+
+        PollButton(
+            Modifier.align(Alignment.BottomCenter).fillMaxWidth().heightIn(min = 60.dp)
+        ) {
+            Text(text = "작성완료", style = PollPollTheme.typography.heading05)
         }
     }
 }
@@ -308,18 +332,32 @@ private fun ColumnScope.CategoryScreen(category: Category) {
 }
 
 @Composable
-fun AddVoteItemScreen(addVoteClicked: () -> Unit = {}) {
+fun AddVoteItemScreen(isComplete: Boolean, addVoteClicked: () -> Unit = {}) {
     Surface(
-        modifier = Modifier
-            .size(320.dp, 62.dp)
-            .clickable { addVoteClicked() },
+        modifier = Modifier.size(320.dp, 62.dp).clickable { addVoteClicked() },
         color = PollPollTheme.colors.primary_100
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Spacer(modifier = Modifier.width(13.dp))
-            Image(painter = painterResource(id = PollIcon.AddCircleRed), contentDescription = "")
-            Spacer(modifier = Modifier.width(11.dp))
-            Text(text = "투표 항목 추가하기")
+        Column() {
+            if (isComplete) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.width(13.dp))
+                    Image(
+                        painter = painterResource(id = PollIcon.VoteModification),
+                        contentDescription = ""
+                    )
+                    Spacer(modifier = Modifier.width(11.dp))
+                    Text(text = "투표 항목 수정하기")
+                }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(modifier = Modifier.width(13.dp))
+                Image(
+                    painter = painterResource(id = PollIcon.AddCircleRed),
+                    contentDescription = ""
+                )
+                Spacer(modifier = Modifier.width(11.dp))
+                Text(text = "투표 항목 추가하기")
+            }
         }
     }
 }
@@ -345,7 +383,7 @@ fun SelectDateScreen(
 @Composable
 fun SelectDateScreenPreview() {
 //    PollPollTheme() {
-//        SelectDateScreen("1일", false) {}
+    SelectDateScreen(VoteRadioButton("test"), VoteRadioButton("test")) {}
 //    }
 }
 
@@ -353,7 +391,11 @@ fun SelectDateScreenPreview() {
 @Composable
 fun AddVoteCategoryPreview() {
     PollPollTheme() {
-//        AddVoteCategoryScreen(selectedOption = selectedOption)
+        AddVoteCategoryScreen(
+            selectedDate = VoteRadioButton("test"),
+            onTextChanged = { it, test -> },
+            isWriteEnabled = false
+        )
     }
 }
 
@@ -377,7 +419,7 @@ fun InsertVoteScreenPreview() {
 @Composable
 fun InsertContentScreenPreview() {
     PollPollTheme() {
-        InsertContentScreen(title = "", content = "")
+        InsertContentScreen(title = "", content = "", isWriteEnabled = false)
     }
 }
 
@@ -390,9 +432,7 @@ private fun ChoiceCategoryScreenPortraitPreview() {
 }
 
 enum class VoteScreenEnum(val progressBar: Float) {
-    Title(0.2f),
-    Content(0.4f),
-    AddVote(0.6f),
+    Title(0.2f), Content(0.4f), AddVote(0.6f),
 }
 
 val VoteRadioList = listOf(

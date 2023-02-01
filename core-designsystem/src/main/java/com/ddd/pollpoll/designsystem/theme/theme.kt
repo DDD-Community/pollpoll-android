@@ -60,6 +60,8 @@ data class CustomSpaces(
     val extraLarge: Dp = 40.dp
 )
 
+
+
 @Composable
 fun PollPollTheme(
     spaces: CustomSpaces = PollPollTheme.spaces,
@@ -71,6 +73,7 @@ fun PollPollTheme(
 ) {
     val currentColor = remember { if (darkColors != null && darkTheme) darkColors else colors }
     val rememberedColors = remember { currentColor.copy() }.apply { updateColorsFrom(currentColor) }
+
 
     CompositionLocalProvider(
         LocalColors provides rememberedColors,
