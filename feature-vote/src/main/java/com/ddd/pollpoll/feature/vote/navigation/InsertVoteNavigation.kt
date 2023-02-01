@@ -22,6 +22,6 @@ fun NavGraphBuilder.insertVoteScreen(
 //            navArgument(topicIdArg) { type = NavType.StringType }
         )
     ) {
-        InsertVoteRoute(/*onBackClick = onBackClick*/)
+        InsertVoteRoute(onCloseButtonClicked = onBackClick)
     }
 }

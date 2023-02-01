@@ -3,6 +3,7 @@ package com.ddd.pollpoll.designsystem.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -42,7 +43,8 @@ fun PollTextField(
     maxLength: Int? = null,
     textStyle: TextStyle = PollPollTheme.typography.heading05,
     contextPadding: PaddingValues = PaddingValues(top = 6.dp, bottom = 20.dp),
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     var focusState by remember { mutableStateOf(false) }
     Column() {
@@ -58,6 +60,7 @@ fun PollTextField(
                 focusedIndicatorColor = PollPollTheme.colors.gray_900
             ),
             keyboardActions = keyboardActions,
+            keyboardOptions = keyboardOptions,
             focusedChanged = { focusState = it.isFocused }
         )
         maxLength?.let { max ->

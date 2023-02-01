@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -64,9 +65,23 @@ fun PollLoginButton(
 }
 
 @Composable
-fun PollButton() {
-    Button(shape = RoundedCornerShape(0.dp), onClick = { /*TODO*/ }) {
-
+fun PollButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    enabled: Boolean = false,
+    content: @Composable RowScope.() -> Unit = {}
+) {
+    Button(
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = PollPollTheme.colors.primary_500,
+            disabledContainerColor = PollPollTheme.colors.gray_300
+        ),
+        enabled = enabled,
+        shape = RoundedCornerShape(0.dp),
+        onClick = onClick
+    ) {
+        content()
     }
 }
 
@@ -79,8 +94,6 @@ object PollButtonDefaults {
     // OutlinedButton default border width isn't exposed via ButtonDefaults
     val OutlinedButtonBorderWidth = 1.dp
 }
-
-
 
 @Preview
 @Composable

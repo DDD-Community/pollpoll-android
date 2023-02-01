@@ -16,7 +16,7 @@ data class PollItem(
 )
 
 fun Vote.asNetworkModel() = PostPostRequest(
-    categoryId = this.categoryId,
+    categoryId = this.category.categoryId,
     contents = this.contents,
     milliseconds = this.milliseconds,
     multipleChoice = this.multipleChoice,

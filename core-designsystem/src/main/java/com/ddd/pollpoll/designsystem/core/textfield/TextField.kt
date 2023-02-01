@@ -41,6 +41,7 @@ fun PollCoreTextField(
     textFieldColors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     paddingValues: PaddingValues,
     keyboardActions: KeyboardActions,
+    keyboardOptions: KeyboardOptions,
     maxLength: Int = 0,
     focusedChanged: (FocusState) -> Unit = {}
 ) {
@@ -52,7 +53,8 @@ fun PollCoreTextField(
         placeholder = { Text(text = placeholderText) },
         contentPadding = paddingValues,
         focusedChanged = focusedChanged,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        keyboardOptions = keyboardOptions
     )
 }
 
