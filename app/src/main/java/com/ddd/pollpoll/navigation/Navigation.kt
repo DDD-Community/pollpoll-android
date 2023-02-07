@@ -23,8 +23,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
+import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
-import com.ddd.pollpoll.feature.vote.navigation.navigateToVote
+import com.ddd.pollpoll.feature.mypollpoll.navigation.navigateToMyPollPoll
 
 @Composable
 fun MainNavigation() {
@@ -35,9 +36,11 @@ fun MainNavigation() {
         loginScreen(
             navigateToMain = {
 
-                navController.navigateToVote()
+//                navController.navigateToVote()
+                navController.navigateToMyPollPoll()
             }
         )
         insertVoteScreen {}
+        myPollPollScreen {}
     }
 }

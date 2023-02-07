@@ -22,7 +22,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ddd.pollpoll.feature.settings"
+    namespace = "com.ddd.pollpoll.feature.mypollpoll"
     compileSdk = 33
 
     defaultConfig {
@@ -61,6 +61,8 @@ dependencies {
     implementation(project(mapOf("path" to ":core-designsystem")))
     implementation(project(mapOf("path" to ":core-designsystem")))
     androidTestImplementation(project(":core-testing"))
+    implementation(project(":core-network"))
+    implementation(project(":core-model"))
 
     // Core Android dependencies
     implementation(libs.androidx.activity.compose)

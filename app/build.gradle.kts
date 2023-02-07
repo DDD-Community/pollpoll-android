@@ -81,6 +81,7 @@ dependencies {
     implementation(project(":core-data"))
     implementation(project(":feature-login"))
     implementation(project(":feature-vote"))
+    implementation(project(":feature-mypollpoll"))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-designsystem"))
 

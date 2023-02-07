@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,11 +49,20 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Composable
+internal fun MyPollPollRoute(
+    modifier: Modifier = Modifier,
+    viewModel: MypollpollViewModel = hiltViewModel()
+) {
+    MypollpollScreen(
+        modifier = modifier,
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MypollpollScreen(
-    modifier: Modifier = Modifier,
-    viewModel: MypollpollViewModel = hiltViewModel()
+    modifier: Modifier = Modifier
 ) {
     Scaffold(topBar = {
         Column() {
