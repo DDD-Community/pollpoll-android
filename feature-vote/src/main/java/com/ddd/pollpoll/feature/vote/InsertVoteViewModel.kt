@@ -52,12 +52,34 @@ class InsertVoteViewModel @Inject constructor() : ViewModel() {
     }
 }
 
+<<<<<<< Updated upstream
 data class AddingVote(
     val category: Category = Category(iconDrawable = PollIcon.Buy, "구매"),
     val title: String = "",
     val content: String = "",
     var voteItemListState: SnapshotStateList<String> = mutableStateListOf<String>()
 )
+=======
+    fun backAddVote() {
+        _uiState.value = when (_uiState.value) {
+            InsertVoteUiState.AddVoteCategory -> InsertVoteUiState.InsertTitle
+            InsertVoteUiState.InsertTitle -> InsertVoteUiState.SelectCategory
+            InsertVoteUiState.SelectCategory -> InsertVoteUiState.Back
+            InsertVoteUiState.Back -> InsertVoteUiState.Back
+        }
+    }
+
+    fun insertPost() = viewModelScope.launch {
+        postRepository.insertPost(vote.value).asResult().collect {
+            it.toString()
+        }
+    }
+
+    fun addVoteList() {
+        val pollList = _vote.value.pollItems.plus(PollItem(""))
+        _vote.update { it.copy(pollItems = pollList) }
+    }
+>>>>>>> Stashed changes
 
 
 interface InsertVoteUiState {
@@ -67,4 +89,13 @@ interface InsertVoteUiState {
     object InsertTitle : InsertVoteUiState
 
     object AddVoteCategory : InsertVoteUiState
+<<<<<<< Updated upstream
+=======
+
+    object Back : InsertVoteUiState
+
+    object Success : InsertVoteUiState
+    data class Error(val throwable: Throwable) : InsertVoteUiState
+    object Loading : InsertVoteUiState
+>>>>>>> Stashed changes
 }
