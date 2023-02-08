@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -63,7 +64,9 @@ internal fun InsertVoteRoute(
         onAddCategory = viewModel::addVoteList,
         onBackButtonClicked = viewModel::backAddVote,
         onCloseButtonClicked = onCloseButtonClicked,
-        onInsertButtonClicked = viewModel::insertPost
+        onInsertButtonClicked = viewModel::insertPost,
+        onVoteDateSelected = viewModel::changeDate
+
     )
 }
 
@@ -81,18 +84,18 @@ fun InsertVoteScreen(
     onTextChanged: (index: Int, String) -> Unit,
     onBackButtonClicked: () -> Unit = {},
     onCloseButtonClicked: () -> Unit = {},
-    onInsertButtonClicked: () -> Unit = {}
+    onInsertButtonClicked: () -> Unit = {},
+    onVoteDateSelected: (Long) -> Unit = {}
 ) {
-    var progressState by remember { mutableStateOf(0.0f) }
-    var bottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-
+    MaterialTheme.
     val coroutineScope = rememberCoroutineScope()
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(VoteRadioList[2]) }
-    var isWriteEnabled by remember { mutableStateOf(false) }
+    val bottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var progressState by remember { mutableStateOf(0.0f) }
+    var selectedOptionState by remember { mutableStateOf(VoteRadioList[2]) }
+    var writeEnabledState by remember { mutableStateOf(false) }
     var contentEnabledState by remember { mutableStateOf(false) }
     var voteEnabledState by remember { mutableStateOf(false) }
-
     var dialogState by remember { mutableStateOf(false) }
 
     BackHandler(enabled = !bottomSheetState.isVisible) {
@@ -119,7 +122,10 @@ fun InsertVoteScreen(
             sheetContent = {
                 Column() {
                     VoteRadioList.forEach {
-                        SelectDateScreen(it, selectedOption, onClick = onOptionSelected)
+                        SelectDateScreen(it, selectedOptionState, onClick = { voteDate ->
+                            selectedOptionState = voteDate
+                            onVoteDateSelected(voteDate.time)
+                        })
                     }
                 }
             },
@@ -142,11 +148,13 @@ fun InsertVoteScreen(
                                 progressState = it.progressBar
                             },
                             addVoteClicked = addVoteClicked,
-                            isWriteEnabled = isWriteEnabled,
+                            isWriteEnabled = writeEnabledState,
                             contentEnabled = contentEnabledState,
                             voteEnabled = voteEnabledState,
                             onContentDone = { voteEnabledState = true },
-                            onTitleDone = { contentEnabledState = true }
+                            onTitleDone = { contentEnabledState = true },
+                            onVoteCompleteButtonClicked = { dialogState = true }
+
                         )
                     }
 
@@ -158,7 +166,7 @@ fun InsertVoteScreen(
                                     bottomSheetState.show()
                                 }
                             },
-                            selectedDate = selectedOption,
+                            selectedDate = selectedOptionState,
                             onAddCategory = onAddCategory,
                             onTextChanged = onTextChanged,
                             voteList = vote.pollItems,
@@ -166,7 +174,7 @@ fun InsertVoteScreen(
                                 progressState = it.progressBar
                             },
                             onVoteButtonClicked = {
-                                isWriteEnabled = true
+                                writeEnabledState = true
                                 onBackButtonClicked()
                             }
                         )
@@ -348,6 +356,7 @@ fun InsertContentScreen(
     progressBarChanged: (VoteScreenEnum) -> Unit = {},
     addVoteClicked: () -> Unit = {},
     isWriteEnabled: Boolean = false,
+    onVoteCompleteButtonClicked: () -> Unit = {},
     onTitleDone: () -> Unit,
     onContentDone: () -> Unit
 ) {
@@ -403,7 +412,8 @@ fun InsertContentScreen(
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .heightIn(min = 60.dp),
-            enabled = isWriteEnabled
+            enabled = isWriteEnabled,
+            onClick = onVoteCompleteButtonClicked
         ) {
             Text(text = "작성완료", style = PollPollTheme.typography.heading05)
         }
@@ -490,7 +500,7 @@ fun SelectDateScreen(
 @Composable
 fun SelectDateScreenPreview() {
 //    PollPollTheme() {
-    SelectDateScreen(VoteRadioButton("test"), VoteRadioButton("test")) {}
+    SelectDateScreen(VoteRadioButton("test", 360000), VoteRadioButton("test", 3666)) {}
 //    }
 }
 
@@ -499,7 +509,7 @@ fun SelectDateScreenPreview() {
 fun AddVoteCategoryPreview() {
     PollPollTheme() {
         AddVoteCategoryScreen(
-            selectedDate = VoteRadioButton("test"),
+            selectedDate = VoteRadioButton("test", 3600000),
             onTextChanged = { it, test -> },
             progressBarChanged = {}
         )
@@ -553,10 +563,10 @@ enum class VoteScreenEnum(val progressBar: Float) {
 }
 
 val VoteRadioList = listOf(
-    VoteRadioButton("3일"),
-    VoteRadioButton("2일"),
-    VoteRadioButton("1일"),
-    VoteRadioButton("12시간")
+    VoteRadioButton("3일", 36000000),
+    VoteRadioButton("2일", 36000000),
+    VoteRadioButton("1일", 36000000),
+    VoteRadioButton("12시간", 36000000)
 )
 
-data class VoteRadioButton(val date: String)
+data class VoteRadioButton(val date: String, val time: Long)

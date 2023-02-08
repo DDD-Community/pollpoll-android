@@ -14,7 +14,7 @@ class HttpRequestInterceptor(private val pollPreference: PollPollDataStore) : In
 
         val originalRequest = chain.request()
         val request = originalRequest.newBuilder().url(originalRequest.url)
-            .header("Authorization", token)
+            .header("Authorization", "Bearer " + token)
             .build()
         val response = chain.proceed(request)
         return response

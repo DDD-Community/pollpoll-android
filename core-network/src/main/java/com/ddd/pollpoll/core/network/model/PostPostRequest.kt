@@ -5,7 +5,7 @@ import com.ddd.pollpoll.Vote
 data class PostPostRequest(
     val categoryId: Int,
     val contents: String,
-    val milliseconds: Int,
+    val milliseconds: Long,
     val multipleChoice: Boolean,
     val pollItems: List<PollItem>,
     val title: String

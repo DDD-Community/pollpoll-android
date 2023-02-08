@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
             PollPollTheme() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = PollPollTheme.colors.primary_500
                 ) {
                     MainNavigation()
                 }

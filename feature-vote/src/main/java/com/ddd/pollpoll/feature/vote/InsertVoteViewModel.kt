@@ -40,6 +40,10 @@ class InsertVoteViewModel @Inject constructor(
         it.copy(contents = content)
     }
 
+    fun changeDate(date : Long) = _vote.update {
+        it.copy(milliseconds = date)
+    }
+
     fun navigateAddVoteCategory() {
         _uiState.value = InsertVoteUiState.AddVoteCategory
     }
@@ -67,6 +71,7 @@ class InsertVoteViewModel @Inject constructor(
         val pollList = _vote.value.pollItems.toMutableList().apply { set(index, pollItem) }
         _vote.update { it.copy(pollItems = pollList) }
     }
+
 }
 
 sealed interface InsertVoteUiState {

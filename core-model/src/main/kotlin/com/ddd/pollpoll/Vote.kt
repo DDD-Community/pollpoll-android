@@ -3,7 +3,7 @@ package com.ddd.pollpoll
 data class Vote(
     val category: CategoryEnum = CategoryEnum.Buy,
     val contents: String = "",
-    val milliseconds: Int = 0,
+    val milliseconds: Long = 0,
     val multipleChoice: Boolean = false,
     val pollItems: List<PollItem> = listOf(PollItem(""), PollItem("")),
     val title: String = ""
@@ -14,10 +14,10 @@ data class PollItem(
 )
 
 enum class CategoryEnum(val categoryId: Int) {
-    Buy(0),
+    Buy(1),
     Carrier(1),
-    Carrier2(2),
-    Love(3),
-    Group(4),
-    Worry(5)
+    Carrier2(1),
+    Love(1),
+    Group(1),
+    Worry(1)
 }
