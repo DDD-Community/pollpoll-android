@@ -69,22 +69,7 @@ fun InsertVoteScreen(
 
     val test = remember { mutableStateListOf<String>("", "") }
 
-<<<<<<< Updated upstream
     Scaffold(modifier = modifier, topBar = { VoteTopBar(progressState) }) { scaffoldPadding ->
-=======
-    BackHandler(enabled = !bottomSheetState.isVisible) {
-        onBackButtonClicked()
-    }
-
-    Scaffold(modifier = modifier, topBar = {
-        VoteTopBar(
-            progressState,
-            onBackButtonClicked = onBackButtonClicked,
-            onCloseButtonClicked = onCloseButtonClicked
-
-        )
-    }) { scaffoldPadding ->
->>>>>>> Stashed changes
         PollModalBottomSheetLayout(
             sheetContent = {
                 Column() {
@@ -96,13 +81,6 @@ fun InsertVoteScreen(
             sheetState = bottomSheetState
         ) {
             Surface(modifier = Modifier.padding(scaffoldPadding)) {
-                if (dialogState) {
-                    PollAlertDialog(
-                        onDismissRequest = { dialogState = false },
-                        onCancelClicked = { dialogState = false },
-                        onConfirmClicked = { onInsertButtonClicked() }
-                    )
-                }
                 when (uiState) {
                     InsertVoteUiState.SelectCategory -> {
                         ChoiceCategoryScreen(onClick = chooseCategory)
@@ -118,18 +96,7 @@ fun InsertVoteScreen(
                             progressBarChanged = {
                                 progressState = it.progressBar
                             },
-<<<<<<< Updated upstream
                             addVoteClicked = addVoteClicked
-=======
-                            addVoteClicked = addVoteClicked,
-                            isWriteEnabled = isWriteEnabled,
-                            contentEnabled = contentEnabledState,
-                            voteEnabled = voteEnabledState,
-                            onContentDone = { voteEnabledState = true },
-                            onTitleDone = { contentEnabledState = true },
-                            onVoteInsertButtonClicked = { dialogState = true }
-
->>>>>>> Stashed changes
                         )
                     }
 
@@ -294,15 +261,7 @@ fun InsertContentScreen(
     titleValueChange: (String) -> Unit = {},
     contentValueChange: (String) -> Unit = {},
     progressBarChanged: (VoteScreenEnum) -> Unit = {},
-<<<<<<< Updated upstream
     addVoteClicked: () -> Unit = {}
-=======
-    addVoteClicked: () -> Unit = {},
-    isWriteEnabled: Boolean = false,
-    onVoteInsertButtonClicked: () -> Unit = {},
-    onTitleDone: () -> Unit,
-    onContentDone: () -> Unit
->>>>>>> Stashed changes
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -328,23 +287,10 @@ fun InsertContentScreen(
                 maxLength = 200
             )
         }
-<<<<<<< Updated upstream
         if (content.isNotEmpty()) {
             Spacer(modifier = Modifier.height(40.dp))
             AddVoteItemScreen(addVoteClicked = addVoteClicked)
             progressBarChanged(VoteScreenEnum.Content)
-=======
-
-        PollButton(
-            Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .heightIn(min = 60.dp),
-            enabled = isWriteEnabled,
-            onClick = onVoteInsertButtonClicked
-        ) {
-            Text(text = "작성완료", style = PollPollTheme.typography.heading05)
->>>>>>> Stashed changes
         }
     }
 }
