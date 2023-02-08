@@ -26,7 +26,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.ddd.pollpoll.core.network.model.Category
+import com.ddd.pollpoll.core.network.model.GetPostResponse
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import result.Result
 import result.asResult
 
@@ -37,6 +39,7 @@ class MypollpollViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val postRepository: PostRepository
 ) : ViewModel() {
+    val posts = MutableStateFlow<GetPostResponse?>(null)
 
     init {
         viewModelScope.launch {
@@ -58,6 +61,7 @@ class MypollpollViewModel @Inject constructor(
                     Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
                     is Result.Success ->  {
                         Log.e("MypollpollViewModel", "post Success ${result.data.posts}")
+                        posts.value = result.data
                     }
                 }
             }

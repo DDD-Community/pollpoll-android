@@ -25,7 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +38,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ddd.pollpoll.core.network.model.GetPostResponse
+import com.ddd.pollpoll.core.network.model.PostResponse
 import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
 import com.ddd.pollpoll.designsystem.component.PollTopBar
@@ -54,15 +56,18 @@ internal fun MyPollPollRoute(
     modifier: Modifier = Modifier,
     viewModel: MypollpollViewModel = hiltViewModel()
 ) {
+    val posts = viewModel.posts.collectAsState().value
     MypollpollScreen(
         modifier = modifier,
+        posts
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MypollpollScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    posts: GetPostResponse?
 ) {
     Scaffold(topBar = {
         Column() {
@@ -99,7 +104,7 @@ fun MypollpollScreen(
                     .background(color = PollPollTheme.colors.gray_050)
             ) {
                 MyPollPollHeader()
-                MyPollPollBody()
+                MyPollPollBody(posts)
             }
         }
     }
@@ -180,27 +185,17 @@ fun PollRecord(
 }
 
 @Composable
-fun MyPollPollBody() {
-    PollCard(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp))
-    Spacer(modifier = Modifier.size(20.dp))
-    PollCard(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp))
-    Spacer(modifier = Modifier.size(20.dp))
-    PollCard(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp))
-    Spacer(modifier = Modifier.size(20.dp))
-    PollCard(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp))
-    Spacer(modifier = Modifier.size(20.dp))
+fun MyPollPollBody(posts: GetPostResponse?) {
+    if (posts != null) {
+        for (post in posts.posts) {
+            PollCard(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                post = post)
+        }
+    }
+
 }
 
 @Composable
@@ -208,7 +203,8 @@ fun PollCard(
     modifier: Modifier = Modifier,
     expireDate: Date = Date(),
     participantsCount: Int = 0,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    post: PostResponse
 ) {
     Card(
         modifier = modifier, shape = RoundedCornerShape(20.dp),
@@ -221,7 +217,7 @@ fun PollCard(
                 PollLabel("초이스")
                 Spacer(modifier = Modifier.size(10.dp))
                 Text(
-                    text = "고민",
+                    text = "${post.categoryName}",
                     color = PollPollTheme.colors.gray_900,
                     style = PollPollTheme.typography.body04
                 )
@@ -229,13 +225,13 @@ fun PollCard(
             Spacer(modifier = Modifier.size(15.dp))
 
             Text(
-                text = "개발자분들 사용하시는 모니터 해상도가 어떻게 되시나요?",
+                text = "${post.title}",
                 color = PollPollTheme.colors.gray_900,
                 style = PollPollTheme.typography.heading05
             )
             Spacer(modifier = Modifier.size(10.dp))
             Text(
-                text = "이번에 회사에 맥북에 연결 할 듀얼 모니터를 교체하려고 하는데 개발자에게 고사양의 모니터가 필요할 지 의문이 들어서 투표 올려봅니다! 해상도 좋은 모니터 쓰면 장점이 있나요??",
+                text = "${post.contents}",
                 color = PollPollTheme.colors.gray_700,
                 style = PollPollTheme.typography.heading05,
                 fontWeight = FontWeight.Normal,
@@ -264,7 +260,7 @@ fun PollCard(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = PollPollTheme.colors.gray_050)) {
                 Text(text = "지금 ", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
-                Text(text = "${participantsCount}명", color = PollPollTheme.colors.primary_500, style = PollPollTheme.typography.body03)
+                Text(text = "${post.participantCount}명", color = PollPollTheme.colors.primary_500, style = PollPollTheme.typography.body03)
                 Text(text = " 참여 중이에요", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
             }
         }
@@ -316,6 +312,6 @@ fun HitsText(hits: Int) {
 @Composable
 private fun PollRecordPreview() {
     PollPollTheme {
-        MypollpollScreen()
+        MypollpollScreen(posts = null)
     }
 }
