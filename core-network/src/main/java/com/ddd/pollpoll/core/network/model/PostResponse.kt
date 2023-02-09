@@ -15,6 +15,13 @@ data class PostResponse(
     val postCreatedAt: Long,
     val postHits: Int,
     val postId: Int,
+    val pollItems: List<PostItem>?,
     val title: String,
     val watcherCount: Int
+)
+
+data class PostItem(
+    val postItemId: Int,
+    val name: String,
+    val count: Int
 )
