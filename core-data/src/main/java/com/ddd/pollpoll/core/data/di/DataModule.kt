@@ -38,6 +38,13 @@ interface DataModule {
 
     @Singleton
     @Binds
+    fun bindsCategoryRepository(
+        CategoryRepository: CategoryRepositoryImp
+    ): CategoryRepository
+
+
+    @Singleton
+    @Binds
     fun bindsPostRepository(
         postRepository: PostRepositoryImp
     ): PostRepository

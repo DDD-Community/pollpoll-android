@@ -87,7 +87,6 @@ fun InsertVoteScreen(
     onInsertButtonClicked: () -> Unit = {},
     onVoteDateSelected: (Long) -> Unit = {}
 ) {
-    MaterialTheme.
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)

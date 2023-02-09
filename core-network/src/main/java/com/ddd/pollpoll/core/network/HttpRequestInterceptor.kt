@@ -13,8 +13,9 @@ class HttpRequestInterceptor(private val pollPreference: PollPollDataStore) : In
         }
 
         val originalRequest = chain.request()
+        val bearer = if ((originalRequest.url.toString()).contains("login")) "" else "Bearer "
         val request = originalRequest.newBuilder().url(originalRequest.url)
-            .header("Authorization", "Bearer " + token)
+            .header("Authorization", "$bearer$token")
             .build()
         val response = chain.proceed(request)
         return response
