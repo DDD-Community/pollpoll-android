@@ -141,22 +141,3 @@ fun SettingCardItem(
 
     }
 }
-
-
-// Previews
-
-@Preview(showBackground = true)
-@Composable
-private fun DefaultPreview() {
-    PollPollTheme() {
-        SettingsScreen()
-    }
-}
-
-@Preview(showBackground = true, widthDp = 480)
-@Composable
-private fun PortraitPreview() {
-    PollPollTheme() {
-        SettingsScreen()
-    }
-}

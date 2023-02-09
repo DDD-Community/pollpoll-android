@@ -16,8 +16,7 @@
 
 package com.ddd.pollpoll.core.data.di
 
-import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.core.data.LoginRepositoryImp
+import com.ddd.pollpoll.core.data.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,6 +32,18 @@ interface DataModule {
     fun bindsLoginRepository(
         loginRepository: LoginRepositoryImp
     ): LoginRepository
+
+    @Singleton
+    @Binds
+    fun bindsCategoryRepository(
+        CategoryRepository: CategoryRepositoryImp
+    ): CategoryRepository
+
+    @Singleton
+    @Binds
+    fun bindsPostRepository(
+        PostRepository: PostRepositoryImp
+    ): PostRepository
 
 }
 

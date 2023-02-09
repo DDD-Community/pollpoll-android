@@ -1,9 +1,6 @@
 package com.ddd.pollpoll.core.network.module
 
-import com.ddd.pollpoll.core.network.remote.LoginRemoteSource
-import com.ddd.pollpoll.core.network.remote.LoginRemoteSourceImp
-import com.ddd.pollpoll.core.network.remote.PostRemoteSource
-import com.ddd.pollpoll.core.network.remote.PostRemoteSourceImp
+import com.ddd.pollpoll.core.network.remote.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,4 +22,10 @@ interface RemoteModule {
     fun bindsPostRemoteSource(
         postRemoteSourceImp: PostRemoteSourceImp
     ): PostRemoteSource
+
+    @Singleton
+    @Binds
+    fun bindsCategoryRemoteSource(
+        categoryRemoteSource: CategoryRemoteSourceImp
+    ): CategoryRemoteSource
 }

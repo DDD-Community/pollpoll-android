@@ -1,25 +1,27 @@
-package com.ddd.pollpoll.feature.vote.navigation
+package com.ddd.pollpoll.feature.mypollpoll.navigation
 
+import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.ddd.pollpoll.feature.vote.InsertVoteRoute
+import com.ddd.pollpoll.feature.mypollpoll.ui.MyPollPollRoute
 
 // internal const val topicIdArg = "topicId"
 
-fun NavController.navigateToVote() {
+
+fun NavController.navigateToMyPollPoll() {
 //    val encodedId = Uri.encode(topicId)
-    this.navigate("insertVote_route")
+    this.navigate("my_poll_poll")
 }
-fun NavGraphBuilder.insertVoteScreen(
+fun NavGraphBuilder.myPollPollScreen(
     onBackClick: () -> Unit
 ) {
     composable(
-        route = "insertVote_route",
+        route = "my_poll_poll",
         arguments = listOf(
 //            navArgument(topicIdArg) { type = NavType.StringType }
         )
     ) {
-        InsertVoteRoute(/*onBackClick = onBackClick*/)
+        MyPollPollRoute(/*onBackClick = onBackClick*/)
     }
 }

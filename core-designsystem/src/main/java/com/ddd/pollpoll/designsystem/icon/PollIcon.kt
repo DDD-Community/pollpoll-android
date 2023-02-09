@@ -24,4 +24,11 @@ object PollIcon {
     val TermsOfService = R.drawable.ic_terms_of_service
     val VersionInfo = R.drawable.ic_version_info
     val ChevronRight = R.drawable.ic_chevron_right
+
+    val Alarm = R.drawable.ic_alarm
+    val Fire = R.drawable.ic_fire
+    val Writing = R.drawable.ic_writing
+    val Cloud = R.drawable.ic_cloud
+
+    val MyPollPollTriangle = R.drawable.mypollpoll_triangle
 }
