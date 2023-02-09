@@ -30,7 +30,7 @@ fun PollAlertDialog(
     onConfirmClicked: () -> Unit
 ) {
     CustomAlertDialog(onDismissRequest = onDismissRequest) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxSize()) {
             Surface(modifier = Modifier.size(266.dp, 170.dp).align(Alignment.Center), color = Color.White) {
                 Column(Modifier.padding(horizontal = 20.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))

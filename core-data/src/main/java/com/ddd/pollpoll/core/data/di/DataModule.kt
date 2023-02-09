@@ -16,7 +16,12 @@
 
 package com.ddd.pollpoll.core.data.di
 
-import com.ddd.pollpoll.core.data.*
+import com.ddd.pollpoll.core.data.CategoryRepository
+import com.ddd.pollpoll.core.data.CategoryRepositoryImp
+import com.ddd.pollpoll.core.data.LoginRepository
+import com.ddd.pollpoll.core.data.LoginRepositoryImp
+import com.ddd.pollpoll.core.data.PostRepository
+import com.ddd.pollpoll.core.data.PostRepositoryImp
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -39,10 +44,11 @@ interface DataModule {
         CategoryRepository: CategoryRepositoryImp
     ): CategoryRepository
 
+
     @Singleton
     @Binds
     fun bindsPostRepository(
-        PostRepository: PostRepositoryImp
+        postRepository: PostRepositoryImp
     ): PostRepository
 
 }

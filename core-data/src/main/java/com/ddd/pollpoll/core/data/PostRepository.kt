@@ -16,11 +16,8 @@
 
 package com.ddd.pollpoll.core.data
 
-import com.ddd.pollpoll.Login
 import com.ddd.pollpoll.Vote
 import com.ddd.pollpoll.core.network.model.GetPostResponse
-import com.ddd.pollpoll.core.network.model.LoginRequest
-import com.ddd.pollpoll.core.network.model.PostResponse
 import com.ddd.pollpoll.core.network.model.asNetworkModel
 import com.ddd.pollpoll.core.network.remote.PostRemoteSource
 import kotlinx.coroutines.flow.Flow
@@ -28,21 +25,19 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface PostRepository {
-    suspend fun insertPost(token: Vote): Flow<Login>
+    suspend fun insertPost(token: Vote): Flow<Unit>
     suspend fun getPosts(lastPostId: Int): Flow<GetPostResponse>
 }
 
 class PostRepositoryImp @Inject constructor(
     private val postRemoteSource: PostRemoteSource
 ) : PostRepository {
-    override suspend fun insertPost(vote: Vote): Flow<Login> = flow {
-        postRemoteSource.insertPost(vote.asNetworkModel())
+    override suspend fun insertPost(vote: Vote): Flow<Unit> = flow {
+        emit(postRemoteSource.insertPost(vote.asNetworkModel()))
     }
-
 
     override suspend fun getPosts(lastPostId: Int): Flow<GetPostResponse> = flow {
         val result = postRemoteSource.getPosts(lastPostId)
         emit(result)
     }
-
 }

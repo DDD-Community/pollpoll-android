@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-
 package com.ddd.pollpoll.feature.mypollpoll.ui
-
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -113,18 +111,19 @@ fun MypollpollScreen(
 @Composable
 fun MyPollPollHeader() {
     Column(modifier = Modifier) {
-        Row(modifier = Modifier
-            .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-            .background(color = Color.White)
-            .padding(horizontal = 20.dp, vertical = 15.dp)) {
-            PollRecord(Writing,"내가 쓴 투표", true)
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+                .background(color = Color.White)
+                .padding(horizontal = 20.dp, vertical = 15.dp)
+        ) {
+            PollRecord(Writing, "내가 쓴 투표", true)
             Spacer(Modifier.weight(1f))
             PollRecord(Fire, "참여한 투표")
             Spacer(Modifier.weight(1f))
             PollRecord(Cloud, "구경한 투표")
         }
         Image(imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle), contentDescription = null, modifier = Modifier.offset(x = 40.dp, y = (-10).dp))
-
     }
 }
 
@@ -133,45 +132,57 @@ fun PollRecord(
     iconRes: Int,
     title: String,
     selected: Boolean = false,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 
 ) {
-    Box(modifier = Modifier
-        .clip(
-            RoundedCornerShape(12.dp)
-        )
-        .height(114.dp)
-        .width(100.dp)) {
-
+    Box(
+        modifier = Modifier
+            .clip(
+                RoundedCornerShape(12.dp)
+            )
+            .height(114.dp)
+            .width(100.dp)
+    ) {
         val contentColor = if (selected) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_400
         val bgColor = if (selected) PollPollTheme.colors.primary_050 else PollPollTheme.colors.gray_050
         val circleColor = if (selected) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_400
         val iconColor = if (selected) PollPollTheme.colors.primary_050 else PollPollTheme.colors.gray_400
 
-        Column(modifier = Modifier
-            .padding(top = 20.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .height(94.dp)
-            .width(100.dp)
-            .background(color = bgColor),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .height(94.dp)
+                .width(100.dp)
+                .background(color = bgColor),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Spacer(Modifier.size(32.dp))
             Text(text = title, style = PollPollTheme.typography.body02, color = contentColor)
             Spacer(Modifier.size(5.dp))
             Row() {
-                Text(text = "0", style = PollPollTheme.typography.heading05,
-                    modifier = Modifier.alignByBaseline())
+                Text(
+                    text = "0",
+                    style = PollPollTheme.typography.heading05,
+                    modifier = Modifier.alignByBaseline()
+                )
                 Spacer(Modifier.size(3.dp))
-                Text(text = "개", style = PollPollTheme.typography.body04,
-                    color = PollPollTheme.colors.gray_500, modifier = Modifier.alignByBaseline())
+                Text(
+                    text = "개",
+                    style = PollPollTheme.typography.body04,
+                    color = PollPollTheme.colors.gray_500,
+                    modifier = Modifier.alignByBaseline()
+                )
             }
         }
 
-        Box(modifier = Modifier
-            .clip(CircleShape)
-            .size(40.dp)
-            .background(color = contentColor)
-            .align(Alignment.TopCenter)) {
+        Box(
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(40.dp)
+                .background(color = contentColor)
+                .align(Alignment.TopCenter)
+        ) {
             Icon(
                 painter = painterResource(id = iconRes),
                 contentDescription = "",
@@ -192,10 +203,10 @@ fun MyPollPollBody(posts: GetPostResponse?) {
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
-                post = post)
+                post = post
+            )
         }
     }
-
 }
 
 @Composable
@@ -207,9 +218,10 @@ fun PollCard(
     post: PostResponse
 ) {
     Card(
-        modifier = modifier, shape = RoundedCornerShape(20.dp),
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = Color.White
         )
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -255,20 +267,20 @@ fun PollCard(
             PollProgressBar()
 
             Spacer(modifier = Modifier.size(32.dp))
-            
-            Button(onClick = { /*TODO*/ }, shape = RoundedCornerShape(12.dp),
+
+            Button(
+                onClick = { /*TODO*/ },
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = PollPollTheme.colors.gray_050)) {
+                colors = ButtonDefaults.buttonColors(containerColor = PollPollTheme.colors.gray_050)
+            ) {
                 Text(text = "지금 ", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
                 Text(text = "${post.participantCount}명", color = PollPollTheme.colors.primary_500, style = PollPollTheme.typography.body03)
                 Text(text = " 참여 중이에요", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
             }
         }
-
     }
-
 }
-
 
 @Composable
 fun TimeText(expireDate: Date) {
@@ -289,7 +301,7 @@ fun TimeText(expireDate: Date) {
     val secondsString = if (diffSeconds < 10) "0$diffSeconds" else diffSeconds
 
     Text(
-        text = "${diffDays}일 ${hoursString}:${minuteString}:${secondsString} 남았어요!",
+        text = "${diffDays}일 $hoursString:$minuteString:$secondsString 남았어요!",
         color = PollPollTheme.colors.gray_400,
         style = PollPollTheme.typography.body03
     )
@@ -303,8 +315,6 @@ fun HitsText(hits: Int) {
         style = PollPollTheme.typography.body03
     )
 }
-
-
 
 // Previews
 

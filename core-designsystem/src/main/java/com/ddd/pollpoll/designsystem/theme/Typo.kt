@@ -13,23 +13,23 @@ val PollPollFamily = FontFamily(
     Font(R.font.pretendard_semibold, FontWeight.SemiBold)
 )
 
-enum class PollTypoStyle(val textSize: Int, val fontWeight: FontWeight, val lineHeight: Int = 0) {
-    // 상단
-    HEADING_01(28, FontWeight.SemiBold, 38),
-    HEADING_02(24, FontWeight.SemiBold, 32),
-    HEADING_03(20, FontWeight.SemiBold, 26),
-    HEADING_04(18, FontWeight.SemiBold, 26),
-    HEADING_05(16, FontWeight.SemiBold, 22),
-
-    // 본문
-    BODY_01(16, FontWeight.Normal, 26),
-    BODY_02(14, FontWeight.Normal, 22),
-    BODY_03(12, FontWeight.Normal, 20),
-    BODY_04(12, FontWeight.Normal, 18),
-
-    // 설명
-    DESCRIPTION(10, FontWeight.Normal)
-}
+//enum class PollTypoStyle(val textSize: Int, val fontWeight: FontWeight, val lineHeight: Int = 0) {
+//    // 상단
+//    HEADING_01(28, FontWeight.SemiBold, 38),
+//    HEADING_02(24, FontWeight.SemiBold, 32),
+//    HEADING_03(20, FontWeight.SemiBold, 26),
+//    HEADING_04(18, FontWeight.SemiBold, 26),
+//    HEADING_05(16, FontWeight.SemiBold, 22),
+//
+//    // 본문
+//    BODY_01(16, FontWeight.Normal, 26),
+//    BODY_02(14, FontWeight.Normal, 22),
+//    BODY_03(12, FontWeight.Normal, 20),
+//    BODY_04(12, FontWeight.Normal, 18),
+//
+//    // 설명
+//    DESCRIPTION(10, FontWeight.Normal)
+//}
 
 data class CustomTypography(
     val heading01: TextStyle = TextStyle(

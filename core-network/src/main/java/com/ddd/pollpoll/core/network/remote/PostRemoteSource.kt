@@ -9,13 +9,13 @@ import javax.inject.Inject
 
 interface PostRemoteSource {
 
-    suspend fun insertPost(post: PostPostRequest): PostResponse
+    suspend fun insertPost(post: PostPostRequest)
     suspend fun getPosts(lastPostId: Int): GetPostResponse
 }
 
 class PostRemoteSourceImp @Inject constructor(
     private val pollAPI: PollAPI
 ) : PostRemoteSource {
-    override suspend fun insertPost(post: PostPostRequest): PostResponse = pollAPI.postPosts(post).executeHandle()
+    override suspend fun insertPost(post: PostPostRequest): Unit = pollAPI.postPosts(post).executeHandle()
     override suspend fun getPosts(lastPostId: Int): GetPostResponse = pollAPI.getPosts(lastPostId).executeHandle()
 }

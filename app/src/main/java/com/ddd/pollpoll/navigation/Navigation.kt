@@ -16,7 +16,6 @@
 
 package com.ddd.pollpoll.ui
 
-import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
@@ -25,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
-import com.ddd.pollpoll.feature.mypollpoll.navigation.navigateToMyPollPoll
+import com.ddd.pollpoll.feature.vote.navigation.navigateToVote
 
 @Composable
 fun MainNavigation() {
@@ -35,12 +34,12 @@ fun MainNavigation() {
     NavHost(navController = navController, startDestination = "login_route") {
         loginScreen(
             navigateToMain = {
-
-//                navController.navigateToVote()
-                navController.navigateToMyPollPoll()
+                navController.navigateToVote()
             }
         )
-        insertVoteScreen {}
+        insertVoteScreen(
+            onBackClick = { navController.popBackStack() }
+        )
         myPollPollScreen {}
     }
 }

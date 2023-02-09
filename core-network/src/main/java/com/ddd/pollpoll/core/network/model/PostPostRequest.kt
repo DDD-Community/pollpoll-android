@@ -5,7 +5,7 @@ import com.ddd.pollpoll.Vote
 data class PostPostRequest(
     val categoryId: Int,
     val contents: String,
-    val milliseconds: Int,
+    val milliseconds: Long,
     val multipleChoice: Boolean,
     val pollItems: List<PollItem>,
     val title: String
@@ -16,7 +16,7 @@ data class PollItem(
 )
 
 fun Vote.asNetworkModel() = PostPostRequest(
-    categoryId = this.categoryId,
+    categoryId = this.category.categoryId,
     contents = this.contents,
     milliseconds = this.milliseconds,
     multipleChoice = this.multipleChoice,
