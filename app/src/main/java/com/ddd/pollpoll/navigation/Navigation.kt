@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
-import com.ddd.pollpoll.feature.mypollpoll.navigation.navigateToMyPollPoll
+import com.ddd.pollpoll.feature.vote.navigation.navigateToVote
 
 @Composable
 fun MainNavigation() {
@@ -41,6 +41,5 @@ fun MainNavigation() {
             onBackClick = { navController.popBackStack() }
         )
         myPollPollScreen {}
-
     }
 }

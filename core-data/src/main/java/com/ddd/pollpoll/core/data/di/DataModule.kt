@@ -16,6 +16,8 @@
 
 package com.ddd.pollpoll.core.data.di
 
+import com.ddd.pollpoll.core.data.CategoryRepository
+import com.ddd.pollpoll.core.data.CategoryRepositoryImp
 import com.ddd.pollpoll.core.data.LoginRepository
 import com.ddd.pollpoll.core.data.LoginRepositoryImp
 import com.ddd.pollpoll.core.data.PostRepository

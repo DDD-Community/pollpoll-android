@@ -9,7 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -36,7 +35,7 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalMaterialApi::class)
 @Composable
 internal fun InsertVoteRoute(
     modifier: Modifier = Modifier,
@@ -44,7 +43,6 @@ internal fun InsertVoteRoute(
     onCloseButtonClicked: () -> Unit
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     val voteState: Vote by viewModel.vote.collectAsStateWithLifecycle()
 
     InsertVoteScreen(
@@ -87,31 +85,27 @@ fun InsertVoteScreen(
     onInsertButtonClicked: () -> Unit = {},
     onVoteDateSelected: (Long) -> Unit = {}
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val bottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    var progressState by remember { mutableStateOf(0.0f) }
+    val insertAppState = rememberInsertVoteState()
     var selectedOptionState by remember { mutableStateOf(VoteRadioList[2]) }
     var writeEnabledState by remember { mutableStateOf(false) }
     var contentEnabledState by remember { mutableStateOf(false) }
     var voteEnabledState by remember { mutableStateOf(false) }
-    var dialogState by remember { mutableStateOf(false) }
 
-    BackHandler(enabled = !bottomSheetState.isVisible) {
+    BackHandler(enabled = !insertAppState.bottomSheetState.isVisible) {
         onBackButtonClicked()
     }
 
-    if (dialogState) {
+    if (insertAppState.dialogState) {
         PollAlertDialog(
-            onDismissRequest = { dialogState = false },
-            onCancelClicked = { dialogState = false },
+            onDismissRequest = { insertAppState.setShowDialog(false) },
+            onCancelClicked = { insertAppState.setShowDialog(false) },
             onConfirmClicked = { onInsertButtonClicked() }
         )
     }
 
     Scaffold(modifier = modifier, topBar = {
         VoteTopBar(
-            progressState,
+            insertAppState.progressState,
             onBackButtonClicked = onBackButtonClicked,
             onCloseButtonClicked = onCloseButtonClicked
 
@@ -128,7 +122,7 @@ fun InsertVoteScreen(
                     }
                 }
             },
-            sheetState = bottomSheetState
+            sheetState = insertAppState.bottomSheetState
         ) {
             Surface(modifier = Modifier.padding(scaffoldPadding)) {
                 when (uiState) {
@@ -143,16 +137,14 @@ fun InsertVoteScreen(
                             vote.contents,
                             titleValueChange = titleValueChange,
                             contentValueChange = contentValueChange,
-                            progressBarChanged = {
-                                progressState = it.progressBar
-                            },
+                            progressBarChanged = { insertAppState.setProgressBar(it.progressBar) },
                             addVoteClicked = addVoteClicked,
                             isWriteEnabled = writeEnabledState,
                             contentEnabled = contentEnabledState,
                             voteEnabled = voteEnabledState,
                             onContentDone = { voteEnabledState = true },
                             onTitleDone = { contentEnabledState = true },
-                            onVoteCompleteButtonClicked = { dialogState = true }
+                            onVoteCompleteButtonClicked = { insertAppState.setShowDialog(true) }
 
                         )
                     }
@@ -161,8 +153,8 @@ fun InsertVoteScreen(
                         AddVoteCategoryScreen(
                             vote.category.toCategory(),
                             onDialogClick = {
-                                coroutineScope.launch {
-                                    bottomSheetState.show()
+                                insertAppState.coroutineScope.launch {
+                                    insertAppState.bottomSheetState.show()
                                 }
                             },
                             selectedDate = selectedOptionState,
@@ -170,7 +162,7 @@ fun InsertVoteScreen(
                             onTextChanged = onTextChanged,
                             voteList = vote.pollItems,
                             progressBarChanged = {
-                                progressState = it.progressBar
+                                insertAppState.setProgressBar(it.progressBar)
                             },
                             onVoteButtonClicked = {
                                 writeEnabledState = true
