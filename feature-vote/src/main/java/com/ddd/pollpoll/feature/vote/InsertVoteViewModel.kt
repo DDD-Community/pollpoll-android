@@ -1,5 +1,6 @@
 package com.ddd.pollpoll.feature.vote
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.PollItem
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import result.Result
 import result.asResult
 import javax.inject.Inject
 
@@ -59,6 +61,11 @@ class InsertVoteViewModel @Inject constructor(
 
     fun insertPost() = viewModelScope.launch {
         postRepository.insertPost(vote.value).asResult().collect {
+            when (it) {
+                Result.Loading -> Log.d("TEST", "insertPost:  로딩")
+                is Result.Success -> Log.d("TEST", "insertPost:  success")
+                is Result.Error -> Log.d("TEST", "insertPost:  실패")
+            }
         }
     }
 
@@ -95,4 +102,5 @@ sealed interface InsertVoteUiState {
     object AddVoteCategory : InsertVoteUiState
 
     object Back : InsertVoteUiState
+
 }

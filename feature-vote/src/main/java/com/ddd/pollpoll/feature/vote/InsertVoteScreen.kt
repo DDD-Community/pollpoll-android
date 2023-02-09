@@ -1,5 +1,6 @@
 package com.ddd.pollpoll.feature.vote
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -549,6 +550,7 @@ private fun ChoiceCategoryScreenPortraitPreview() {
     }
 }
 
+
 enum class VoteScreenEnum(val progressBar: Float) {
     Title(0.2f), Content(0.4f), AddVote(1.0f),
 }
@@ -559,5 +561,5 @@ val VoteRadioList = listOf(
     VoteRadioButton("1일", 36000000),
     VoteRadioButton("12시간", 36000000)
 )
-
+@Stable
 data class VoteRadioButton(val date: String, val time: Long)
