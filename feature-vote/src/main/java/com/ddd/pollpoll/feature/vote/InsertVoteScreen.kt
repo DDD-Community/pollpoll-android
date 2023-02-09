@@ -28,7 +28,6 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.PollItem
 import com.ddd.pollpoll.Vote
-import com.ddd.pollpoll.core.BackHandler
 import com.ddd.pollpoll.designsystem.component.*
 import com.ddd.pollpoll.designsystem.core.bottomseat.PollModalBottomSheetLayout
 import com.ddd.pollpoll.designsystem.core.grid.VerticalGrid
