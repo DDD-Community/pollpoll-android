@@ -3,11 +3,7 @@ package com.ddd.pollpoll.core.network.retrofit
 import com.ddd.pollpoll.core.network.handle.ApiResponse
 import com.ddd.pollpoll.core.network.model.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface PollAPI {
 
@@ -22,6 +18,10 @@ interface PollAPI {
 
     @GET("/api/posts/{postId}")
     suspend fun getPost(@Path("postId")postId: Int): Response<ApiResponse<PostResponse>>
+
+    @PUT("/api/polls/{pollId}/participate")
+    suspend fun putPoll(@Path("pollId")pollId: Int, @Body pollItemIds: PutVoteRequest): Response<ApiResponse<Unit>>
+//    suspend fun putPoll(@Path("pollId")pollId: Int, @Query("pollItemIds")pollItemIds: PutVoteRequest): Response<ApiResponse<Unit>>
 
     @GET("/api/categories")
     suspend fun getCategories(): Response<ApiResponse<GetCategoriesResponse>>
