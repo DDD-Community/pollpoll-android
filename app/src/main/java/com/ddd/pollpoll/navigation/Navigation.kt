@@ -84,20 +84,20 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)
+                .height(71.dp)
                 .shadow(
                     spotColor = Color(0x00000000),
                     elevation = 24.dp
                 ),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            BottomNavBarItem(PollIcon.Cloud, "홈", "insertVote_route", currentRoute) {
+            BottomNavBarItem(PollIcon.Home, "홈", "insertVote_route", currentRoute) {
                 navController.navigate("insertVote_route") {
                     launchSingleTop = true
                     popUpTo(0) { inclusive = true }
                 }
             }
-            BottomNavBarItem(PollIcon.TermsOfService, "마이폴폴", "my_poll_poll", currentRoute) {
+            BottomNavBarItem(PollIcon.MyPollPoll, "마이폴폴", "my_poll_poll", currentRoute) {
                 navController.navigate("my_poll_poll") {
                     launchSingleTop = true
                     popUpTo(0) { inclusive = true }
