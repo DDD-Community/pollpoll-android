@@ -110,9 +110,8 @@ fun BottomNavBarItem(resId: Int, itemName: String, route: String, currentRoute: 
         },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val color = if (currentRoute?.contains(route) == true) PollPollTheme.colors.primary_500
-                    else PollPollTheme.colors.gray_700
-
+        val color = if (currentRoute?.contains(route) == true) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_700
+        
         Spacer(modifier = Modifier.size(8.dp))
         Icon(
             painter = painterResource(resId),
