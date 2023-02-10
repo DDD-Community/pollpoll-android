@@ -30,6 +30,9 @@ object PollIcon {
     val Writing = R.drawable.ic_writing
     val Cloud = R.drawable.ic_cloud
 
+    val Home = R.drawable.ic_home
+    val MyPollPoll = R.drawable.ic_my_pollpoll
+
     val MyPollPollTriangle = R.drawable.mypollpoll_triangle
 
     val VoteModification = R.drawable.ic_vote_modifcation
