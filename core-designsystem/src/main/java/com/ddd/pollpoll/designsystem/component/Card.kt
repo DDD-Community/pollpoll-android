@@ -25,21 +25,21 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @Composable
 fun PollTrendCard(
-    color: PollCardType = PollCardType.AB
+    type: PollCardType = PollCardType.AB
 ) {
     Card(shape = RoundedCornerShape(20.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp, 20.dp))
-                .background(color = if (color == PollCardType.AB) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500)
+                .background(color = if (type == PollCardType.AB) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500)
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.width(PollPollTheme.spaces.large))
-            Text("A / B" , style = PollPollTheme.typography.body04, color = Color.White)
+            Text(text = if(type== PollCardType.AB) "A / B" else "초이스", style = PollPollTheme.typography.body04, color = Color.White)
             Spacer(modifier = Modifier.weight(1f))
             Icon(painterResource(id = PollIcon.Alarm), contentDescription = "")
             Spacer(modifier = Modifier.width(5.dp))
-            Text("2일 13:32:31" , style = PollPollTheme.typography.body04, color = Color.White)
+            Text("2일 13:32:31", style = PollPollTheme.typography.body04, color = Color.White)
             Spacer(modifier = Modifier.width(PollPollTheme.spaces.large))
         }
         Column(
@@ -78,9 +78,8 @@ fun PollTrendCard(
             PollButton(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
                 shape = RoundedCornerShape(20.dp),
-                color = if (color == PollCardType.AB) PollButtonColor.BLUE else PollButtonColor.ORANGE
+                color = if (type == PollCardType.AB) PollButtonColor.BLUE else PollButtonColor.ORANGE
             ) {
-
                 Text(
                     modifier = Modifier,
                     text = "참여하기",
