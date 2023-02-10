@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,17 +69,20 @@ fun PollLoginButton(
 fun PollButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    enabled: Boolean = false,
+    enabled: Boolean = true,
+    shape: Shape = RoundedCornerShape(0.dp),
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    color: PollButtonColor = PollButtonColor.ORANGE,
     content: @Composable RowScope.() -> Unit = {}
 ) {
     Button(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = PollPollTheme.colors.primary_500,
+            containerColor = if (color == PollButtonColor.BLUE) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500,
             disabledContainerColor = PollPollTheme.colors.gray_300
         ),
         enabled = enabled,
-        shape = RoundedCornerShape(0.dp),
+        shape = shape,
         onClick = onClick
     ) {
         content()
@@ -93,6 +97,10 @@ object PollButtonDefaults {
     // TODO: File bug
     // OutlinedButton default border width isn't exposed via ButtonDefaults
     val OutlinedButtonBorderWidth = 1.dp
+}
+
+enum class PollButtonColor {
+    ORANGE, BLUE
 }
 
 @Preview

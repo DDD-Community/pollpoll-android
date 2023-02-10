@@ -21,17 +21,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.PostRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import com.ddd.pollpoll.core.network.model.Category
 import com.ddd.pollpoll.core.network.model.GetPostResponse
-import kotlinx.coroutines.delay
+import com.ddd.pollpoll.core.result.Result
+import com.ddd.pollpoll.core.result.asResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import result.Result
-import result.asResult
-
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,12 +39,16 @@ class MypollpollViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            categoryRepository.getCategories().asResult().collect {result ->
+            categoryRepository.getCategories().asResult().collect { result ->
                 when (result) {
-                    is Result.Error -> Log.e("MypollpollViewModel", "category Error ${result.exception}")
+                    is Result.Error -> Log.e(
+                        "MypollpollViewModel",
+                        "category Error ${result.exception}"
+                    )
+
                     Result.Loading -> Log.e("MypollpollViewModel", "category Loading")
-                    is Result.Success ->  {
-                        Log.e("MypollpollViewModel", "category Success ${result.data.categories}")
+                    is Result.Success -> {
+                        Log.e("MypollpollViewModel", "category Success ${result.data?.categories}")
                     }
                 }
             }
@@ -57,16 +57,18 @@ class MypollpollViewModel @Inject constructor(
         viewModelScope.launch {
             postRepository.getPosts(2).asResult().collect { result ->
                 when (result) {
-                    is Result.Error -> Log.e("MypollpollViewModel", "post Error ${result.exception}")
+                    is Result.Error -> Log.e(
+                        "MypollpollViewModel",
+                        "post Error ${result.exception}"
+                    )
+
                     Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
-                    is Result.Success ->  {
-                        Log.e("MypollpollViewModel", "post Success ${result.data.posts}")
+                    is Result.Success -> {
+                        Log.e("MypollpollViewModel", "post Success ${result.data?.posts}")
                         posts.value = result.data
                     }
                 }
             }
         }
-
     }
-
 }

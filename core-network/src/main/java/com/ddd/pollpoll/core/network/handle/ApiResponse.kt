@@ -1,5 +1,6 @@
 package com.ddd.pollpoll.core.network.handle
 
+import com.ddd.pollpoll.core.exception.ResponseNullException
 import retrofit2.HttpException
 import retrofit2.Response
 
@@ -11,10 +12,8 @@ suspend fun <T> Response<ApiResponse<T>>.executeHandle(): T {
     return try {
         val response = this
         val body = response.body()?.data
-        if (response.isSuccessful && body != null) body else throw Exception(response.message())
+        if (response.isSuccessful && body != null) body else throw ResponseNullException(response.message())
     } catch (e: HttpException) {
-        throw Exception()
-    } catch (e: Throwable) {
         throw Exception()
     }
 }
