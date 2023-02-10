@@ -43,7 +43,9 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
+import com.ddd.pollpoll.feature.vote.navigation.navigateToReadVote
 import com.ddd.pollpoll.feature.vote.navigation.navigateToVote
+import com.ddd.pollpoll.feature.vote.navigation.readVoteScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,10 +61,14 @@ fun MainNavigation() {
         NavHost(navController = navController, startDestination = "login_route") {
             loginScreen(
                 navigateToMain = {
-                    navController.navigateToVote()
+//                    navController.navigateToVote()
+                    navController.navigateToReadVote()
                 }
             )
             insertVoteScreen(
+                onBackClick = { navController.popBackStack() }
+            )
+            readVoteScreen(
                 onBackClick = { navController.popBackStack() }
             )
             myPollPollScreen {}

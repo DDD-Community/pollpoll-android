@@ -11,6 +11,7 @@ interface PostRemoteSource {
 
     suspend fun insertPost(post: PostPostRequest)
     suspend fun getPosts(lastPostId: Int): GetPostResponse
+    suspend fun getPost(postId: Int): PostResponse
 }
 
 class PostRemoteSourceImp @Inject constructor(
@@ -18,4 +19,5 @@ class PostRemoteSourceImp @Inject constructor(
 ) : PostRemoteSource {
     override suspend fun insertPost(post: PostPostRequest): Unit = pollAPI.postPosts(post).executeHandle()
     override suspend fun getPosts(lastPostId: Int): GetPostResponse = pollAPI.getPosts(lastPostId).executeHandle()
+    override suspend fun getPost(postId: Int): PostResponse = pollAPI.getPost(postId).executeHandle()
 }
