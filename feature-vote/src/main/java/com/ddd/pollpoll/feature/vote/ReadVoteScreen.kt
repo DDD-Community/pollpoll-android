@@ -7,7 +7,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
-import com.ddd.pollpoll.core.network.model.PostItem
 import com.ddd.pollpoll.core.network.model.PostResponse
 import com.ddd.pollpoll.designsystem.component.PollButton
 import com.ddd.pollpoll.designsystem.component.PollLabel
@@ -29,6 +27,7 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
+import kotlin.reflect.KFunction1
 
 @OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -46,7 +45,9 @@ fun ReadVoteScreen(
     viewModel: ReadVoteViewModel = hiltViewModel()
 ) {
     val lastPost = viewModel.lastPost.collectAsState().value
-//    val lastPostItems = viewModel.lastPostItems.collectAsState().value
+    val selectedIndex = viewModel.selectedIndex.collectAsState().value
+    val beforeVote = viewModel.beforeVote.collectAsState().value
+    val afterVote = viewModel.afterVote.collectAsState().value
 
     Scaffold(topBar = {
         Column() {
@@ -89,11 +90,9 @@ fun ReadVoteScreen(
                 Spacer(modifier = Modifier.size(20.dp))
 
                 VoteContent(
-                    lastPost,
-                    viewModel.voted.value,
-                    viewModel::voteSelectedVote,
-                    viewModel::reVote
-                )
+                    lastPost, viewModel.voted.value,
+                    viewModel::vote, viewModel::reVote, selectedIndex, viewModel::selectIndex,
+                    beforeVote, afterVote)
             }
         }
     }
@@ -144,6 +143,8 @@ fun VoteInfo(lastPost: PostResponse?) {
             style = PollPollTheme.typography.body02
         )
     }
+
+
 }
 
 @Composable
@@ -169,13 +170,16 @@ fun HitsText(hits: Int) {
 fun VoteContent(
     lastPost: PostResponse?,
     voted: Boolean,
-    voteSelectedVote: () -> Unit,
-    reVote: () -> Unit
+    vote: KFunction1<List<Int>, Unit>,
+    reVote: () -> Unit,
+    selectedIndex: Set<Int>,
+    selectIndex: (Int) -> Unit,
+    beforeVote: List<Vote>,
+    afterVote: List<Vote>
 ) {
     if (lastPost == null) {
         Text(text = "loading...")
     } else {
-        val votes = lastPost.pollItems
         Column(
             modifier = Modifier
                 .border(1.dp, color = PollPollTheme.colors.gray_200)
@@ -191,29 +195,33 @@ fun VoteContent(
             )
             VoteDueDateText(Date(lastPost.pollEndAt))
             Spacer(modifier = Modifier.size(30.dp))
+
             if (voted) {
-//            VoteResults(votes)
-//
-//            Button(onClick = { reVote() }, modifier = Modifier.fillMaxWidth()) {
-//                Text(
-//                    text = "다시 투표하기",
-//                    color = Color.White,
-//                    style = PollPollTheme.typography.body03
-//                )
-//            }
+                // 투표가 완료된 리스트
+                VoteResults(afterVote)
+
+                PollButton(onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                    reVote()
+                }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "다시 투표하기",
+                        color = Color.White,
+                        style = PollPollTheme.typography.body03
+                    )
+                }
+
             } else {
-//            VoteItemSelector(votes)
-//            var isLessOneVoteSelected = false
-//            for (vote in votes) {
-//                if (vote.isSelected) isLessOneVoteSelected = true
-//            }
-                VoteItemSelector(votes)
-//            PollButton()
-                PollButton(
-                    onClick = { voteSelectedVote() },
-                    enabled = true,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                // 투표가 완료되지 않은 리스트
+                // 클릭 가능한 아이템들
+                // 아이템 클릭한걸 뷰모델로 넘기고, 선택 혹은 이미 선택된거면 해제
+                for (beforeItem in beforeVote) {
+                    VoteItem(beforeItem, selectIndex)
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
+
+                PollButton(onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                    vote(selectedIndex.toList())
+                }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "폴폴 참여하기",
                         color = Color.White,
@@ -221,9 +229,13 @@ fun VoteContent(
                     )
                 }
             }
+
+
         }
     }
+
 }
+
 
 @Composable
 fun ParticipantsText(participants: Int) {
@@ -245,25 +257,25 @@ fun VoteDueDateText(date: Date) {
     )
 }
 
+
 @Composable
 fun VoteResults(items: List<Vote>) {
     for ((index, item) in items.withIndex()) {
-        VoteResultItem(
-            item.copy(index = index, onClick = {
-            })
-        )
+        VoteResultItem(item.copy(index = index, onClick = {
+
+        }))
         Spacer(modifier = Modifier.size(10.dp))
     }
 }
 
 @Composable
 fun VoteResultItem(vote: Vote) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-            }
-    ) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+
+        }
+    ){
         val backgroundModifier =
             if (vote.isSelected) Modifier
                 .fillMaxWidth()
@@ -282,15 +294,11 @@ fun VoteResultItem(vote: Vote) {
                 .padding(10.dp)
         Row(
             modifier = backgroundModifier
-        ) {
+        ){
             val color = PollPollTheme.colors.gray_700
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})",
-                style = PollPollTheme.typography.body03,
-                color = color
-            )
+            Text(text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})", style = PollPollTheme.typography.body03, color = color)
         }
 
         Row(
@@ -304,56 +312,24 @@ fun VoteResultItem(vote: Vote) {
                 }
                 .background(PollPollTheme.colors.primary_500)
                 .padding(10.dp)
-        ) {
+        ){
             val color = Color.White
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})",
-                style = PollPollTheme.typography.body03,
-                color = color
-            )
+            Text(text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})", style = PollPollTheme.typography.body03, color = color)
         }
     }
-}
 
-data class Vote(
-    val index: Int,
-    val text: String,
-    val percent: Float,
-    val voteCount: Int,
-    val isSelected: Boolean,
-    val onClick: () -> Unit
-)
-
-@Composable
-fun VoteItemSelector(votes: List<PostItem>?) {
-    votes?.let {
-        for ((index, postItem) in it.withIndex()) {
-            val item = Vote(
-                index = index,
-                text = postItem.name,
-                percent = 0f,
-                voteCount = postItem.count,
-                isSelected = false,
-                onClick = {}
-            )
-
-            VoteItem(item.copy(index = index))
-            Spacer(modifier = Modifier.size(10.dp))
-        }
-    }
 }
 
 @Composable
-fun VoteItem(vote: Vote) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                vote.onClick()
-            }
-    ) {
+fun VoteItem(vote: Vote, select: (Int)-> Unit) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+            select(vote.index)
+        }
+    ){
         val backgroundModifier =
             if (vote.isSelected) Modifier
                 .fillMaxWidth()
@@ -372,13 +348,14 @@ fun VoteItem(vote: Vote) {
                 .padding(10.dp)
         Row(
             modifier = backgroundModifier
-        ) {
+        ){
             val color =
                 if (vote.isSelected) PollPollTheme.colors.primary_500
                 else PollPollTheme.colors.gray_900
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
         }
     }
+
 }
 
 @Preview
