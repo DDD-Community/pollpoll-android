@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import result.Result
-import result.asResult
+import com.ddd.pollpoll.core.result.Result
+import com.ddd.pollpoll.core.result.asResult
 import javax.inject.Inject
 
 // todo release후 대대적인 리펙토링
@@ -64,7 +64,7 @@ class InsertVoteViewModel @Inject constructor(
             when (it) {
                 Result.Loading -> Log.d("TEST", "insertPost:  로딩")
                 is Result.Success -> Log.d("TEST", "insertPost:  success")
-                is Result.Error -> Log.d("TEST", "insertPost:  실패")
+                is Result.Error -> Log.d("TEST", "insertPost:  실패${it.exception}")
             }
         }
     }
