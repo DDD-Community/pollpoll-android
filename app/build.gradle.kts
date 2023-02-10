@@ -84,6 +84,11 @@ dependencies {
     implementation(project(":feature-mypollpoll"))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-designsystem"))
+    implementation(project(":core-common"))
+    implementation(project(":core-model"))
+
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.lifecycle.runtime.ktx)
 
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)

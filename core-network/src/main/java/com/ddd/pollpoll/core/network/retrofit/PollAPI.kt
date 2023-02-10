@@ -14,10 +14,13 @@ interface PollAPI {
     suspend fun postPosts(@Body posts: PostPostRequest): Response<ApiResponse<Unit>>
 
     @GET("/api/posts")
-    suspend fun getPosts(@Query("lastPostId")lastPostId: Int): Response<ApiResponse<GetPostResponse>>
+    suspend fun getPosts(@Query("lastPostId") lastPostId: Int): Response<ApiResponse<GetPostResponse>>
 
     @GET("/api/posts/{postId}")
-    suspend fun getPost(@Path("postId")postId: Int): Response<ApiResponse<PostResponse>>
+    suspend fun getPost(@Path("postId") postId: Int): Response<ApiResponse<PostResponse>>
+
+    @GET("/api/posts/popular")
+    suspend fun getPopularPost(): Response<ApiResponse<GetPopularResponse>>
 
     @PUT("/api/polls/{pollId}/participate")
     suspend fun putPoll(@Path("pollId")pollId: Int, @Body pollItemIds: PutVoteRequest): Response<ApiResponse<Unit>>

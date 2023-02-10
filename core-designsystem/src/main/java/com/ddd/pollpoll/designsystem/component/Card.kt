@@ -24,8 +24,11 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @Composable
-fun PollTrendCard(
-    type: PollCardType = PollCardType.AB
+fun PollPopularCard(
+    type: PollCardType = PollCardType.AB,
+    title: String = "사무실에서 손톱 깎는거 잘못이다/아니다",
+    participants: Int = 0,
+    watcherCount: Int = 0
 ) {
     Card(shape = RoundedCornerShape(20.dp)) {
         Row(
@@ -35,7 +38,7 @@ fun PollTrendCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.width(PollPollTheme.spaces.large))
-            Text(text = if(type== PollCardType.AB) "A / B" else "초이스", style = PollPollTheme.typography.body04, color = Color.White)
+            Text(text = if (type == PollCardType.AB) "A / B" else "초이스", style = PollPollTheme.typography.body04, color = Color.White)
             Spacer(modifier = Modifier.weight(1f))
             Icon(painterResource(id = PollIcon.Alarm), contentDescription = "")
             Spacer(modifier = Modifier.width(5.dp))
@@ -99,5 +102,5 @@ enum class PollCardType {
 @Preview
 @Composable
 fun PollTendCardPreview() {
-    PollTrendCard()
+    PollPopularCard()
 }

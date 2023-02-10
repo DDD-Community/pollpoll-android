@@ -48,7 +48,7 @@ class MypollpollViewModel @Inject constructor(
 
                     Result.Loading -> Log.e("MypollpollViewModel", "category Loading")
                     is Result.Success -> {
-                        Log.e("MypollpollViewModel", "category Success ${result.data?.categories}")
+                        Log.e("MypollpollViewModel", "category Success ${result.data?: listOf()}")
                     }
                 }
             }

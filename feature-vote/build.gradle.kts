@@ -51,7 +51,6 @@ dependencies {
 
     // Core Android dependencies
     implementation(libs.androidx.activity.compose)
-
     implementation(libs.androidx.compose.lifecycle.runtime.ktx)
 
     // Arch Components
