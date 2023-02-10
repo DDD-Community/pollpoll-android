@@ -6,6 +6,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PollAPI {
@@ -18,6 +19,9 @@ interface PollAPI {
 
     @GET("/api/posts")
     suspend fun getPosts(@Query("lastPostId")lastPostId: Int): Response<ApiResponse<GetPostResponse>>
+
+    @GET("/api/posts/{postId}")
+    suspend fun getPost(@Path("postId")postId: Int): Response<ApiResponse<PostResponse>>
 
     @GET("/api/categories")
     suspend fun getCategories(): Response<ApiResponse<GetCategoriesResponse>>

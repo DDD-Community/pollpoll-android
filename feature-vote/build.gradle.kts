@@ -43,6 +43,8 @@ dependencies {
     implementation(project(":core-data"))
     implementation(project(":core-model"))
     implementation(project(":core-ui"))
+    implementation(project(mapOf("path" to ":core-network")))
+    implementation(project(mapOf("path" to ":feature-login")))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-designsystem"))
     implementation(project(":core-common"))

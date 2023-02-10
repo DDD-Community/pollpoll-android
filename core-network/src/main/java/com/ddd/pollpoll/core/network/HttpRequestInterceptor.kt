@@ -1,5 +1,6 @@
 package com.ddd.pollpoll.core.network
 
+import android.util.Log
 import com.ddd.pollpoll.datastore.PollPollDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -11,6 +12,7 @@ class HttpRequestInterceptor(private val pollPreference: PollPollDataStore) : In
         val token = runBlocking {
             pollPreference.getToken().first()
         }
+        Log.e("token", token)
 
         val originalRequest = chain.request()
         val bearer = if ((originalRequest.url.toString()).contains("login")) "" else "Bearer "
