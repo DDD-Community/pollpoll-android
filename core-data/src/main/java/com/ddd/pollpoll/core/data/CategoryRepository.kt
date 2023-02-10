@@ -16,23 +16,23 @@
 
 package com.ddd.pollpoll.core.data
 
-import com.ddd.pollpoll.Login
-import com.ddd.pollpoll.core.network.model.Category
+import com.ddd.pollpoll.Category
 import com.ddd.pollpoll.core.network.model.GetCategoriesResponse
+import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.network.remote.CategoryRemoteSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface CategoryRepository {
-    suspend fun getCategories(): Flow<GetCategoriesResponse>
+    suspend fun getCategories(): Flow<List<Category>>
 }
 
 class CategoryRepositoryImp @Inject constructor(
     private val categoryRemoteSource: CategoryRemoteSource
 ) : CategoryRepository {
-    override suspend fun getCategories(): Flow<GetCategoriesResponse> = flow {
-        val result = categoryRemoteSource.getCategories()
+    override suspend fun getCategories(): Flow<List<Category>> = flow {
+        val result = categoryRemoteSource.getCategories().asExternalModel()
         emit(result)
     }
 }

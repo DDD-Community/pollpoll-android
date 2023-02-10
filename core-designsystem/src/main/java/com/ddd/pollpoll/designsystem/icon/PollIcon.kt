@@ -33,4 +33,7 @@ object PollIcon {
     val MyPollPollTriangle = R.drawable.mypollpoll_triangle
 
     val VoteModification = R.drawable.ic_vote_modifcation
+
+    val Logo = R.drawable.ic_logo
+    val Search = R.drawable.ic_search
 }

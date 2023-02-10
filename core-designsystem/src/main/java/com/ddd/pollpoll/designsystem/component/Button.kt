@@ -3,24 +3,35 @@ package com.ddd.pollpoll.designsystem.component
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
@@ -89,6 +100,43 @@ fun PollButton(
     }
 }
 
+@Composable
+fun PollCategoryButton(
+    onClick: () -> Unit = {},
+    clicked: Boolean = true,
+    imageUrl: String = "",
+    text: String = "전체"
+) {
+    Column() {
+        Card(
+            Modifier.size(60.dp).clickable { onClick() },
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = if (clicked) PollPollTheme.colors.primary_500 else Color(0xFFF5F5F5)
+            ),
+            elevation = CardDefaults.cardElevation(2.dp)
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            AsyncImage(
+                modifier = Modifier.align(CenterHorizontally),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(PollIcon.Carrier),
+                contentDescription = ""
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            modifier = Modifier.align(CenterHorizontally),
+            text = text,
+            color = if (clicked) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_050
+        )
+    }
+}
+
 object PollButtonDefaults {
     // TODO: File bug
     // OutlinedButton border color doesn't respect disabled state by default
@@ -110,3 +158,21 @@ fun PollButtonPreview() {
         PollButton()
     }
 }
+
+@Preview
+@Composable
+fun PollCategoryButtonPreview() {
+    PollPollTheme {
+        PollCategoryButton()
+    }
+}
+
+@Preview
+@Composable
+fun PollCategoryButtonEnabledPreview() {
+    PollPollTheme {
+        PollCategoryButton(clicked = false)
+    }
+}
+
+

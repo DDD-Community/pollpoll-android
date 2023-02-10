@@ -16,6 +16,7 @@
 
 package com.ddd.pollpoll.core.data
 
+import com.ddd.pollpoll.PopularPost
 import com.ddd.pollpoll.Vote
 import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.core.network.model.PostResponse
@@ -29,6 +30,8 @@ interface PostRepository {
     suspend fun insertPost(token: Vote): Flow<Unit>
     suspend fun getPosts(lastPostId: Int): Flow<GetPostResponse>
     suspend fun getPost(postId: Int): Flow<PostResponse>
+
+    suspend fun getPopularPost(): Flow<PopularPost>
 }
 
 class PostRepositoryImp @Inject constructor(
@@ -45,6 +48,11 @@ class PostRepositoryImp @Inject constructor(
 
     override suspend fun getPost(postId: Int): Flow<PostResponse> = flow {
         val result = postRemoteSource.getPost(postId)
+        emit(result)
+    }
+
+    override suspend fun getPopularPost(): Flow<PopularPost> = flow {
+        val result = postRemoteSource.getPopularPosts()
         emit(result)
     }
 }

@@ -42,9 +42,9 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
+import com.ddd.pollpoll.feature.vote.navigation.MainScreen
 import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
-import com.ddd.pollpoll.feature.vote.navigation.navigateToReadVote
-import com.ddd.pollpoll.feature.vote.navigation.navigateToVote
+import com.ddd.pollpoll.feature.vote.navigation.navigateToMain
 import com.ddd.pollpoll.feature.vote.navigation.readVoteScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +62,7 @@ fun MainNavigation() {
             loginScreen(
                 navigateToMain = {
 //                    navController.navigateToVote()
-                    navController.navigateToReadVote()
+                    navController.navigateToMain()
                 }
             )
             insertVoteScreen(
@@ -72,23 +72,25 @@ fun MainNavigation() {
                 onBackClick = { navController.popBackStack() }
             )
             myPollPollScreen {}
+            MainScreen()
         }
     }
-
 }
 
 @Composable
 fun BottomNavigation(navController: NavHostController, currentBackStack: NavBackStackEntry?) {
     val currentRoute = currentBackStack?.destination?.route
     Column(Modifier.background(Color.White)) {
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp)
-            .shadow(
-                spotColor = Color(0x00000000),
-                elevation = 24.dp
-            ), horizontalArrangement = Arrangement.SpaceEvenly) {
-
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp)
+                .shadow(
+                    spotColor = Color(0x00000000),
+                    elevation = 24.dp
+                ),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             BottomNavBarItem(PollIcon.Cloud, "홈", "insertVote_route", currentRoute) {
                 navController.navigate("insertVote_route") {
                     launchSingleTop = true
@@ -106,18 +108,26 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
 }
 
 @Composable
-fun BottomNavBarItem(resId: Int, itemName: String, route: String, currentRoute: String?, onClick: () -> Unit) {
-    Column(modifier = Modifier
-        .size(75.dp, 51.dp)
-        .clip(CircleShape)
-        .background(Color.White)
-        .clickable {
-            onClick()
-        },
+fun BottomNavBarItem(
+    resId: Int,
+    itemName: String,
+    route: String,
+    currentRoute: String?,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .size(75.dp, 51.dp)
+            .clip(CircleShape)
+            .background(Color.White)
+            .clickable {
+                onClick()
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val color = if (currentRoute?.contains(route) == true) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_700
-        
+        val color =
+            if (currentRoute?.contains(route) == true) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_700
+
         Spacer(modifier = Modifier.size(8.dp))
         Icon(
             painter = painterResource(resId),
