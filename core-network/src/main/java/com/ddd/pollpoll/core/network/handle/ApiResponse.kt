@@ -12,7 +12,9 @@ suspend fun <T> Response<ApiResponse<T>>.executeHandle(): T {
     return try {
         val response = this
         val body = response.body()?.data
-        if (response.isSuccessful && body != null) body else throw ResponseNullException(response.message())
+        if (response.isSuccessful) {
+            body ?: throw ResponseNullException(response.message())
+        } else throw HttpException(response)
     } catch (e: HttpException) {
         throw Exception()
     }
