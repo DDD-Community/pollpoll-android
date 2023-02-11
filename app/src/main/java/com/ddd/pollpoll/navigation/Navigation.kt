@@ -45,12 +45,8 @@ import com.ddd.pollpoll.feature.login.ui.navigation.loginRoute
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
-import com.ddd.pollpoll.feature.vote.navigation.MainScreen
-import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
+import com.ddd.pollpoll.feature.vote.navigation.*
 import com.ddd.pollpoll.feature.vote.navigation.mainRoute
-import com.ddd.pollpoll.feature.vote.navigation.navigateToMain
-import com.ddd.pollpoll.feature.vote.navigation.navigateToInsertVote
-import com.ddd.pollpoll.feature.vote.navigation.readVoteScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +86,9 @@ fun MainNavigation() {
                 onBackClick = { navController.popBackStack() }
             )
             myPollPollScreen {}
-            MainScreen()
+            MainScreen(
+                navigateToReadVote = { navController.navigateToReadVote() }
+            )
         }
     }
 }
