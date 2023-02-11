@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.core.network.model.GetPostResponse
+import com.ddd.pollpoll.designsystem.component.DotsIndicator
 import com.ddd.pollpoll.designsystem.component.PollCardType
 import com.ddd.pollpoll.designsystem.component.PollCategoryButton
 import com.ddd.pollpoll.designsystem.component.PollPopularCard
@@ -56,6 +58,7 @@ internal fun MainScreenRoute(
         TopScreen(categoryUiState.value)
         Spacer(modifier = Modifier.height(20.dp))
         PopularListScreen(popularUiState.value)
+        PollList(posts = posts, navigateToReadVote)
     }
 }
 
@@ -93,7 +96,9 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
             }
         }
 //        Image(painter = painterResource(id = PollIcon.MyPollPollTriangle), contentDescription = "")
-        Image(imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle), contentDescription = null, modifier = Modifier.offset(y = (-10).dp).align(Alignment.CenterHorizontally))
+        Image(imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle), contentDescription = null, modifier = Modifier
+            .offset(y = (-10).dp)
+            .align(Alignment.CenterHorizontally))
     }
 }
 
@@ -106,7 +111,9 @@ fun PopularScreen(
     watcherCount: Int = 0
 ) {
     Spacer(modifier = Modifier.height(30.dp))
-    Column(modifier = Modifier.padding(horizontal = 20.dp).background(Color.White)) {
+    Column(modifier = Modifier
+        .padding(horizontal = 20.dp)
+        .background(Color.White)) {
         Text(
             text = topTitle,
             style = PollPollTheme.typography.heading02,
@@ -143,7 +150,9 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
                                     0xFFF1F1F1
                                 )
                             ),
-                            modifier = Modifier.size(45.dp).clip(RoundedCornerShape(12.dp)),
+                            modifier = Modifier
+                                .size(45.dp)
+                                .clip(RoundedCornerShape(12.dp)),
                             onClick = { /*TODO*/ }
                         ) {
                             Image(
@@ -178,7 +187,8 @@ fun PollList(posts: GetPostResponse?, navigateToReadVote: () -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
-                post = post
+                post = post,
+                onClick = {navigateToReadVote()}
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
@@ -194,6 +204,6 @@ fun MainScreenPreview() {
 @Composable
 fun TopScreenPreview() {
     PollPollTheme() {
-        TopScreen()
+//        TopScreen(categoryUiState)
     }
 }
