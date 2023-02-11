@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.designsystem.component.DotsIndicator
 import com.ddd.pollpoll.designsystem.component.PollCardType
 import com.ddd.pollpoll.designsystem.component.PollCategoryButton
 import com.ddd.pollpoll.designsystem.component.PollPopularCard
@@ -67,11 +68,20 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
     val horizontalState = rememberPagerState()
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
-            Spacer(modifier = Modifier.height(30.dp))
+
             Column() {
                 when (popularUiState) {
                     PopularUiState.Loading -> {}
                     is PopularUiState.Success -> {
+                        Spacer(modifier = Modifier.height(30.dp))
+                        DotsIndicator(
+                            totalDots = 3,
+                            selectedIndex = horizontalState.currentPage,
+                            selectedColor = PollPollTheme.colors.primary_500,
+                            unSelectedColor = Color(0xFFF1F1F1)
+                        )
+                        Spacer(modifier = Modifier.height(30.dp))
+
                         HorizontalPager(state = horizontalState, pageCount = 3) { page ->
                             when (page) {
                                 0 -> PopularScreen(topTitle = "참여가 많은 폴폴")
