@@ -21,6 +21,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,11 +41,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import com.ddd.pollpoll.feature.login.ui.navigation.loginRoute
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
+import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.vote.navigation.MainScreen
 import com.ddd.pollpoll.feature.vote.navigation.insertVoteScreen
+import com.ddd.pollpoll.feature.vote.navigation.mainRoute
 import com.ddd.pollpoll.feature.vote.navigation.navigateToMain
+import com.ddd.pollpoll.feature.vote.navigation.navigateToInsertVote
 import com.ddd.pollpoll.feature.vote.navigation.readVoteScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,11 +60,24 @@ fun MainNavigation() {
     Scaffold(
         bottomBar = {
             BottomNavigation(navController, currentBackStack)
+        },
+        floatingActionButton = {
+            if (currentBackStack?.destination?.route == mainRoute) {
+                FloatingActionButton(
+                    shape = CircleShape,
+                    containerColor = PollPollTheme.colors.gray_700,
+                    onClick = {
+                        navController.navigateToInsertVote()
+                    }
+                ) {
+                    Icon(painter = painterResource(id = PollIcon.Insert), "")
+                }
+            }
         }
     ) { paddingValues ->
         val pd = paddingValues
         NavHost(navController = navController, startDestination = "login_route") {
-            loginScreen(
+           loginScreen(
                 navigateToMain = {
 //                    navController.navigateToVote()
                     navController.navigateToMain()
@@ -80,27 +98,30 @@ fun MainNavigation() {
 @Composable
 fun BottomNavigation(navController: NavHostController, currentBackStack: NavBackStackEntry?) {
     val currentRoute = currentBackStack?.destination?.route
-    Column(Modifier.background(Color.White)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-                .shadow(
-                    spotColor = Color(0x00000000),
-                    elevation = 24.dp
-                ),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            BottomNavBarItem(PollIcon.Cloud, "홈", "insertVote_route", currentRoute) {
-                navController.navigate("insertVote_route") {
-                    launchSingleTop = true
-                    popUpTo(0) { inclusive = true }
+    if (currentRoute == loginRoute || currentRoute == null) {
+    } else {
+        Column(Modifier.background(Color.White)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .shadow(
+                        spotColor = Color(0x00000000),
+                        elevation = 24.dp
+                    ),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                BottomNavBarItem(PollIcon.Cloud, "홈", mainRoute, currentRoute) {
+                    navController.navigate(mainRoute) {
+                        launchSingleTop = true
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            }
-            BottomNavBarItem(PollIcon.TermsOfService, "마이폴폴", "my_poll_poll", currentRoute) {
-                navController.navigate("my_poll_poll") {
-                    launchSingleTop = true
-                    popUpTo(0) { inclusive = true }
+                BottomNavBarItem(PollIcon.TermsOfService, "마이폴폴", myPollPollRoute, currentRoute) {
+                    navController.navigate(myPollPollRoute) {
+                        launchSingleTop = true
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             }
         }

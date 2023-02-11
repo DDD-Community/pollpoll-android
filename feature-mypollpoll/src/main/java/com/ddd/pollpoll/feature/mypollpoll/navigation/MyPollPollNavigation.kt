@@ -7,15 +7,17 @@ import com.ddd.pollpoll.feature.mypollpoll.ui.MyPollPollRoute
 
 // internal const val topicIdArg = "topicId"
 
+const val myPollPollRoute = "my_poll_poll"
+
 fun NavController.navigateToMyPollPoll() {
 //    val encodedId = Uri.encode(topicId)
-    this.navigate("my_poll_poll")
+    this.navigate(myPollPollRoute)
 }
 fun NavGraphBuilder.myPollPollScreen(
     onBackClick: () -> Unit
 ) {
     composable(
-        route = "my_poll_poll",
+        route = myPollPollRoute,
         arguments = listOf(
 //            navArgument(topicIdArg) { type = NavType.StringType }
         )

@@ -36,4 +36,6 @@ object PollIcon {
 
     val Logo = R.drawable.ic_logo
     val Search = R.drawable.ic_search
+
+    val Insert = R.drawable.ic_insert
 }

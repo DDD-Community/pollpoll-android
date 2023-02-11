@@ -7,7 +7,7 @@ import com.ddd.pollpoll.feature.vote.InsertVoteRoute
 
 // internal const val topicIdArg = "topicId"
 
-fun NavController.navigateToVote() {
+fun NavController.navigateToInsertVote() {
 //    val encodedId = Uri.encode(topicId)
     this.navigate("insertVote_route")
 }
