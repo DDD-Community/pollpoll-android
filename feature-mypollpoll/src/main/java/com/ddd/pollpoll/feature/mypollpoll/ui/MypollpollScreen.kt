@@ -262,7 +262,7 @@ fun PollCard(
                     tint = Color(0xff8477F8)
                 )
                 Spacer(modifier = Modifier.size(3.dp))
-                TimeText(expireDate = expireDate)
+                TimeText(expireDate = Date(post.pollEndAt))
             }
             Spacer(modifier = Modifier.size(8.dp))
 
@@ -293,9 +293,9 @@ fun TimeText(expireDate: Date) {
     val diff = currentTime - expireDateTime
     val sdf = SimpleDateFormat("MM.dd HH:mm")
 
-    val diffSeconds: Long = diff / 1000
-    val diffMinutes: Long = diff / (60 * 1000)
-    val diffHours: Long = diff / (60 * 60 * 1000)
+    val diffSeconds: Long = (diff / 1000) % 60
+    val diffMinutes: Long = (diff / (60 * 1000)) % 60
+    val diffHours: Long = (diff / (60 * 60 * 1000)) % 24
     val diffDays: Long = diff / (24 * 60 * 60 * 1000)
 
     val hoursString = if (diffHours < 10) "0$diffHours" else "$diffHours"
