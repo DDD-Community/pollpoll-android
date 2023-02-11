@@ -46,7 +46,7 @@ class ReadVoteViewModel @Inject constructor(
                 when (result) {
                     is Result.Error -> Log.e("ReadVoteViewModel", "post Error ${result.exception}")
                     Result.Loading -> Log.e("ReadVoteViewModel", "post Loading")
-                    is Result.Success ->  {
+                    is Result.Success -> {
                         Log.e("ReadVoteViewModel", "post Success ${result.data}")
                         lastPost.value = result.data
                         val votes = lastPost.value?.pollItems
@@ -95,8 +95,6 @@ class ReadVoteViewModel @Inject constructor(
             }
             beforeVote.value = tempList
         }
-
-
     }
 
     fun vote(votedIndex: List<Int>) {
@@ -107,7 +105,7 @@ class ReadVoteViewModel @Inject constructor(
             }
             val tempList = mutableListOf<Vote>()
             val tempPostItemList = mutableListOf<Int>()
-            for ((i,item) in it.withIndex()) {
+            for ((i, item) in it.withIndex()) {
                 val voteCountAfterVote = if (votedIndex.contains(i)) {
                     tempPostItemList.add(item.postItemId)
                     item.count + 1
@@ -115,11 +113,16 @@ class ReadVoteViewModel @Inject constructor(
                     item.count
                 }
                 tempList.add(
-                    Vote(index = i, text = item.name,
+                    Vote(
+                        index = i,
+                        text = item.name,
                         percent = voteCountAfterVote.toFloat() / voteParticipantCount.toFloat(),
-                        voteCount = voteCountAfterVote, isSelected = false, onClick = {}, item.postItemId)
+                        voteCount = voteCountAfterVote,
+                        isSelected = false,
+                        onClick = {},
+                        item.postItemId
+                    )
                 )
-
             }
             afterVote.value = tempList
 //            selectedPostItemIds.value = tempPostItemList.toList()

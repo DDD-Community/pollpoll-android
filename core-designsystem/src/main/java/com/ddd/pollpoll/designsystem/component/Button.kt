@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -118,10 +120,10 @@ fun PollCategoryButton(
             contentPadding = PaddingValues(0.dp)
         ) {
             AsyncImage(
-                modifier = Modifier.align(CenterVertically),
+                modifier = Modifier.align(CenterVertically).size(36.dp),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
-                    .crossfade(true)
+                    .size(size = 40)
                     .build(),
                 placeholder = painterResource(PollIcon.Carrier),
                 contentDescription = ""
