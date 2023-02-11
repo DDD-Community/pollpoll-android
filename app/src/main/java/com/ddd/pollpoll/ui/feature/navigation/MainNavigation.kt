@@ -15,11 +15,12 @@ fun NavController.navigateToMain() {
 }
 
 fun NavGraphBuilder.MainScreen(
+    navigateToReadVote: () -> Unit,
 ) {
     composable(
         route = mainRoute,
         arguments = listOf()
     ) {
-        MainScreenRoute()
+        MainScreenRoute(navigateToReadVote = navigateToReadVote)
     }
 }

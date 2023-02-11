@@ -4,15 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -23,29 +15,36 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.designsystem.component.PollCardType
 import com.ddd.pollpoll.designsystem.component.PollCategoryButton
 import com.ddd.pollpoll.designsystem.component.PollPopularCard
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import com.ddd.pollpoll.feature.mypollpoll.ui.PollCard
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun MainScreenRoute(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel(),
+    navigateToReadVote: () -> Unit
 ) {
     val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle()
     val popularUiState = viewModel.popularUiState.collectAsStateWithLifecycle()
+    val posts = viewModel.posts.collectAsState().value
 
     val scrollState = rememberScrollState()
     Column(
@@ -57,6 +56,9 @@ internal fun MainScreenRoute(
         TopScreen(categoryUiState.value)
         Spacer(modifier = Modifier.height(20.dp))
         PopularListScreen(popularUiState.value)
+        Spacer(modifier = Modifier.height(5.dp))
+        PollList(posts, navigateToReadVote)
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
@@ -84,7 +86,8 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
                 Spacer(modifier = Modifier.height(30.dp))
             }
         }
-        Image(painter = painterResource(id = PollIcon.MyPollPollTriangle), contentDescription = "")
+//        Image(painter = painterResource(id = PollIcon.MyPollPollTriangle), contentDescription = "")
+        Image(imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle), contentDescription = null, modifier = Modifier.offset(y = (-10).dp).align(Alignment.CenterHorizontally))
     }
 }
 
@@ -96,7 +99,8 @@ fun PopularScreen(
     participants: Int = 0,
     watcherCount: Int = 0
 ) {
-    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+    Spacer(modifier = Modifier.height(30.dp))
+    Column(modifier = Modifier.padding(horizontal = 20.dp).background(Color.White)) {
         Text(
             text = topTitle,
             style = PollPollTheme.typography.heading02,
@@ -152,6 +156,21 @@ fun TopScreen(categoryUiState: CategoryUiState) {
                     Spacer(modifier = Modifier.height(30.dp))
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PollList(posts: GetPostResponse?, navigateToReadVote: () -> Unit) {
+    if (posts != null) {
+        for (post in posts.posts) {
+            PollCard(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                post = post
+            )
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

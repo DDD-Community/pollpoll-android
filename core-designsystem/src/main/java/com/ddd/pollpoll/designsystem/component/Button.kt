@@ -102,7 +102,7 @@ fun PollButton(
 @Composable
 fun PollCategoryButton(
     onClick: () -> Unit = {},
-    clicked: Boolean = true,
+    clicked: Boolean = false,
     imageUrl: String = "",
     text: String = "전체"
 ) {
@@ -131,7 +131,7 @@ fun PollCategoryButton(
         Text(
             modifier = Modifier.align(CenterHorizontally),
             text = text,
-            color = if (clicked) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_050,
+            color = if (clicked) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_900,
             style = PollPollTheme.typography.heading05
         )
     }
