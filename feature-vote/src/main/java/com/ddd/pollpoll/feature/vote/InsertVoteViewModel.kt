@@ -26,7 +26,7 @@ class InsertVoteViewModel @Inject constructor(
         MutableStateFlow(InsertVoteUiState.SelectCategory)
     val uiState: StateFlow<InsertVoteUiState> = _uiState
 
-    private val _vote: MutableStateFlow<Vote> = MutableStateFlow(Vote())
+    private val _vote: MutableStateFlow<Vote> = MutableStateFlow(Vote(milliseconds = 86400000))
     val vote = _vote.asStateFlow()
 
     fun selectCategory(categoryId: Category) {

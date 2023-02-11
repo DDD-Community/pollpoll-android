@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -102,7 +104,7 @@ fun PollButton(
 @Composable
 fun PollCategoryButton(
     onClick: () -> Unit = {},
-    clicked: Boolean = true,
+    clicked: Boolean = false,
     imageUrl: String = "",
     text: String = "전체"
 ) {
@@ -118,10 +120,10 @@ fun PollCategoryButton(
             contentPadding = PaddingValues(0.dp)
         ) {
             AsyncImage(
-                modifier = Modifier.align(CenterVertically),
+                modifier = Modifier.align(CenterVertically).size(36.dp),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
-                    .crossfade(true)
+                    .size(size = 40)
                     .build(),
                 placeholder = painterResource(PollIcon.Carrier),
                 contentDescription = ""
@@ -131,7 +133,7 @@ fun PollCategoryButton(
         Text(
             modifier = Modifier.align(CenterHorizontally),
             text = text,
-            color = if (clicked) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_050,
+            color = if (clicked) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_900,
             style = PollPollTheme.typography.heading05
         )
     }

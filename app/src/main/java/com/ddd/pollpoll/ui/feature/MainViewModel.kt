@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.PopularPost
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.PostRepository
+import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import com.ddd.pollpoll.feature.vote.Category
@@ -31,6 +32,8 @@ class MainViewModel @Inject constructor(
     private val _popularUiState: MutableStateFlow<PopularUiState> =
         MutableStateFlow(PopularUiState.Loading)
     val popularUiState: StateFlow<PopularUiState> = _popularUiState.asStateFlow()
+
+    val posts = MutableStateFlow<GetPostResponse?>(null)
 
     init {
         viewModelScope.launch {
@@ -65,6 +68,23 @@ class MainViewModel @Inject constructor(
                             Log.d("mainViemodel" , "${result.data}")
                             PopularUiState.Success(result.data!!)
                         }
+                    }
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            postRepository.getPosts(100).asResult().collect { result ->
+                when (result) {
+                    is Result.Error -> Log.e(
+                        "MypollpollViewModel",
+                        "post Error ${result.exception}"
+                    )
+
+                    Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
+                    is Result.Success -> {
+                        Log.e("MypollpollViewModel", "post Success ${result.data?.posts}")
+                        posts.value = result.data
                     }
                 }
             }
