@@ -18,13 +18,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -109,7 +110,7 @@ fun PopularScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopScreen(categoryUiState: CategoryUiState) {
+fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf())) {
     val listState = rememberScrollState()
     when (categoryUiState) {
         CategoryUiState.Loading -> {}
@@ -127,13 +128,17 @@ fun TopScreen(categoryUiState: CategoryUiState) {
                                 .width(10.dp)
                                 .weight(1f)
                         )
-                        Button(
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF1F1F1)),
-                            modifier = Modifier.size(45.dp),
-                            shape = RoundedCornerShape(12.dp),
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = Color(
+                                    0xFFF1F1F1
+                                )
+                            ),
+                            modifier = Modifier.size(45.dp).clip(RoundedCornerShape(12.dp)),
                             onClick = { /*TODO*/ }
                         ) {
                             Image(
+                                modifier = Modifier.align(Alignment.CenterVertically),
                                 painter = painterResource(id = PollIcon.Search),
                                 contentDescription = ""
                             )
@@ -165,6 +170,6 @@ fun MainScreenPreview() {
 @Composable
 fun TopScreenPreview() {
     PollPollTheme() {
-//        TopScreen(categoryUiState)
+        TopScreen()
     }
 }
