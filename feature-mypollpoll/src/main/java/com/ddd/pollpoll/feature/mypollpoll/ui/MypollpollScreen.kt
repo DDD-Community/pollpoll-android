@@ -22,8 +22,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,8 +45,10 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon.Cloud
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Fire
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Writing
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 @Composable
 internal fun MyPollPollRoute(
@@ -262,7 +263,7 @@ fun PollCard(
                     tint = Color(0xff8477F8)
                 )
                 Spacer(modifier = Modifier.size(3.dp))
-                TimeText(expireDate = expireDate)
+                TimeText(expireDate = Date(post.pollEndAt))
             }
             Spacer(modifier = Modifier.size(8.dp))
 
@@ -287,15 +288,22 @@ fun PollCard(
 @Composable
 fun TimeText(expireDate: Date) {
     // date gap millisceond to date
-
     val expireDateTime = expireDate.time
-    val currentTime = Date().time
-    val diff = currentTime - expireDateTime
+    var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
+
+    LaunchedEffect(key1 = Unit) {
+        while (true) {
+            delay(1000)
+            currentTime = System.currentTimeMillis()
+        }
+    }
+
+    val diff = (expireDateTime - currentTime).absoluteValue
     val sdf = SimpleDateFormat("MM.dd HH:mm")
 
-    val diffSeconds: Long = diff / 1000
-    val diffMinutes: Long = diff / (60 * 1000)
-    val diffHours: Long = diff / (60 * 60 * 1000)
+    val diffSeconds: Long = (diff / 1000) % 60
+    val diffMinutes: Long = (diff / (60 * 1000)) % 60
+    val diffHours: Long = (diff / (60 * 60 * 1000)) % 24
     val diffDays: Long = diff / (24 * 60 * 60 * 1000)
 
     val hoursString = if (diffHours < 10) "0$diffHours" else "$diffHours"
