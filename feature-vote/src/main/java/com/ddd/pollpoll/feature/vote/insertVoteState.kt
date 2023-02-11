@@ -1,5 +1,7 @@
 package com.ddd.pollpoll.feature.vote
 
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
@@ -16,7 +18,8 @@ import kotlinx.coroutines.CoroutineScope
 @Stable
 internal class InsertVoteState @OptIn(ExperimentalMaterialApi::class) constructor(
     val bottomSheetState: ModalBottomSheetState,
-    val coroutineScope: CoroutineScope
+    val coroutineScope: CoroutineScope,
+    val scrollState: ScrollState
 ) {
 
     var dialogState by mutableStateOf(false)
@@ -38,7 +41,8 @@ internal class InsertVoteState @OptIn(ExperimentalMaterialApi::class) constructo
 @Composable
 internal fun rememberInsertVoteState(
     bottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    scrollState: ScrollState = rememberScrollState()
 ): InsertVoteState = remember(bottomSheetState, coroutineScope) {
-    InsertVoteState(bottomSheetState, coroutineScope)
+    InsertVoteState(bottomSheetState, coroutineScope, scrollState)
 }
