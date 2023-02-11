@@ -209,6 +209,7 @@ fun MyPollPollBody(posts: GetPostResponse?) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PollCard(
     modifier: Modifier = Modifier,
@@ -222,7 +223,8 @@ fun PollCard(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
-        )
+        ),
+        onClick = {onClick()}
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
