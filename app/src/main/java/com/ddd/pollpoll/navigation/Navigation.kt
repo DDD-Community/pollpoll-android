@@ -109,13 +109,13 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
                     ),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                BottomNavBarItem(PollIcon.Cloud, "홈", mainRoute, currentRoute) {
+                BottomNavBarItem(PollIcon.Home, "홈", mainRoute, currentRoute) {
                     navController.navigate(mainRoute) {
                         launchSingleTop = true
                         popUpTo(0) { inclusive = true }
                     }
                 }
-                BottomNavBarItem(PollIcon.TermsOfService, "마이폴폴", myPollPollRoute, currentRoute) {
+                BottomNavBarItem(PollIcon.MyPollPoll, "마이폴폴", myPollPollRoute, currentRoute) {
                     navController.navigate(myPollPollRoute) {
                         launchSingleTop = true
                         popUpTo(0) { inclusive = true }

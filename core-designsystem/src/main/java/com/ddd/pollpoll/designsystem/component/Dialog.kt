@@ -35,13 +35,13 @@ fun PollAlertDialog(
                 Column(Modifier.padding(horizontal = 20.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "등록을 취소할까요?",
+                        text = "등록하시겠습니까?",
                         style = PollPollTheme.typography.body02,
                         color = PollPollTheme.colors.gray_700
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     Text(
-                        text = "지금까지 작성한 건 삭제가 됩니다.",
+                        text = "등록 한 시점부터 투표가 진행됩니다.",
                         style = PollPollTheme.typography.body04,
                         color = PollPollTheme.colors.gray_700
                     )
