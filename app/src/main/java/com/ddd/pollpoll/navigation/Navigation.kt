@@ -95,7 +95,7 @@ fun MainNavigation() {
 @Composable
 fun BottomNavigation(navController: NavHostController, currentBackStack: NavBackStackEntry?) {
     val currentRoute = currentBackStack?.destination?.route
-    if (currentRoute == loginRoute || currentRoute == null) {
+    if (currentRoute == loginRoute || currentRoute == null || currentRoute == insertVoteRoute) {
     } else {
         Column(Modifier.background(Color.White)) {
             Row(
