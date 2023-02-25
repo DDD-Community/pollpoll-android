@@ -310,7 +310,7 @@ private fun VoteTopBar(
     onCloseButtonClicked: () -> Unit = {}
 ) {
     val progressAni by animateFloatAsState(progress)
-    Column() {
+    Column(Modifier.background(Color.White)) {
         PollTopBar(
             title = {
                 Text(text = "투표 작성")

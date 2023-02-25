@@ -22,6 +22,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -101,7 +103,7 @@ internal fun LoginScreen(
     }
 
     Surface(modifier) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.background(Color.White) ,horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(80.dp))
             Image(
                 painter = painterResource(id = R.drawable.img_speech_bubble),

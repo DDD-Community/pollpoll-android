@@ -69,7 +69,7 @@ fun MypollpollScreen(
     posts: GetPostResponse?
 ) {
     Scaffold(topBar = {
-        Column() {
+        Column(Modifier.background(Color.White)) {
             PollTopBar(
                 title = {
                     Text(text = "마이 페이지")
@@ -101,6 +101,7 @@ fun MypollpollScreen(
             Column(
                 modifier = Modifier
                     .background(color = PollPollTheme.colors.gray_050)
+                    .fillMaxSize()
             ) {
                 MyPollPollHeader()
                 MyPollPollBody(posts)

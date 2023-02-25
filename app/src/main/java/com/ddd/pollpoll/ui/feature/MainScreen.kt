@@ -69,19 +69,18 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
 
-            Column() {
+            Column(Modifier.background(Color.White).fillMaxWidth()) {
+                Spacer(modifier = Modifier.height(30.dp))
+                DotsIndicator(
+                    totalDots = 3,
+                    selectedIndex = horizontalState.currentPage,
+                    selectedColor = PollPollTheme.colors.primary_500,
+                    unSelectedColor = Color(0xFFF1F1F1)
+                )
+                Spacer(modifier = Modifier.height(30.dp))
                 when (popularUiState) {
                     PopularUiState.Loading -> {}
                     is PopularUiState.Success -> {
-                        Spacer(modifier = Modifier.height(30.dp))
-                        DotsIndicator(
-                            totalDots = 3,
-                            selectedIndex = horizontalState.currentPage,
-                            selectedColor = PollPollTheme.colors.primary_500,
-                            unSelectedColor = Color(0xFFF1F1F1)
-                        )
-                        Spacer(modifier = Modifier.height(30.dp))
-
                         HorizontalPager(state = horizontalState, pageCount = 3) { page ->
                             when (page) {
                                 0 -> PopularScreen(topTitle = "참여가 많은 폴폴")
@@ -128,40 +127,42 @@ fun PopularScreen(
 @Composable
 fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf())) {
     val listState = rememberScrollState()
-    when (categoryUiState) {
-        CategoryUiState.Loading -> {}
-        is CategoryUiState.Success -> {
-            Surface(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)) {
-                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    Spacer(modifier = Modifier.height(62.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = PollIcon.Logo),
-                            contentDescription = ""
+    Surface(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 20.dp).background(Color.White)) {
+            Spacer(modifier = Modifier.height(62.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = PollIcon.Logo),
+                    contentDescription = ""
+                )
+                Spacer(
+                    modifier = Modifier
+                        .width(10.dp)
+                        .weight(1f)
+                )
+                IconButton(
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color(
+                            0xFFF1F1F1
                         )
-                        Spacer(
-                            modifier = Modifier
-                                .width(10.dp)
-                                .weight(1f)
-                        )
-                        IconButton(
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = Color(
-                                    0xFFF1F1F1
-                                )
-                            ),
-                            modifier = Modifier
-                                .size(45.dp)
-                                .clip(RoundedCornerShape(12.dp)),
-                            onClick = { /*TODO*/ }
-                        ) {
-                            Image(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                painter = painterResource(id = PollIcon.Search),
-                                contentDescription = ""
-                            )
-                        }
-                    }
+                    ),
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    onClick = { /*TODO*/ }
+                ) {
+                    Image(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        painter = painterResource(id = PollIcon.Search),
+                        contentDescription = ""
+                    )
+                }
+            }
+
+            when (categoryUiState) {
+                CategoryUiState.Loading -> {}
+                is CategoryUiState.Success -> {
+
                     // 충격적이게도 LazyRow로 하면 망가짐
                     Row(modifier = Modifier.horizontalScroll(listState)) {
                         categoryUiState.categoryList.forEach {
@@ -177,6 +178,7 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
             }
         }
     }
+
 }
 
 @Composable

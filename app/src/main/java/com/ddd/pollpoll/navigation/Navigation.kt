@@ -66,13 +66,12 @@ fun MainNavigation() {
                         navController.navigateToInsertVote()
                     }
                 ) {
-                    Icon(painter = painterResource(id = PollIcon.Insert), "")
+                    Icon(painter = painterResource(id = PollIcon.Insert), "", tint = PollPollTheme.colors.gray_050)
                 }
             }
         }
     ) { paddingValues ->
-        val pd = paddingValues
-        NavHost(navController = navController, startDestination = "login_route") {
+        NavHost(modifier = Modifier.padding(paddingValues),navController = navController, startDestination = "login_route") {
            loginScreen(
                 navigateToMain = {
 //                    navController.navigateToVote()
