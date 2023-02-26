@@ -52,7 +52,11 @@ fun PollTextField(
             value = text,
             placeholderText = placeholderText,
             textStyle = textStyle,
-            onValueChange = onValueChange,
+            onValueChange = { textValue ->
+                maxLength?.let { maxLength ->
+                    if (textValue.length <= maxLength) onValueChange(textValue)
+                } ?: onValueChange(textValue)
+            },
             paddingValues = contextPadding,
             textFieldColors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,

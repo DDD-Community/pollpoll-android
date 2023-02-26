@@ -29,10 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.core.network.model.GetPostResponse
-import com.ddd.pollpoll.designsystem.component.DotsIndicator
-import com.ddd.pollpoll.designsystem.component.PollCardType
-import com.ddd.pollpoll.designsystem.component.PollCategoryButton
-import com.ddd.pollpoll.designsystem.component.PollPopularCard
+import com.ddd.pollpoll.designsystem.component.*
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.mypollpoll.ui.PollCard
@@ -68,17 +65,15 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
     val horizontalState = rememberPagerState()
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
-
             Column() {
                 when (popularUiState) {
                     PopularUiState.Loading -> {}
                     is PopularUiState.Success -> {
                         Spacer(modifier = Modifier.height(30.dp))
-                        DotsIndicator(
-                            totalDots = 3,
-                            selectedIndex = horizontalState.currentPage,
-                            selectedColor = PollPollTheme.colors.primary_500,
-                            unSelectedColor = Color(0xFFF1F1F1)
+                        PollPagerIndicator(
+                            numberOfPages = 3,
+                            selectedPage = horizontalState.currentPage,
+                            modifier = Modifier.padding(horizontal = 20.dp)
                         )
                         Spacer(modifier = Modifier.height(30.dp))
 

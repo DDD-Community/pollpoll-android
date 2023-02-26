@@ -80,18 +80,7 @@ class InsertVoteViewModel @Inject constructor(
     }
 }
 
-data class InsertVoteUiStateTest(
-    val vote: Vote = Vote()
 
-) {
-    val isInsertButtonEnabled: Boolean
-        get() = vote.title.isBlank() &&
-            vote.contents.isNotBlank() &&
-            !vote.pollItems.contains(PollItem(""))
-
-    val isCompleteButtonEnabled: Boolean
-        get() = !vote.pollItems.contains(PollItem(""))
-}
 
 sealed interface InsertVoteUiState {
 
