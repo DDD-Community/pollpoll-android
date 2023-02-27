@@ -46,6 +46,7 @@ internal fun MainScreenRoute(
     val posts = viewModel.posts.collectAsState().value
 
     val scrollState = rememberScrollState()
+
     Column(
         Modifier
             .fillMaxSize()
@@ -62,13 +63,16 @@ internal fun MainScreenRoute(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
-    val horizontalState = rememberPagerState()
+
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
             Column() {
                 when (popularUiState) {
-                    PopularUiState.Loading -> {}
+                    PopularUiState.Loading -> {
+
+                    }
                     is PopularUiState.Success -> {
+                        val horizontalState = rememberPagerState()
                         Spacer(modifier = Modifier.height(30.dp))
                         PollPagerIndicator(
                             numberOfPages = 3,
@@ -86,6 +90,7 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
                         }
                         popularUiState.categoryList
                     }
+                    is PopularUiState.Error -> {}
                 }
                 Spacer(modifier = Modifier.height(30.dp))
             }
@@ -171,6 +176,7 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
                 }
             }
         }
+        is CategoryUiState.Error -> {}
     }
 }
 

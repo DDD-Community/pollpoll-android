@@ -94,12 +94,12 @@ class MainViewModel @Inject constructor(
 
 sealed interface CategoryUiState {
     object Loading : CategoryUiState
-
+    data class Error(val message : String) : CategoryUiState
     data class Success(val categoryList: List<com.ddd.pollpoll.Category>) : CategoryUiState
 }
 
 sealed interface PopularUiState {
     object Loading : PopularUiState
-
+    data class Error(val message : String) : PopularUiState
     data class Success(val categoryList: PopularPost) : PopularUiState
 }

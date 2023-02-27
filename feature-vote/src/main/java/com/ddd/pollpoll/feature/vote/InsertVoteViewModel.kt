@@ -29,6 +29,9 @@ class InsertVoteViewModel @Inject constructor(
     private val _vote: MutableStateFlow<Vote> = MutableStateFlow(Vote(milliseconds = 86400000))
     val vote = _vote.asStateFlow()
 
+    private val _uiStateTest = MutableStateFlow(InsertVoteUiStateTest())
+    val uiStateTest = _uiStateTest.asStateFlow()
+
     fun selectCategory(categoryId: Category) {
         _vote.update { it.copy(category = categoryId.categoryId) }
         _uiState.value = InsertVoteUiState.InsertTitle
@@ -63,7 +66,7 @@ class InsertVoteViewModel @Inject constructor(
         postRepository.insertPost(vote.value).asResult().collect {
             when (it) {
                 Result.Loading -> Log.d("TEST", "insertPost:  로딩")
-                is Result.Success -> Log.d("TEST", "insertPost:  success")
+                is Result.Success -> _uiStateTest.update {it.copy(isInserted = true) }
                 is Result.Error -> Log.d("TEST", "insertPost:  실패${it.exception}")
             }
         }
@@ -80,7 +83,18 @@ class InsertVoteViewModel @Inject constructor(
     }
 }
 
+data class InsertVoteUiStateTest(
+    val vote: Vote = Vote(),
+    val isInserted: Boolean = false
+) {
+    val isInsertButtonEnabled: Boolean
+        get() = vote.title.isBlank() &&
+            vote.contents.isNotBlank() &&
+            !vote.pollItems.contains(PollItem(""))
 
+    val isCompleteButtonEnabled: Boolean
+        get() = !vote.pollItems.contains(PollItem(""))
+}
 
 sealed interface InsertVoteUiState {
 

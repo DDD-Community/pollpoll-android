@@ -16,6 +16,7 @@
 
 package com.ddd.pollpoll.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -80,7 +81,11 @@ fun MainNavigation() {
                 }
             )
             insertVoteScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onInsertButtonClick = {
+                    Log.d("insertVote" , "insertVote 상위 올라옴 ")
+                    navController.popBackStack()
+                }
             )
             readVoteScreen(
                 onBackClick = { navController.popBackStack() }
@@ -96,7 +101,7 @@ fun MainNavigation() {
 @Composable
 fun BottomNavigation(navController: NavHostController, currentBackStack: NavBackStackEntry?) {
     val currentRoute = currentBackStack?.destination?.route
-    if (currentRoute == loginRoute || currentRoute == null) {
+    if (currentRoute == loginRoute ||currentRoute == insertVoteRoute || currentRoute == null) {
     } else {
         Column(Modifier.background(Color.White)) {
             Row(

@@ -67,10 +67,17 @@ import kotlinx.coroutines.launch
 internal fun InsertVoteRoute(
     modifier: Modifier = Modifier,
     viewModel: InsertVoteViewModel = hiltViewModel(),
-    onCloseButtonClicked: () -> Unit
+    onCloseButtonClicked: () -> Unit,
+    onInsertButtonClicked: () -> Unit
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
     val voteState: Vote by viewModel.vote.collectAsStateWithLifecycle()
+
+    val uiStateTest : InsertVoteUiStateTest by viewModel.uiStateTest.collectAsStateWithLifecycle()
+
+    if(uiStateTest.isInserted){
+        onInsertButtonClicked()
+    }
 
     InsertVoteScreen(
         modifier = modifier,
@@ -126,7 +133,10 @@ fun InsertVoteScreen(
         PollAlertDialog(
             onDismissRequest = { insertAppState.setShowDialog(false) },
             onCancelClicked = { insertAppState.setShowDialog(false) },
-            onConfirmClicked = { onInsertButtonClicked() }
+            onConfirmClicked = {
+                onInsertButtonClicked()
+
+            }
         )
     }
 
@@ -226,6 +236,7 @@ fun AddVoteCategoryScreen(
         Modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Column(Modifier.padding(20.dp)) {
             CategoryScreen(category)
             voteList.forEachIndexed { index, it ->
@@ -396,9 +407,11 @@ fun InsertContentScreen(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        onTitleDone()
-                        progressBarChanged(VoteScreenEnum.Title)
-                        focusManager.clearFocus()
+                        if(title.isNotEmpty()) {
+                            onTitleDone()
+                            progressBarChanged(VoteScreenEnum.Title)
+                            focusManager.clearFocus()
+                        }
                     }
                 ),
                 maxLength = 50
@@ -411,9 +424,11 @@ fun InsertContentScreen(
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            onContentDone()
-                            progressBarChanged(VoteScreenEnum.Content)
-                            focusManager.clearFocus()
+                            if(content.isNotEmpty()) {
+                                onContentDone()
+                                progressBarChanged(VoteScreenEnum.Content)
+                                focusManager.clearFocus()
+                            }
                         }
                     ),
                     maxLength = 200
