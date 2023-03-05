@@ -100,6 +100,29 @@ fun PollButton(
         content()
     }
 }
+@Composable
+fun PollRoundedButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    enabled: Boolean = true,
+    shape: Shape = RoundedCornerShape(0.dp),
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    color: PollButtonColor = PollButtonColor.ORANGE,
+    content: @Composable RowScope.() -> Unit = {}
+) {
+    Button(
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (color == PollButtonColor.BLUE) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500,
+            disabledContainerColor = PollPollTheme.colors.gray_300
+        ),
+        enabled = enabled,
+        shape = shape,
+        onClick = onClick
+    ) {
+        content()
+    }
+}
 
 @Composable
 fun PollCategoryButton(

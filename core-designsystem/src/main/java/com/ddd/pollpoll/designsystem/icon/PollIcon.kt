@@ -41,4 +41,6 @@ object PollIcon {
     val Search = R.drawable.ic_search
 
     val Insert = R.drawable.ic_insert
+    val CancelFill = R.drawable.ic_cancel_fill
+    val Refresh = R.drawable.ic_refresh
 }
