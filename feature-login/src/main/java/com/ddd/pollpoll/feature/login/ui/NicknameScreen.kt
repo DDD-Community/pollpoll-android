@@ -146,13 +146,13 @@ internal fun NicknameScreen(
             Spacer(modifier = Modifier.weight(40f))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(painter = painterResource(id = PollIcon.Refresh), contentDescription = "", Modifier.size(18.dp), tint = PollPollTheme.colors.primary_500)
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.width(5.dp))
                 Text(text = "다시 추천받기", style = PollPollTheme.typography.body02, color = PollPollTheme.colors.primary_500)
             }
             Spacer(modifier = Modifier.weight(85f))
 
             PollButton(onClick = nicknameClick, shape = RoundedCornerShape(100.dp), modifier = Modifier.padding(horizontal = 40.dp).fillMaxWidth()) {
-                Text(text = "폴폴 들어가기", style = PollPollTheme.typography.heading05)
+                Text(text = "폴폴 들어가기", style = PollPollTheme.typography.heading05, modifier = Modifier.padding(vertical = 4.dp))
             }
             Spacer(modifier = Modifier.weight(80f))
         }
