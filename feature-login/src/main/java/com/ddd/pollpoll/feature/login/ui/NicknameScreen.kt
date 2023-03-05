@@ -24,27 +24,30 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ddd.pollpoll.feature.login.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ddd.pollpoll.designsystem.component.PollLoginButton
+import com.ddd.pollpoll.designsystem.component.PollButton
+import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
-import com.ddd.pollpoll.feature.login.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -54,15 +57,15 @@ import com.google.android.gms.tasks.Task
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-internal fun LoginRoute(
+internal fun NicknameRoute(
     modifier: Modifier = Modifier.fillMaxSize(),
-    viewModel: LoginViewModel = hiltViewModel(),
+    viewModel: NicknameViewModel = hiltViewModel(),
     navigateToMain: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val localView = LocalView.current
-    val googleSignInClient = getGoogleLoginAuth(localView.context as Activity)
+    val googleSignInClient = getGoogleNicknameAuth(localView.context as Activity)
 
     val startForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -76,9 +79,9 @@ internal fun LoginRoute(
             }
         }
 
-    LoginScreen(
+    NicknameScreen(
         modifier = modifier,
-        loginClick = {
+        nicknameClick = {
             startForResult.launch(googleSignInClient?.signInIntent)
         },
         uiState,
@@ -86,53 +89,76 @@ internal fun LoginRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun LoginScreen(
+internal fun NicknameScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
-    loginClick: () -> Unit = {},
-    uiState: LoginUiState,
+    nicknameClick: () -> Unit = {},
+    uiState: NicknameUiState,
     navigateToMain: (String) -> Unit
 ) {
     when (uiState) {
-        is LoginUiState.Success -> {
+        is NicknameUiState.Success -> {
             navigateToMain(uiState.data)
         }
-        LoginUiState.Empty -> {}
-        is LoginUiState.Error -> {}
-        LoginUiState.Loading -> {}
+        NicknameUiState.Empty -> {}
+        is NicknameUiState.Error -> {}
+        NicknameUiState.Loading -> {}
     }
 
     Surface(modifier) {
         Column(Modifier.background(Color.White) ,horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.weight(1f))
             Image(
                 painter = painterResource(id = R.drawable.img_speech_bubble),
                 contentDescription = ""
             )
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 style = PollPollTheme.typography.heading01,
-                text = buildAnnotatedString {
-                    append("고민이 있나요?")
-                    withStyle(
-                        SpanStyle(
-                            color = PollPollTheme.colors.primary_500
-                        )
-                    ) {
-                        append("\n폴폴")
-                    }
-                    append("이 도와줄게요.")
-                },
+                text = "오늘도 고민거리를\n해결하고 가세요!",
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(15.dp))
-            Text(text = "모든 고민거리는 투표를 통해 해결해요", style = PollPollTheme.typography.body02)
-            Spacer(modifier = Modifier.height(153.dp))
-            PollLoginButton(text = "구글 ID 로그인", onClick = loginClick)
+            Spacer(modifier = Modifier.height(40.dp))
+            OutlinedTextField(
+                modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth(),
+                value = "멋쟁이 다람쥐",
+                shape = RoundedCornerShape(12.dp),
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = PollIcon.Close),
+                        contentDescription = "",
+                        Modifier.size(18.dp),
+                        tint = PollPollTheme.colors.gray_500
+                    )
+                },
+                textStyle = PollPollTheme.typography.heading05,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = PollPollTheme.colors.gray_300,
+                    unfocusedBorderColor = PollPollTheme.colors.gray_300,
+                    containerColor = PollPollTheme.colors.gray_050),
+                onValueChange = {
+
+            })
+            Spacer(modifier = Modifier.height(40.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(painter = painterResource(id = PollIcon.Search), contentDescription = "", Modifier.size(18.dp), tint = PollPollTheme.colors.primary_500)
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(text = "다시 추천받기", style = PollPollTheme.typography.body02, color = PollPollTheme.colors.primary_500)
+            }
+            Spacer(modifier = Modifier.height(85.dp))
+
+            PollButton(onClick = nicknameClick) {
+                Text(text = "폴폴 들어가기", style = PollPollTheme.typography.heading05)
+            }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
 
-private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
+private fun getGoogleNicknameAuth(activity: Activity): GoogleSignInClient {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
         .requestIdToken("182245619639-91irinookimtn557n057f2vcg9pn7okb.apps.googleusercontent.com")
@@ -144,11 +170,11 @@ private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
 
 private fun handleSignInResult(
     completedTask: Task<GoogleSignInAccount>,
-    viewModel: LoginViewModel
+    viewModel: NicknameViewModel
 ) {
     try {
         val account = completedTask.getResult(ApiException::class.java)
-        account.idToken?.let { token -> viewModel.addLogin(token) }
+        account.idToken?.let { token -> viewModel.addNickname(token) }
     } catch (e: ApiException) {
         Log.w("Test", "signInResult:failed code=" + e.getStatusCode())
     }
@@ -159,7 +185,7 @@ private fun handleSignInResult(
 @Composable
 private fun DefaultPreview() {
     PollPollTheme {
-        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
+        NicknameScreen(modifier = Modifier, uiState = NicknameUiState.Success("gf"), navigateToMain = {})
     }
 }
 
@@ -167,6 +193,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     PollPollTheme() {
-        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
+        NicknameScreen(modifier = Modifier, uiState = NicknameUiState.Success("gf"), navigateToMain = {})
     }
 }

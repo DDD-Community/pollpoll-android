@@ -223,7 +223,7 @@ fun AddVoteCategoryScreen(
 
     buttonEnabled = !voteList.contains(PollItem(""))
     Column(
-        Modifier.verticalScroll(scrollState),
+        Modifier.verticalScroll(scrollState).background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(Modifier.padding(20.dp)) {
@@ -310,7 +310,7 @@ private fun VoteTopBar(
     onCloseButtonClicked: () -> Unit = {}
 ) {
     val progressAni by animateFloatAsState(progress)
-    Column() {
+    Column(Modifier.background(Color.White)) {
         PollTopBar(
             title = {
                 Text(text = "투표 작성")
@@ -342,7 +342,7 @@ private fun VoteTopBar(
 
 @Composable
 fun ChoiceCategoryScreen(onClick: (Category) -> Unit = {}) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(Modifier.background(Color.White),horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(24.dp))
         Text(text = "카테고리를 설정해주세요")
         Spacer(modifier = Modifier.height(48.dp))
@@ -380,7 +380,7 @@ fun InsertContentScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    Box(Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize().background(Color.White)) {
         Column(
             Modifier
                 .padding(20.dp)
