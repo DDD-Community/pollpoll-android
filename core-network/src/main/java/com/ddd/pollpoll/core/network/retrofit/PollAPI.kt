@@ -28,4 +28,15 @@ interface PollAPI {
 
     @GET("/api/categories")
     suspend fun getCategories(): Response<ApiResponse<GetCategoriesResponse>>
+
+
+    @GET("/api/user/nickname-recommend")
+    suspend fun getNickNameRecommend(): Response<ApiResponse<GetNicknameRecommendResponse>>
+
+    @PUT("/api/user/nickname")
+    suspend fun putNickname(@Body nickname: PutNicknameRequest): Response<ApiResponse<Unit>>
+
+    @GET("/api/user/has-nickname")
+    suspend fun getHasNickname(): Response<ApiResponse<GetHasNicknameResponse>>
+
 }

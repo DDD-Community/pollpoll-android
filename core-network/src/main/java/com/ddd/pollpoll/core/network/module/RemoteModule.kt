@@ -28,4 +28,10 @@ interface RemoteModule {
     fun bindsCategoryRemoteSource(
         categoryRemoteSource: CategoryRemoteSourceImp
     ): CategoryRemoteSource
+
+    @Singleton
+    @Binds
+    fun bindsNicknameRemoteSource(
+        nickNameRemoteSource: NickNameRemoteSourceImp
+    ): NickNameRemoteSource
 }
