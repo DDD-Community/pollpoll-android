@@ -103,8 +103,8 @@ internal fun LoginScreen(
     }
 
     Surface(modifier) {
-        Column(Modifier.background(Color.White) ,horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.height(80.dp))
+        Column(Modifier.background(Color.White).fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.weight(80f))
             Image(
                 painter = painterResource(id = R.drawable.img_speech_bubble),
                 contentDescription = ""
@@ -126,8 +126,9 @@ internal fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = "모든 고민거리는 투표를 통해 해결해요", style = PollPollTheme.typography.body02)
-            Spacer(modifier = Modifier.height(153.dp))
+            Spacer(modifier = Modifier.weight(153f))
             PollLoginButton(text = "구글 ID 로그인", onClick = loginClick)
+            Spacer(modifier = Modifier.weight(80f))
         }
     }
 }
