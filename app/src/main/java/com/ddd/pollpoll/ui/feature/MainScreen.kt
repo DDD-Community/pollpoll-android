@@ -132,9 +132,8 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
     val listState = rememberScrollState()
     Surface(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)) {
         Column(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .background(Color.White)) {
-            Spacer(modifier = Modifier.height(12.dp))
+            .background(Color.White)
+            .padding(horizontal = 20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = PollIcon.Logo),

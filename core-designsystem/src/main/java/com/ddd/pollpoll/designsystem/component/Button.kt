@@ -32,6 +32,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
@@ -146,7 +147,8 @@ fun PollCategoryButton(
                 modifier = Modifier.align(CenterVertically).size(36.dp),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
-                    .size(size = 40)
+                    .decoderFactory(SvgDecoder.Factory())
+//                    .size(size = 40)
                     .build(),
                 placeholder = painterResource(PollIcon.Carrier),
                 contentDescription = ""

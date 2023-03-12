@@ -62,7 +62,7 @@ internal fun NicknameRoute(
     viewModel: NicknameViewModel = hiltViewModel(),
     navigateToMain: (String) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.recommendNicknameUiState.collectAsStateWithLifecycle()
 
     val localView = LocalView.current
     val googleSignInClient = getGoogleNicknameAuth(localView.context as Activity)
@@ -94,16 +94,16 @@ internal fun NicknameRoute(
 internal fun NicknameScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
     nicknameClick: () -> Unit = {},
-    uiState: NicknameUiState,
+    uiState: RecommendNicknameUiState,
     navigateToMain: (String) -> Unit
 ) {
     when (uiState) {
-        is NicknameUiState.Success -> {
+        is RecommendNicknameUiState.Success -> {
             navigateToMain(uiState.data)
         }
-        NicknameUiState.Empty -> {}
-        is NicknameUiState.Error -> {}
-        NicknameUiState.Loading -> {}
+        RecommendNicknameUiState.Empty -> {}
+        is RecommendNicknameUiState.Error -> {}
+        RecommendNicknameUiState.Loading -> {}
     }
 
     Surface(modifier) {
@@ -175,7 +175,7 @@ private fun handleSignInResult(
 ) {
     try {
         val account = completedTask.getResult(ApiException::class.java)
-        account.idToken?.let { token -> viewModel.addNickname(token) }
+//        account.idToken?.let { token -> viewModel.(token) }
     } catch (e: ApiException) {
         Log.w("Test", "signInResult:failed code=" + e.getStatusCode())
     }
@@ -186,7 +186,7 @@ private fun handleSignInResult(
 @Composable
 private fun DefaultPreview() {
     PollPollTheme {
-        NicknameScreen(modifier = Modifier, uiState = NicknameUiState.Success("gf"), navigateToMain = {})
+        NicknameScreen(modifier = Modifier, uiState = RecommendNicknameUiState.Success("gf"), navigateToMain = {})
     }
 }
 
@@ -194,6 +194,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     PollPollTheme() {
-        NicknameScreen(modifier = Modifier, uiState = NicknameUiState.Success("gf"), navigateToMain = {})
+        NicknameScreen(modifier = Modifier, uiState = RecommendNicknameUiState.Success("gf"), navigateToMain = {})
     }
 }

@@ -32,6 +32,7 @@ androidxArchCore = "2.1.0"
 datastore = "1.0.0"
 
 coil = "2.2.2"
+coilsvg = "2.2.2"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -92,6 +93,7 @@ androidx-datastore = { group = "androidx.datastore", name = "datastore-preferenc
 
 #coil
 compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+svg-coil = { group = "io.coil-kt", name = "coil-svg", version.ref = "coilsvg" }
 
 
 [plugins]
