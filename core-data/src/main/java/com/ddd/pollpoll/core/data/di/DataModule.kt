@@ -16,15 +16,11 @@
 
 package com.ddd.pollpoll.core.data.di
 
+import com.ddd.pollpoll.core.data.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.core.data.DefaultLoginRepository
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -34,16 +30,27 @@ interface DataModule {
     @Singleton
     @Binds
     fun bindsLoginRepository(
-        loginRepository: DefaultLoginRepository
+        loginRepository: LoginRepositoryImp
     ): LoginRepository
+
+    @Singleton
+    @Binds
+    fun bindsCategoryRepository(
+        CategoryRepository: CategoryRepositoryImp
+    ): CategoryRepository
+
+
+    @Singleton
+    @Binds
+    fun bindsPostRepository(
+        postRepository: PostRepositoryImp
+    ): PostRepository
+
+
+    @Singleton
+    @Binds
+    fun bindsNickNameRepository(
+        postRepository: NickNameRepositoryImp
+    ): NickNameRepository
 }
 
-class FakeLoginRepository @Inject constructor() : LoginRepository {
-    override val logins: Flow<List<String>> = flowOf(fakeLogins)
-
-    override suspend fun add(name: String) {
-        throw NotImplementedError()
-    }
-}
-
-val fakeLogins = listOf("One", "Two", "Three")

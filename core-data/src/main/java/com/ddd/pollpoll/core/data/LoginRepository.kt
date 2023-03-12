@@ -16,26 +16,27 @@
 
 package com.ddd.pollpoll.core.data
 
+import com.ddd.pollpoll.Login
+import com.ddd.pollpoll.core.network.model.LoginRequest
+import com.ddd.pollpoll.core.network.model.asExternalModel
+import com.ddd.pollpoll.core.network.remote.LoginRemoteSource
+import com.ddd.pollpoll.datastore.PollPollDataStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import com.ddd.pollpoll.core.database.Login
-import com.ddd.pollpoll.core.database.LoginDao
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface LoginRepository {
-    val logins: Flow<List<String>>
-
-    suspend fun add(name: String)
+    suspend fun loginGoogle(token: String): Flow<Login>
 }
 
-class DefaultLoginRepository @Inject constructor(
-    private val loginDao: LoginDao
+class LoginRepositoryImp @Inject constructor(
+    private val loginRemoteSource: LoginRemoteSource,
+    private val pollDataStore: PollPollDataStore
 ) : LoginRepository {
 
-    override val logins: Flow<List<String>> =
-        loginDao.getLogins().map { items -> items.map { it.name } }
-
-    override suspend fun add(name: String) {
-        loginDao.insertLogin(Login(name = name))
+    override suspend fun loginGoogle(token: String): Flow<Login> = flow {
+        val result = loginRemoteSource.loginGoogle(LoginRequest(token)).asExternalModel()
+        pollDataStore.updateToken(result.token)
+        emit(result)
     }
 }

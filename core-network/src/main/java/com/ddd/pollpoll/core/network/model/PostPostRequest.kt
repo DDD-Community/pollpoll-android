@@ -1,7 +1,5 @@
 package com.ddd.pollpoll.core.network.model
 
-import com.ddd.pollpoll.Vote
-
 data class PostPostRequest(
     val categoryId: Int,
     val contents: String,

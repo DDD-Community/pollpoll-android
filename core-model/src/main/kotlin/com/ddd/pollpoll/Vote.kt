@@ -13,8 +13,6 @@ data class PollItem(
     val name: String
 )
 
-
-
 enum class CategoryEnum(val categoryId: Int) {
     Buy(1),
     Carrier(1),

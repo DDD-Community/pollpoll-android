@@ -18,17 +18,14 @@ package com.ddd.pollpoll.feature.login.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import com.ddd.pollpoll.core.data.LoginRepository
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Error
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Loading
-import com.ddd.pollpoll.feature.login.ui.LoginUiState.Success
+import com.ddd.pollpoll.core.result.Result
+import com.ddd.pollpoll.core.result.asResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,20 +33,35 @@ class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<LoginUiState> = loginRepository
-        .logins.map { Success(data = it) }
-        .catch { Error(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
+    private val _uiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState.Empty)
+    val uiState = _uiState.asStateFlow()
 
-    fun addLogin(name: String) {
+    fun addLogin(token: String) {
         viewModelScope.launch {
-            loginRepository.add(name)
+            loginRepository.loginGoogle(token).asResult().collect { result ->
+                when (result) {
+                    is Result.Error -> _uiState.update {
+                        LoginUiState.Error(
+                            result.exception ?: Exception("알수없는 오류")
+                        )
+                    }
+
+                    Result.Loading -> _uiState.update { LoginUiState.Loading }
+                    is Result.Success -> _uiState.update {
+                        LoginUiState.Success(
+                            result.data?.token ?: ""
+                        )
+                    }
+                }
+            }
         }
     }
 }
 
 sealed interface LoginUiState {
-    object Loading : LoginUiState
+
+    object Empty : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
-    data class Success(val data: List<String>) : LoginUiState
+    data class Success(val data: String) : LoginUiState
+    object Loading : LoginUiState
 }
