@@ -223,16 +223,23 @@ fun AddVoteCategoryScreen(
 
     buttonEnabled = !voteList.contains(PollItem(""))
     Column(
-        Modifier.verticalScroll(scrollState).background(Color.White),
+        Modifier//.verticalScroll(scrollState)
+            .background(Color.White)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(Modifier.padding(20.dp)) {
+        Column(
+            Modifier.padding(20.dp).weight(1f)) {
             CategoryScreen(category)
-            voteList.forEachIndexed { index, it ->
-                PollTextField(text = it.name, placeholderText = "항목입력", onValueChange = {
-                    onTextChanged(index, it)
-                })
-                Spacer(modifier = Modifier.height(20.dp))
+            Box(Modifier.heightIn(max = 250.dp)) {
+                Column(Modifier.verticalScroll(scrollState)) {
+                    voteList.forEachIndexed { index, it ->
+                        PollTextField(text = it.name, placeholderText = "항목입력", onValueChange = {
+                            onTextChanged(index, it)
+                        })
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -252,7 +259,7 @@ fun AddVoteCategoryScreen(
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(130.dp)
+                    .weight(1f)
             )
             Spacer(
                 modifier = Modifier
@@ -380,7 +387,10 @@ fun InsertContentScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    Box(Modifier.fillMaxSize().background(Color.White)) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.White)) {
         Column(
             Modifier
                 .padding(20.dp)
