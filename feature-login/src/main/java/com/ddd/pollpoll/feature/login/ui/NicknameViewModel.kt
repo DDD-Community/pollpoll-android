@@ -25,13 +25,12 @@ import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NicknameViewModel @Inject constructor(
-    private val nickNameRepository: NickNameRepository
+    private val nickNameRepository: NickNameRepository,
 ) : ViewModel() {
 
     private val _recommendNicknameUiState: MutableStateFlow<RecommendNicknameUiState> =
@@ -42,17 +41,20 @@ class NicknameViewModel @Inject constructor(
         MutableStateFlow(InsertNicknameUiState.Empty)
     val insertNicknameUiState = _insertNicknameUiState.asStateFlow()
 
+    init {
+        recommendNickname()
+    }
 
     fun recommendNickname() = viewModelScope.launch {
         nickNameRepository.getNickNameRecommend().asResult().collect {
             _recommendNicknameUiState.value = when (it) {
                 is Result.Success -> RecommendNicknameUiState.Success(it.data?.nickname ?: "")
                 is Result.Error -> RecommendNicknameUiState.Error(
-                    it.exception ?: Exception("알수없는 오류")
+                    it.exception ?: Exception("알수없는 오류"),
                 )
+
                 Result.Loading -> RecommendNicknameUiState.Loading
             }
-
         }
 
         fun insertNickName(nickName: String) = viewModelScope.launch {
@@ -60,14 +62,13 @@ class NicknameViewModel @Inject constructor(
                 _insertNicknameUiState.value = when (it) {
                     is Result.Success -> InsertNicknameUiState.Success
                     is Result.Error -> InsertNicknameUiState.Error(
-                        it.exception ?: Exception("알수없는 오류")
+                        it.exception ?: Exception("알수없는 오류"),
                     )
+
                     Result.Loading -> InsertNicknameUiState.Loading
                 }
             }
         }
-
-
     }
 }
 
