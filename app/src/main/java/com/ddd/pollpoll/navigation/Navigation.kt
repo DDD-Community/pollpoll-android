@@ -43,11 +43,19 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.ui.navigation.loginRoute
 import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
+import com.ddd.pollpoll.feature.login.ui.navigation.navigateToNickNameScreen
+import com.ddd.pollpoll.feature.login.ui.navigation.nickNameRoute
+import com.ddd.pollpoll.feature.login.ui.navigation.nickNameScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.vote.navigation.*
 import com.ddd.pollpoll.feature.vote.navigation.mainRoute
 
+val bottomInvisibleList = listOf(
+    loginRoute,
+    insertVoteRoute,
+    nickNameRoute
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavigation() {
@@ -64,29 +72,30 @@ fun MainNavigation() {
                     containerColor = PollPollTheme.colors.gray_700,
                     onClick = {
                         navController.navigateToInsertVote()
-                    }
+                    },
                 ) {
                     Icon(painter = painterResource(id = PollIcon.Insert), "", tint = PollPollTheme.colors.gray_050)
                 }
             }
-        }
+        },
     ) { paddingValues ->
-        NavHost(modifier = Modifier.padding(paddingValues),navController = navController, startDestination = "login_route") {
-           loginScreen(
-                navigateToMain = {
-//                    navController.navigateToVote()
-                    navController.navigateToMain()
-                }
+        NavHost(modifier = Modifier.padding(paddingValues), navController = navController, startDestination = "login_route") {
+            loginScreen(
+                navigateToMainScreen = { navController.navigateToMain() },
+                navigateToNickNameScreen = { navController.navigateToNickNameScreen() },
+            )
+            nickNameScreen(
+                navigateToMainScreen = { navController.navigateToMain() },
             )
             insertVoteScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
             )
             readVoteScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
             )
             myPollPollScreen {}
             MainScreen(
-                navigateToReadVote = { navController.navigateToReadVote() }
+                navigateToReadVote = { navController.navigateToReadVote() },
             )
         }
     }
@@ -95,7 +104,7 @@ fun MainNavigation() {
 @Composable
 fun BottomNavigation(navController: NavHostController, currentBackStack: NavBackStackEntry?) {
     val currentRoute = currentBackStack?.destination?.route
-    if (currentRoute == loginRoute || currentRoute == null || currentRoute == insertVoteRoute) {
+    if (currentRoute in bottomInvisibleList) {
     } else {
         Column(Modifier.background(Color.White)) {
             Row(
@@ -104,9 +113,9 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
                     .height(52.dp)
                     .shadow(
                         spotColor = Color(0x00000000),
-                        elevation = 24.dp
+                        elevation = 24.dp,
                     ),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 BottomNavBarItem(PollIcon.Home, "홈", mainRoute, currentRoute) {
                     navController.navigate(mainRoute) {
@@ -123,6 +132,7 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
             }
         }
     }
+
 }
 
 @Composable
@@ -131,7 +141,7 @@ fun BottomNavBarItem(
     itemName: String,
     route: String,
     currentRoute: String?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -141,7 +151,7 @@ fun BottomNavBarItem(
             .clickable {
                 onClick()
             },
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val color =
             if (currentRoute?.contains(route) == true) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_700
@@ -151,8 +161,9 @@ fun BottomNavBarItem(
             painter = painterResource(resId),
             contentDescription = itemName,
             modifier = Modifier.size(24.dp),
-            tint = color
+            tint = color,
         )
         Text(text = itemName, style = PollPollTheme.typography.desc, color = color)
     }
+
 }
