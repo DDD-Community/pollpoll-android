@@ -126,7 +126,10 @@ fun InsertVoteScreen(
         PollAlertDialog(
             onDismissRequest = { insertAppState.setShowDialog(false) },
             onCancelClicked = { insertAppState.setShowDialog(false) },
-            onConfirmClicked = { onInsertButtonClicked() }
+            onConfirmClicked = {
+                insertAppState.setShowDialog(false)
+                onInsertButtonClicked()
+            }
         )
     }
 

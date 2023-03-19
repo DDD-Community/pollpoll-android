@@ -53,11 +53,13 @@ import kotlin.math.absoluteValue
 @Composable
 internal fun MyPollPollRoute(
     modifier: Modifier = Modifier,
+    navigateToSettings: () -> Unit,
     viewModel: MypollpollViewModel = hiltViewModel()
 ) {
     val posts = viewModel.posts.collectAsState().value
     MypollpollScreen(
         modifier = modifier,
+        navigateToSettings,
         posts
     )
 }
@@ -66,6 +68,7 @@ internal fun MyPollPollRoute(
 @Composable
 fun MypollpollScreen(
     modifier: Modifier = Modifier,
+    navigateToSettings: () -> Unit,
     posts: GetPostResponse?
 ) {
     Scaffold(topBar = {
@@ -87,9 +90,9 @@ fun MypollpollScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { navigateToSettings() }) {
                         Icon(
-                            painter = painterResource(id = PollIcon.Close),
+                            painter = painterResource(id = PollIcon.Settings),
                             contentDescription = ""
                         )
                     }
@@ -333,6 +336,6 @@ fun HitsText(hits: Int) {
 @Composable
 private fun PollRecordPreview() {
     PollPollTheme {
-        MypollpollScreen(posts = null)
+        MypollpollScreen(navigateToSettings = {} ,posts = null)
     }
 }

@@ -14,7 +14,7 @@ fun NavController.navigateToMyPollPoll() {
     this.navigate(myPollPollRoute)
 }
 fun NavGraphBuilder.myPollPollScreen(
-    onBackClick: () -> Unit
+    navigateToSettings: () -> Unit
 ) {
     composable(
         route = myPollPollRoute,
@@ -22,6 +22,6 @@ fun NavGraphBuilder.myPollPollScreen(
 //            navArgument(topicIdArg) { type = NavType.StringType }
         )
     ) {
-        MyPollPollRoute(/*onBackClick = onBackClick*/)
+        MyPollPollRoute(navigateToSettings = navigateToSettings)
     }
 }
