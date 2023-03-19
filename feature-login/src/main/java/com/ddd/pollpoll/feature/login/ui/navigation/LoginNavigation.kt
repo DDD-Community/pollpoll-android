@@ -8,19 +8,14 @@ const val loginRoute = "login_route"
 
 fun NavGraphBuilder.loginScreen(
 //    onBackClick: () -> Unit,
-    navigateToMainScreen: () -> Unit,
-    navigateToNickNameScreen: () -> Unit,
+    navigateToMain: (String) -> Unit
 ) {
     composable(
         route = "login_route",
         arguments = listOf(
 //            navArgument(topicIdArg) { type = NavType.StringType }
-        ),
-    ) {
-        LoginRoute(
-            /*onBackClick = onBackClick*/
-            navigateToMain = navigateToMainScreen,
-            navigateToNickNameScreen = navigateToNickNameScreen,
         )
+    ) {
+        LoginRoute(/*onBackClick = onBackClick*/ navigateToMain = navigateToMain)
     }
 }
