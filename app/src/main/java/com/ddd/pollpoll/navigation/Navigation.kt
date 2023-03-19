@@ -54,8 +54,9 @@ import com.ddd.pollpoll.feature.vote.navigation.mainRoute
 val bottomInvisibleList = listOf(
     loginRoute,
     insertVoteRoute,
-    nickNameRoute
+    nickNameRoute,
 )
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavigation() {
@@ -89,14 +90,13 @@ fun MainNavigation() {
             )
             insertVoteScreen(
                 onBackClick = { navController.popBackStack() },
+                navToMain = { navController.navigateToMain() },
             )
             readVoteScreen(
                 onBackClick = { navController.popBackStack() },
             )
             myPollPollScreen {}
-            MainScreen(
-                navigateToReadVote = { navController.navigateToReadVote() },
-            )
+            MainScreen(navigateToReadVote = { navController.navigateToReadVote() },)
         }
     }
 }
@@ -132,7 +132,6 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
             }
         }
     }
-
 }
 
 @Composable
@@ -165,5 +164,4 @@ fun BottomNavBarItem(
         )
         Text(text = itemName, style = PollPollTheme.typography.desc, color = color)
     }
-
 }
