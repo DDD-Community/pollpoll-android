@@ -23,19 +23,19 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-@Entity
-data class Login(
-    val name: String
-) {
-    @PrimaryKey(autoGenerate = true)
-    var uid: Int = 0
-}
-
-@Dao
-interface LoginDao {
-    @Query("SELECT * FROM login ORDER BY uid DESC LIMIT 10")
-    fun getLogins(): Flow<List<Login>>
-
-    @Insert
-    suspend fun insertLogin(item: Login)
-}
+//@Entity
+//data class Login(
+//    val name: String
+//) {
+//    @PrimaryKey(autoGenerate = true)
+//    var uid: Int = 0
+//}
+//
+//@Dao
+//interface LoginDao {
+//    @Query("SELECT * FROM login ORDER BY uid DESC LIMIT 10")
+//    fun getLogins(): Flow<List<Login>>
+//
+//    @Insert
+//    suspend fun insertLogin(item: Login)
+//}
