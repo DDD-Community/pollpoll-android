@@ -19,18 +19,21 @@ package com.ddd.pollpoll.feature.login.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.core.data.LoginRepository
+import com.ddd.pollpoll.core.data.NickNameRepository
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val nickNameRepository: NickNameRepository,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState.Empty)
@@ -41,17 +44,30 @@ class LoginViewModel @Inject constructor(
             loginRepository.loginGoogle(token).asResult().collect { result ->
                 when (result) {
                     is Result.Error -> _uiState.update {
-                        LoginUiState.Error(
-                            result.exception ?: Exception("알수없는 오류")
-                        )
+                        LoginUiState.Error(result.exception ?: Exception("알수없는 오류"))
                     }
 
                     Result.Loading -> _uiState.update { LoginUiState.Loading }
-                    is Result.Success -> _uiState.update {
-                        LoginUiState.Success(
-                            result.data?.token ?: ""
-                        )
+
+                    is Result.Success -> {
+                        verifyHasNickName()
                     }
+                }
+            }
+        }
+    }
+
+    private fun verifyHasNickName() = viewModelScope.launch {
+        nickNameRepository.getHasNickname().asResult().collect { result ->
+            when (result) {
+                is Result.Error -> _uiState.update {
+                    LoginUiState.Error(result.exception ?: Exception("알수없는 오류"))
+                }
+
+                Result.Loading -> _uiState.update { LoginUiState.Loading }
+
+                is Result.Success -> {
+                    _uiState.update { if (result.data?.hasNickname != true) LoginUiState.HasNickName else LoginUiState.NotNickName }
                 }
             }
         }
@@ -62,6 +78,7 @@ sealed interface LoginUiState {
 
     object Empty : LoginUiState
     data class Error(val throwable: Throwable) : LoginUiState
-    data class Success(val data: String) : LoginUiState
+    object HasNickName : LoginUiState
+    object NotNickName : LoginUiState
     object Loading : LoginUiState
 }
