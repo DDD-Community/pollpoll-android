@@ -14,8 +14,4 @@
  * limitations under the License.
  */
 
-plugins {
-    alias(libs.plugins.dependency.update) apply false
-}
-
 // Root build.gradle.kts
