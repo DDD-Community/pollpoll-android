@@ -6,20 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.PollItem
 import com.ddd.pollpoll.Vote
 import com.ddd.pollpoll.core.data.PostRepository
+import com.ddd.pollpoll.core.result.Result
+import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.ddd.pollpoll.core.result.Result
-import com.ddd.pollpoll.core.result.asResult
 import javax.inject.Inject
 
 // todo release후 대대적인 리펙토링
 @HiltViewModel
 class InsertVoteViewModel @Inject constructor(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<InsertVoteUiState> =
@@ -56,6 +56,7 @@ class InsertVoteViewModel @Inject constructor(
             InsertVoteUiState.InsertTitle -> InsertVoteUiState.SelectCategory
             InsertVoteUiState.SelectCategory -> InsertVoteUiState.Back
             InsertVoteUiState.Back -> InsertVoteUiState.Back
+            is InsertVoteUiState.Success -> InsertVoteUiState.Back
         }
     }
 
@@ -63,7 +64,7 @@ class InsertVoteViewModel @Inject constructor(
         postRepository.insertPost(vote.value).asResult().collect {
             when (it) {
                 Result.Loading -> Log.d("TEST", "insertPost:  로딩")
-                is Result.Success -> Log.d("TEST", "insertPost:  success")
+                is Result.Success -> _uiState.update { InsertVoteUiState.Success("") }
                 is Result.Error -> Log.d("TEST", "insertPost:  실패${it.exception}")
             }
         }
@@ -81,7 +82,7 @@ class InsertVoteViewModel @Inject constructor(
 }
 
 data class InsertVoteUiStateTest(
-    val vote: Vote = Vote()
+    val vote: Vote = Vote(),
 
 ) {
     val isInsertButtonEnabled: Boolean
@@ -101,6 +102,7 @@ sealed interface InsertVoteUiState {
 
     object AddVoteCategory : InsertVoteUiState
 
-    object Back : InsertVoteUiState
+    data class Success(val text: String) : InsertVoteUiState
 
+    object Back : InsertVoteUiState
 }
