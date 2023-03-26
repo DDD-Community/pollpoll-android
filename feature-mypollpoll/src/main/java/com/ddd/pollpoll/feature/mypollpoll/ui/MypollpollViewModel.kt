@@ -30,12 +30,46 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+data class MyPollPollUiState(
+    val myPollSelected: Boolean,
+    val myPollCount: Int,
+    val participatePollSelected: Boolean,
+    val participateCount: Int,
+    val watchPollSelected: Boolean,
+    val watchPollCount: Int,
+
+)
+
 @HiltViewModel
 class MypollpollViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val postRepository: PostRepository
 ) : ViewModel() {
     val posts = MutableStateFlow<GetPostResponse?>(null)
+    val uiState = MutableStateFlow(MyPollPollUiState(true, 0, false, 0, false, 0))
+
+    fun myPollClicked() {
+        uiState.value = uiState.value.copy(
+            myPollSelected = true,
+            participatePollSelected = false,
+            watchPollSelected = false
+        )
+    }
+    fun participatePollClicked() {
+        uiState.value = uiState.value.copy(
+            myPollSelected = false,
+            participatePollSelected = true,
+            watchPollSelected = false
+        )
+    }
+    fun watchPollClicked() {
+        uiState.value = uiState.value.copy(
+            myPollSelected = false,
+            participatePollSelected = false,
+            watchPollSelected = true
+        )
+    }
 
     init {
         viewModelScope.launch {
