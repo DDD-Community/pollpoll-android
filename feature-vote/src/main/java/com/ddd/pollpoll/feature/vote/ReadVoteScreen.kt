@@ -33,21 +33,24 @@ import kotlin.reflect.KFunction1
 @Composable
 internal fun ReadVoteRoute(
     modifier: Modifier = Modifier,
+    postId: Int,
     viewModel: ReadVoteViewModel = hiltViewModel(),
     onCloseButtonClicked: () -> Unit
 ) {
-    ReadVoteScreen(viewModel)
+    ReadVoteScreen(viewModel, postId)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadVoteScreen(
-    viewModel: ReadVoteViewModel = hiltViewModel()
+    viewModel: ReadVoteViewModel = hiltViewModel(),
+    postId: Int
 ) {
     val lastPost = viewModel.lastPost.collectAsState().value
     val selectedIndex = viewModel.selectedIndex.collectAsState().value
     val beforeVote = viewModel.beforeVote.collectAsState().value
     val afterVote = viewModel.afterVote.collectAsState().value
+    viewModel.setPostId(postId)
 
     Scaffold(topBar = {
         Column() {
@@ -362,7 +365,7 @@ fun VoteItem(vote: Vote, select: (Int)-> Unit) {
 @Composable
 fun ReadVoteScreenPreview() {
     PollPollTheme {
-        ReadVoteScreen()
+        ReadVoteScreen(postId = 0)
     }
 }
 
@@ -370,6 +373,6 @@ fun ReadVoteScreenPreview() {
 @Composable
 private fun ReadVoteScreenScreenPortraitPreview() {
     PollPollTheme() {
-        ReadVoteScreen()
+        ReadVoteScreen(postId = 0)
     }
 }

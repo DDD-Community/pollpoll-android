@@ -104,9 +104,10 @@ fun MainNavigation() {
                 navigateUp = { navController.navigateUp() }
             )
             MainScreen(
-                navigateToReadVote = { navController.navigateToReadVote() }
+                navigateToReadVote = { postId ->
+                    navController.navigateToReadVote(postId)
+                }
             )
-            MainScreen(navigateToReadVote = { navController.navigateToReadVote() },)
         }
     }
 }

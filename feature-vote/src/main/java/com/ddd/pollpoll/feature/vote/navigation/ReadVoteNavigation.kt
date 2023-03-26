@@ -2,25 +2,30 @@ package com.ddd.pollpoll.feature.vote.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.ddd.pollpoll.feature.vote.InsertVoteRoute
 import com.ddd.pollpoll.feature.vote.ReadVoteRoute
 
 // internal const val topicIdArg = "topicId"
 
-fun NavController.navigateToReadVote() {
+fun NavController.navigateToReadVote(postId: Int) {
 //    val encodedId = Uri.encode(topicId)
-    this.navigate("readVote_route")
+    this.navigate("readVote_route/$postId")
 }
 fun NavGraphBuilder.readVoteScreen(
     onBackClick: () -> Unit
 ) {
     composable(
-        route = "readVote_route",
+        route = "readVote_route/{postId}",
         arguments = listOf(
-//            navArgument(topicIdArg) { type = NavType.StringType }
+            navArgument("postId") {
+                type = NavType.IntType
+            }
         )
     ) {
-        ReadVoteRoute(onCloseButtonClicked = onBackClick)
+        val argsPostId = it.arguments?.getInt("postId") ?: 0
+        ReadVoteRoute(onCloseButtonClicked = onBackClick, postId = argsPostId)
     }
 }

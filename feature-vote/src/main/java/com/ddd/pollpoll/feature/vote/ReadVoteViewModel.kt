@@ -40,9 +40,9 @@ class ReadVoteViewModel @Inject constructor(
         beforeVote.value = tempBeforeVoteList.toList()
     }
 
-    init {
+    fun setPostId(postId: Int) {
         viewModelScope.launch {
-            postRepository.getPost(36).asResult().collect { result ->
+            postRepository.getPost(postId).asResult().collect { result ->
                 when (result) {
                     is Result.Error -> Log.e("ReadVoteViewModel", "post Error ${result.exception}")
                     Result.Loading -> Log.e("ReadVoteViewModel", "post Loading")

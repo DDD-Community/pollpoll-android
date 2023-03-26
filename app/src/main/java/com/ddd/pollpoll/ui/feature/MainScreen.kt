@@ -43,7 +43,7 @@ import com.ddd.pollpoll.feature.mypollpoll.ui.PollCard
 internal fun MainScreenRoute(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
-    navigateToReadVote: () -> Unit
+    navigateToReadVote: (Int) -> Unit
 ) {
     val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle()
     val popularUiState = viewModel.popularUiState.collectAsStateWithLifecycle()
@@ -192,14 +192,14 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
 }
 
 @Composable
-fun PollList(posts: List<Post>, navigateToReadVote: () -> Unit) {
+fun PollList(posts: List<Post>, navigateToReadVote: (Int) -> Unit) {
     for (post in posts) {
         PollCard(
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
             post = post,
-            onClick = {navigateToReadVote()}
+            onClick = {navigateToReadVote(post.postId)}
         )
         Spacer(modifier = Modifier.height(20.dp))
     }
