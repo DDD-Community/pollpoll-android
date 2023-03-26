@@ -53,6 +53,9 @@ class MypollpollViewModel @Inject constructor(
     val uiState = MutableStateFlow(MyPollPollUiState(true, 0, false, 0, false, 0))
 
     fun myPollClicked() {
+        viewModelScope.launch {
+            selectMyPollType("MY_POLL")
+        }
         uiState.value = uiState.value.copy(
             myPollSelected = true,
             participatePollSelected = false,
@@ -60,6 +63,9 @@ class MypollpollViewModel @Inject constructor(
         )
     }
     fun participatePollClicked() {
+        viewModelScope.launch {
+            selectMyPollType("PARTICIPATE_POLL")
+        }
         uiState.value = uiState.value.copy(
             myPollSelected = false,
             participatePollSelected = true,
@@ -67,6 +73,9 @@ class MypollpollViewModel @Inject constructor(
         )
     }
     fun watchPollClicked() {
+        viewModelScope.launch {
+            selectMyPollType("WATCH_POLL")
+        }
         uiState.value = uiState.value.copy(
             myPollSelected = false,
             participatePollSelected = false,
@@ -74,30 +83,34 @@ class MypollpollViewModel @Inject constructor(
         )
     }
 
-    init {
-        viewModelScope.launch {
-            myPageRepository.getMyPageType("MY_POLL").asResult().collect { result ->
-                when (result) {
-                    is Result.Error -> Log.e(
-                        "MypollpollViewModel",
-                        "getMyPageType Error ${result.exception}"
-                    )
+    private suspend fun selectMyPollType(type: String) {
+        myPageRepository.getMyPageType(type).asResult().collect { result ->
+            when (result) {
+                is Result.Error -> Log.e(
+                    "MypollpollViewModel",
+                    "getMyPageType Error ${result.exception}, Type : $type"
+                )
 
-                    Result.Loading -> Log.e("MypollpollViewModel", "getMyPageType Loading")
-                    is Result.Success -> {
-                        Log.e("MypollpollViewModel", "getMyPageType Success ${result.data}")
-                        result.data?.let { myPageType ->
-                            Log.e("MypollpollViewModel", "myPageType : $myPageType")
-                            uiState.value = uiState.value.copy(
-                                myPollCount = myPageType.myPollCount,
-                                participateCount = myPageType.participatePollCount,
-                                watchPollCount = myPageType.watchPollCount
-                            )
-                            posts.value = myPageType.posts
-                        }
+                Result.Loading -> Log.e("MypollpollViewModel", "getMyPageType Loading, Type : $type")
+                is Result.Success -> {
+                    Log.e("MypollpollViewModel", "getMyPageType Success ${result.data}, Type : $type")
+                    result.data?.let { myPageType ->
+                        Log.e("MypollpollViewModel", "myPageType : $myPageType")
+                        uiState.value = uiState.value.copy(
+                            myPollCount = myPageType.myPollCount,
+                            participateCount = myPageType.participatePollCount,
+                            watchPollCount = myPageType.watchPollCount
+                        )
+                        posts.value = myPageType.posts
                     }
                 }
             }
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            selectMyPollType("MY_POLL")
         }
 
     }
