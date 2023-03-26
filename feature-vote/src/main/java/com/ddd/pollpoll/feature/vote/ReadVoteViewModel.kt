@@ -40,32 +40,30 @@ class ReadVoteViewModel @Inject constructor(
         beforeVote.value = tempBeforeVoteList.toList()
     }
 
-    fun setPostId(postId: Int) {
-        viewModelScope.launch {
-            postRepository.getPost(postId).asResult().collect { result ->
-                when (result) {
-                    is Result.Error -> Log.e("ReadVoteViewModel", "post Error ${result.exception}")
-                    Result.Loading -> Log.e("ReadVoteViewModel", "post Loading")
-                    is Result.Success -> {
-                        Log.e("ReadVoteViewModel", "post Success ${result.data}")
-                        lastPost.value = result.data
-                        val votes = lastPost.value?.pollItems
-                        votes?.let {
-                            val tempList = mutableListOf<Vote>()
-                            for ((index, postItem) in it.withIndex()) {
-                                val item = Vote(
-                                    index = index,
-                                    text = postItem.name,
-                                    percent = 0f,
-                                    voteCount = postItem.count,
-                                    isSelected = false,
-                                    onClick = {},
-                                    postItemId = postItem.postItemId
-                                )
-                                tempList.add(item)
-                            }
-                            beforeVote.value = tempList
+    suspend fun setPostId(postId: Int) {
+        postRepository.getPost(postId).asResult().collect { result ->
+            when (result) {
+                is Result.Error -> Log.e("ReadVoteViewModel", "post Error ${result.exception}")
+                Result.Loading -> Log.e("ReadVoteViewModel", "post Loading")
+                is Result.Success -> {
+                    Log.e("ReadVoteViewModel", "post Success ${result.data}")
+                    lastPost.value = result.data
+                    val votes = lastPost.value?.pollItems
+                    votes?.let {
+                        val tempList = mutableListOf<Vote>()
+                        for ((index, postItem) in it.withIndex()) {
+                            val item = Vote(
+                                index = index,
+                                text = postItem.name,
+                                percent = 0f,
+                                voteCount = postItem.count,
+                                isSelected = false,
+                                onClick = {},
+                                postItemId = postItem.postItemId
+                            )
+                            tempList.add(item)
                         }
+                        beforeVote.value = tempList
                     }
                 }
             }
