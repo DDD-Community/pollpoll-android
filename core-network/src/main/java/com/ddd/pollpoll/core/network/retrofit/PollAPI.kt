@@ -39,4 +39,7 @@ interface PollAPI {
     @GET("/api/user/has-nickname")
     suspend fun getHasNickname(): Response<ApiResponse<GetHasNicknameResponse>>
 
+    @GET("/api/user/my-page")
+    suspend fun getMyPage(@Query("type") type: String): Response<ApiResponse<GetMyPageResponse>>
+
 }

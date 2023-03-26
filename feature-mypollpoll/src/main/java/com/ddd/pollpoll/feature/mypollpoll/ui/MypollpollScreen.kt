@@ -192,7 +192,7 @@ fun PollRecord(
             Spacer(Modifier.size(5.dp))
             Row() {
                 Text(
-                    text = "0",
+                    text = count.toString(),
                     style = PollPollTheme.typography.heading05,
                     modifier = Modifier.alignByBaseline()
                 )

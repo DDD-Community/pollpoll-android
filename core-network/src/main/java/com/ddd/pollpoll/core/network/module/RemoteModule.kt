@@ -34,4 +34,10 @@ interface RemoteModule {
     fun bindsNicknameRemoteSource(
         nickNameRemoteSource: NickNameRemoteSourceImp
     ): NickNameRemoteSource
+
+    @Singleton
+    @Binds
+    fun bindsMyPageRemoteSource(
+        myPageRemoteSource: MyPageRemoteSourceImp
+    ): MyPageRemoteSource
 }
