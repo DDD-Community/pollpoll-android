@@ -55,6 +55,7 @@ import kotlin.math.absoluteValue
 internal fun MyPollPollRoute(
     modifier: Modifier = Modifier,
     navigateToSettings: () -> Unit,
+    navigateToReadVote: (Int) -> Unit,
     viewModel: MypollpollViewModel = hiltViewModel()
 ) {
     val posts = viewModel.posts.collectAsState().value
@@ -62,6 +63,7 @@ internal fun MyPollPollRoute(
     MypollpollScreen(
         modifier = modifier,
         navigateToSettings,
+        navigateToReadVote,
         posts,
         uiState,
         viewModel::myPollClicked,
@@ -75,6 +77,7 @@ internal fun MyPollPollRoute(
 fun MypollpollScreen(
     modifier: Modifier = Modifier,
     navigateToSettings: () -> Unit,
+    navigateToReadVote: (Int) -> Unit,
     posts: List<Post>,
     uiState: MyPollPollUiState,
     myPollClicked: () -> Unit,
@@ -118,7 +121,7 @@ fun MypollpollScreen(
             ) {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
                     MyPollPollHeader(uiState, myPollClicked, participatePollClicked, watchPollClicked)
-                    MyPollPollBody(posts)
+                    MyPollPollBody(posts, navigateToReadVote)
                 }
             }
         }
@@ -229,7 +232,7 @@ fun PollRecord(
 }
 
 @Composable
-fun MyPollPollBody(posts: List<Post>) {
+fun MyPollPollBody(posts: List<Post>, navigateToReadVote: (Int) -> Unit) {
     Row(Modifier.padding(top = 5.dp, bottom = 12.dp, end = 10.dp)) {
         Spacer(modifier = Modifier.weight(1f))
         Icon(
@@ -248,7 +251,10 @@ fun MyPollPollBody(posts: List<Post>) {
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
-            post = post
+            post = post,
+            onClick = {
+                navigateToReadVote(post.postId)
+            }
         )
         Spacer(modifier = Modifier.height(20.dp))
     }
@@ -387,6 +393,7 @@ private fun PollRecordPreview() {
     PollPollTheme {
         MypollpollScreen(
             navigateToSettings = {} ,
+            navigateToReadVote = {} ,
             posts = emptyList(),
             uiState = MyPollPollUiState(true, 0, false, 0, false, 0),
             myPollClicked = {},

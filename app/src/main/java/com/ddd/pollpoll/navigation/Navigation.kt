@@ -98,7 +98,10 @@ fun MainNavigation() {
                 onBackClick = { navController.popBackStack() },
             )
             myPollPollScreen (
-                navigateToSettings = { navController.navigateToSettings()}
+                navigateToSettings = { navController.navigateToSettings()},
+                navigateToReadVote = { postId ->
+                    navController.navigateToReadVote(postId)
+                }
             )
             settingsScreen(
                 navigateUp = { navController.navigateUp() }
