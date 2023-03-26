@@ -19,6 +19,7 @@ package com.ddd.pollpoll.feature.mypollpoll.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.MyPageRepository
 import com.ddd.pollpoll.core.data.PostRepository
@@ -48,7 +49,7 @@ class MypollpollViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val myPageRepository: MyPageRepository
 ) : ViewModel() {
-    val posts = MutableStateFlow<GetPostResponse?>(null)
+    val posts = MutableStateFlow<List<Post>>(emptyList())
     val uiState = MutableStateFlow(MyPollPollUiState(true, 0, false, 0, false, 0))
 
     fun myPollClicked() {
@@ -92,44 +93,12 @@ class MypollpollViewModel @Inject constructor(
                                 participateCount = myPageType.participatePollCount,
                                 watchPollCount = myPageType.watchPollCount
                             )
+                            posts.value = myPageType.posts
                         }
                     }
                 }
             }
         }
 
-
-        viewModelScope.launch {
-            categoryRepository.getCategories().asResult().collect { result ->
-                when (result) {
-                    is Result.Error -> Log.e(
-                        "MypollpollViewModel",
-                        "category Error ${result.exception}"
-                    )
-
-                    Result.Loading -> Log.e("MypollpollViewModel", "category Loading")
-                    is Result.Success -> {
-                        Log.e("MypollpollViewModel", "category Success ${result.data?: listOf()}")
-                    }
-                }
-            }
-        }
-
-        viewModelScope.launch {
-            postRepository.getPosts(2).asResult().collect { result ->
-                when (result) {
-                    is Result.Error -> Log.e(
-                        "MypollpollViewModel",
-                        "post Error ${result.exception}"
-                    )
-
-                    Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
-                    is Result.Success -> {
-                        Log.e("MypollpollViewModel", "post Success ${result.data?.posts}")
-                        posts.value = result.data
-                    }
-                }
-            }
-        }
     }
 }

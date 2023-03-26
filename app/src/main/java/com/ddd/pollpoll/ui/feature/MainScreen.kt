@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.designsystem.component.DotsIndicator
 import com.ddd.pollpoll.designsystem.component.PollCardType
@@ -191,18 +192,16 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
 }
 
 @Composable
-fun PollList(posts: GetPostResponse?, navigateToReadVote: () -> Unit) {
-    if (posts != null) {
-        for (post in posts.posts) {
-            PollCard(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                post = post,
-                onClick = {navigateToReadVote()}
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+fun PollList(posts: List<Post>, navigateToReadVote: () -> Unit) {
+    for (post in posts) {
+        PollCard(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            post = post,
+            onClick = {navigateToReadVote()}
+        )
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 

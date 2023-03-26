@@ -44,4 +44,7 @@ object PollIcon {
     val CancelFill = R.drawable.ic_cancel_fill
     val Refresh = R.drawable.ic_refresh
     val Settings = R.drawable.ic_settings
+
+    val CheckCircle = R.drawable.ic_check_circle
+
 }
