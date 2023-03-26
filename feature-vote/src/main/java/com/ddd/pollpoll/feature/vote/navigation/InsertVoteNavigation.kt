@@ -12,15 +12,20 @@ fun NavController.navigateToInsertVote() {
 //    val encodedId = Uri.encode(topicId)
     this.navigate(insertVoteRoute)
 }
+
 fun NavGraphBuilder.insertVoteScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    navToMain: () -> Unit,
 ) {
     composable(
         route = insertVoteRoute,
         arguments = listOf(
 //            navArgument(topicIdArg) { type = NavType.StringType }
-        )
+        ),
     ) {
-        InsertVoteRoute(onCloseButtonClicked = onBackClick)
+        InsertVoteRoute(
+            onCloseButtonClicked = onBackClick,
+            onInsertSucceed = navToMain,
+        )
     }
 }

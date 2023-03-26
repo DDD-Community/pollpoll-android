@@ -94,6 +94,7 @@ fun PollButton(
             containerColor = if (color == PollButtonColor.BLUE) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500,
             disabledContainerColor = PollPollTheme.colors.gray_300
         ),
+        contentPadding = contentPadding,
         enabled = enabled,
         shape = shape,
         onClick = onClick

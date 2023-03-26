@@ -57,7 +57,8 @@ import com.google.android.gms.tasks.Task
 internal fun LoginRoute(
     modifier: Modifier = Modifier.fillMaxSize(),
     viewModel: LoginViewModel = hiltViewModel(),
-    navigateToMain: (String) -> Unit
+    navigateToMain: () -> Unit,
+    navigateToNickNameScreen: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -82,7 +83,8 @@ internal fun LoginRoute(
             startForResult.launch(googleSignInClient?.signInIntent)
         },
         uiState,
-        navigateToMain = navigateToMain
+        navigateToMainScreen = navigateToMain,
+        navigateToNickNameScreen = navigateToNickNameScreen,
     )
 }
 
@@ -91,23 +93,32 @@ internal fun LoginScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
     loginClick: () -> Unit = {},
     uiState: LoginUiState,
-    navigateToMain: (String) -> Unit
+    navigateToMainScreen: () -> Unit = {},
+    navigateToNickNameScreen: () -> Unit = {},
 ) {
     when (uiState) {
-        is LoginUiState.Success -> {
-            navigateToMain(uiState.data)
+        is LoginUiState.HasNickName -> {
+            navigateToMainScreen()
         }
+
+        is LoginUiState.NotNickName -> {
+            navigateToNickNameScreen()
+        }
+
         LoginUiState.Empty -> {}
         is LoginUiState.Error -> {}
         LoginUiState.Loading -> {}
     }
 
     Surface(modifier) {
-        Column(Modifier.background(Color.White).fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.weight(80f))
+        Column(
+            Modifier.background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(80.dp))
             Image(
                 painter = painterResource(id = R.drawable.img_speech_bubble),
-                contentDescription = ""
+                contentDescription = "",
             )
             Text(
                 style = PollPollTheme.typography.heading01,
@@ -115,20 +126,19 @@ internal fun LoginScreen(
                     append("고민이 있나요?")
                     withStyle(
                         SpanStyle(
-                            color = PollPollTheme.colors.primary_500
-                        )
+                            color = PollPollTheme.colors.primary_500,
+                        ),
                     ) {
                         append("\n폴폴")
                     }
                     append("이 도와줄게요.")
                 },
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = "모든 고민거리는 투표를 통해 해결해요", style = PollPollTheme.typography.body02)
-            Spacer(modifier = Modifier.weight(153f))
+            Spacer(modifier = Modifier.height(153.dp))
             PollLoginButton(text = "구글 ID 로그인", onClick = loginClick)
-            Spacer(modifier = Modifier.weight(80f))
         }
     }
 }
@@ -145,7 +155,7 @@ private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
 
 private fun handleSignInResult(
     completedTask: Task<GoogleSignInAccount>,
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
 ) {
     try {
         val account = completedTask.getResult(ApiException::class.java)
@@ -160,7 +170,7 @@ private fun handleSignInResult(
 @Composable
 private fun DefaultPreview() {
     PollPollTheme {
-        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Empty, navigateToMainScreen = {})
     }
 }
 
@@ -168,6 +178,6 @@ private fun DefaultPreview() {
 @Composable
 private fun PortraitPreview() {
     PollPollTheme() {
-        LoginScreen(modifier = Modifier, uiState = LoginUiState.Success("gf"), navigateToMain = {})
+        LoginScreen(modifier = Modifier, uiState = LoginUiState.Empty, navigateToMainScreen = {})
     }
 }
