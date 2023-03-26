@@ -191,7 +191,7 @@ fun VoteContent(
     } else {
         Column(
             modifier = Modifier
-                .border(1.dp, color = PollPollTheme.colors.gray_200)
+                .border(1.dp, color = PollPollTheme.colors.gray_200, shape = RoundedCornerShape(20.dp))
                 .padding(horizontal = 20.dp, vertical = 30.dp)
                 .fillMaxWidth()
         ) {

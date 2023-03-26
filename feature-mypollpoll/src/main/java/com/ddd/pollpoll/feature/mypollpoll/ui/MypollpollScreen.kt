@@ -95,12 +95,7 @@ fun MypollpollScreen(
                 actionIconColor = Color.Black,
 
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = PollIcon.LeftArrow),
-                            contentDescription = ""
-                        )
-                    }
+
                 },
                 actions = {
                     IconButton(onClick = { navigateToSettings() }) {
