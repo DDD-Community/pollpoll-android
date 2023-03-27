@@ -40,16 +40,7 @@ class PostRepositoryImp @Inject constructor(
     private val postRemoteSource: PostRemoteSource
 ) : PostRepository {
     override suspend fun insertPost(vote: Vote): Flow<Unit> = flow {
-        emit(postRemoteSource.insertPost(
-            PostPostRequest(
-                categoryId = vote.category.categoryId,
-                contents = vote.contents,
-                milliseconds = vote.milliseconds,
-                multipleChoice = vote.multipleChoice,
-                pollItems = vote.pollItems.map { it.asNetworkModel() },
-                title = vote.title
-            )
-        ))
+        emit(postRemoteSource.insertPost(vote.asNetworkModel()))
     }
 
     override suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Flow<Unit> = flow {
