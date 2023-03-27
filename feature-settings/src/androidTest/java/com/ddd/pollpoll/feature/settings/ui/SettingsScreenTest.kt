@@ -20,7 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.runner.RunWith
 
 /**
- * UI tests for [SettingsScreen].
+ * UI tests for [SettingsScreenRoute].
  */
 @RunWith(AndroidJUnit4::class)
 class SettingsScreenTest {

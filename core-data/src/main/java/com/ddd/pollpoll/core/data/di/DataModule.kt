@@ -52,5 +52,14 @@ interface DataModule {
     fun bindsNickNameRepository(
         postRepository: NickNameRepositoryImp
     ): NickNameRepository
+
+
+    @Singleton
+    @Binds
+    fun bindsMyPageRepository(
+        myPageRepository: MyPageRepositoryImp
+    ): MyPageRepository
+
+
 }
 

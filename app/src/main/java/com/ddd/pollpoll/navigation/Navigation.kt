@@ -48,6 +48,8 @@ import com.ddd.pollpoll.feature.login.ui.navigation.nickNameRoute
 import com.ddd.pollpoll.feature.login.ui.navigation.nickNameScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
+import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToSettings
+import com.ddd.pollpoll.feature.settings.ui.navigation.settingsScreen
 import com.ddd.pollpoll.feature.vote.navigation.*
 import com.ddd.pollpoll.feature.vote.navigation.mainRoute
 
@@ -95,8 +97,20 @@ fun MainNavigation() {
             readVoteScreen(
                 onBackClick = { navController.popBackStack() },
             )
-            myPollPollScreen {}
-            MainScreen(navigateToReadVote = { navController.navigateToReadVote() },)
+            myPollPollScreen (
+                navigateToSettings = { navController.navigateToSettings()},
+                navigateToReadVote = { postId ->
+                    navController.navigateToReadVote(postId)
+                }
+            )
+            settingsScreen(
+                navigateUp = { navController.navigateUp() }
+            )
+            MainScreen(
+                navigateToReadVote = { postId ->
+                    navController.navigateToReadVote(postId)
+                }
+            )
         }
     }
 }

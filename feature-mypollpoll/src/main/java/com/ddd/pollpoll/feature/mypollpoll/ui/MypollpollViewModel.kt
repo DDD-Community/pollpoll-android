@@ -19,7 +19,9 @@ package com.ddd.pollpoll.feature.mypollpoll.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.CategoryRepository
+import com.ddd.pollpoll.core.data.MyPageRepository
 import com.ddd.pollpoll.core.data.PostRepository
 import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.core.result.Result
@@ -30,45 +32,86 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+data class MyPollPollUiState(
+    val myPollSelected: Boolean,
+    val myPollCount: Int,
+    val participatePollSelected: Boolean,
+    val participateCount: Int,
+    val watchPollSelected: Boolean,
+    val watchPollCount: Int,
+
+)
+
 @HiltViewModel
 class MypollpollViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val myPageRepository: MyPageRepository
 ) : ViewModel() {
-    val posts = MutableStateFlow<GetPostResponse?>(null)
+    val posts = MutableStateFlow<List<Post>>(emptyList())
+    val uiState = MutableStateFlow(MyPollPollUiState(true, 0, false, 0, false, 0))
+
+    fun myPollClicked() {
+        viewModelScope.launch {
+            selectMyPollType("MY_POLL")
+        }
+        uiState.value = uiState.value.copy(
+            myPollSelected = true,
+            participatePollSelected = false,
+            watchPollSelected = false
+        )
+    }
+    fun participatePollClicked() {
+        viewModelScope.launch {
+            selectMyPollType("PARTICIPATE_POLL")
+        }
+        uiState.value = uiState.value.copy(
+            myPollSelected = false,
+            participatePollSelected = true,
+            watchPollSelected = false
+        )
+    }
+    fun watchPollClicked() {
+        viewModelScope.launch {
+            selectMyPollType("WATCH_POLL")
+        }
+        uiState.value = uiState.value.copy(
+            myPollSelected = false,
+            participatePollSelected = false,
+            watchPollSelected = true
+        )
+    }
+
+    private suspend fun selectMyPollType(type: String) {
+        myPageRepository.getMyPageType(type).asResult().collect { result ->
+            when (result) {
+                is Result.Error -> Log.e(
+                    "MypollpollViewModel",
+                    "getMyPageType Error ${result.exception}, Type : $type"
+                )
+
+                Result.Loading -> Log.e("MypollpollViewModel", "getMyPageType Loading, Type : $type")
+                is Result.Success -> {
+                    Log.e("MypollpollViewModel", "getMyPageType Success ${result.data}, Type : $type")
+                    result.data?.let { myPageType ->
+                        Log.e("MypollpollViewModel", "myPageType : $myPageType")
+                        uiState.value = uiState.value.copy(
+                            myPollCount = myPageType.myPollCount,
+                            participateCount = myPageType.participatePollCount,
+                            watchPollCount = myPageType.watchPollCount
+                        )
+                        posts.value = myPageType.posts
+                    }
+                }
+            }
+        }
+    }
 
     init {
         viewModelScope.launch {
-            categoryRepository.getCategories().asResult().collect { result ->
-                when (result) {
-                    is Result.Error -> Log.e(
-                        "MypollpollViewModel",
-                        "category Error ${result.exception}"
-                    )
-
-                    Result.Loading -> Log.e("MypollpollViewModel", "category Loading")
-                    is Result.Success -> {
-                        Log.e("MypollpollViewModel", "category Success ${result.data?: listOf()}")
-                    }
-                }
-            }
+            selectMyPollType("MY_POLL")
         }
 
-        viewModelScope.launch {
-            postRepository.getPosts(2).asResult().collect { result ->
-                when (result) {
-                    is Result.Error -> Log.e(
-                        "MypollpollViewModel",
-                        "post Error ${result.exception}"
-                    )
-
-                    Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
-                    is Result.Success -> {
-                        Log.e("MypollpollViewModel", "post Success ${result.data?.posts}")
-                        posts.value = result.data
-                    }
-                }
-            }
-        }
     }
 }

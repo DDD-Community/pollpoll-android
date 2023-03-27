@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.designsystem.component.DotsIndicator
 import com.ddd.pollpoll.designsystem.component.PollCardType
@@ -42,7 +43,7 @@ import com.ddd.pollpoll.feature.mypollpoll.ui.PollCard
 internal fun MainScreenRoute(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = hiltViewModel(),
-    navigateToReadVote: () -> Unit
+    navigateToReadVote: (Int) -> Unit
 ) {
     val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle()
     val popularUiState = viewModel.popularUiState.collectAsStateWithLifecycle()
@@ -69,7 +70,10 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
 
-            Column(Modifier.background(Color.White).fillMaxWidth()) {
+            Column(
+                Modifier
+                    .background(Color.White)
+                    .fillMaxWidth()) {
                 Spacer(modifier = Modifier.height(30.dp))
                 DotsIndicator(
                     totalDots = 3,
@@ -128,8 +132,9 @@ fun PopularScreen(
 fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf())) {
     val listState = rememberScrollState()
     Surface(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)) {
-        Column(modifier = Modifier.padding(horizontal = 20.dp).background(Color.White)) {
-            Spacer(modifier = Modifier.height(62.dp))
+        Column(modifier = Modifier
+            .background(Color.White)
+            .padding(horizontal = 20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = PollIcon.Logo),
@@ -147,8 +152,8 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
                         )
                     ),
                     modifier = Modifier
-                        .size(45.dp)
-                        .clip(RoundedCornerShape(12.dp)),
+                        .clip(RoundedCornerShape(12.dp))
+                        .size(45.dp),
                     onClick = { /*TODO*/ }
                 ) {
                     Image(
@@ -162,6 +167,11 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
             when (categoryUiState) {
                 CategoryUiState.Loading -> {}
                 is CategoryUiState.Success -> {
+                    Text(
+                        text = "카테고리",
+                        style = PollPollTheme.typography.heading04,
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
 
                     // 충격적이게도 LazyRow로 하면 망가짐
                     Row(modifier = Modifier.horizontalScroll(listState)) {
@@ -182,18 +192,16 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
 }
 
 @Composable
-fun PollList(posts: GetPostResponse?, navigateToReadVote: () -> Unit) {
-    if (posts != null) {
-        for (post in posts.posts) {
-            PollCard(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                post = post,
-                onClick = {navigateToReadVote()}
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+fun PollList(posts: List<Post>, navigateToReadVote: (Int) -> Unit) {
+    for (post in posts) {
+        PollCard(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            post = post,
+            onClick = {navigateToReadVote(post.postId)}
+        )
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
