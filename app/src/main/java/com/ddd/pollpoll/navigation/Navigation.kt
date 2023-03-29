@@ -48,14 +48,17 @@ import com.ddd.pollpoll.feature.login.ui.navigation.nickNameRoute
 import com.ddd.pollpoll.feature.login.ui.navigation.nickNameScreen
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
+import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToSettings
+import com.ddd.pollpoll.feature.settings.ui.navigation.settingsScreen
 import com.ddd.pollpoll.feature.vote.navigation.*
 import com.ddd.pollpoll.feature.vote.navigation.mainRoute
 
 val bottomInvisibleList = listOf(
     loginRoute,
     insertVoteRoute,
-    nickNameRoute
+    nickNameRoute,
 )
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavigation() {
@@ -89,13 +92,24 @@ fun MainNavigation() {
             )
             insertVoteScreen(
                 onBackClick = { navController.popBackStack() },
+                navToMain = { navController.navigateToMain() },
             )
             readVoteScreen(
                 onBackClick = { navController.popBackStack() },
             )
-            myPollPollScreen {}
+            myPollPollScreen (
+                navigateToSettings = { navController.navigateToSettings()},
+                navigateToReadVote = { postId ->
+                    navController.navigateToReadVote(postId)
+                }
+            )
+            settingsScreen(
+                navigateUp = { navController.navigateUp() }
+            )
             MainScreen(
-                navigateToReadVote = { navController.navigateToReadVote() },
+                navigateToReadVote = { postId ->
+                    navController.navigateToReadVote(postId)
+                }
             )
         }
     }
@@ -132,7 +146,6 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
             }
         }
     }
-
 }
 
 @Composable
@@ -165,5 +178,4 @@ fun BottomNavBarItem(
         )
         Text(text = itemName, style = PollPollTheme.typography.desc, color = color)
     }
-
 }

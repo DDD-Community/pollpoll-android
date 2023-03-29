@@ -32,6 +32,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
@@ -101,6 +102,29 @@ fun PollButton(
         content()
     }
 }
+@Composable
+fun PollRoundedButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    enabled: Boolean = true,
+    shape: Shape = RoundedCornerShape(0.dp),
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    color: PollButtonColor = PollButtonColor.ORANGE,
+    content: @Composable RowScope.() -> Unit = {}
+) {
+    Button(
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (color == PollButtonColor.BLUE) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500,
+            disabledContainerColor = PollPollTheme.colors.gray_300
+        ),
+        enabled = enabled,
+        shape = shape,
+        onClick = onClick
+    ) {
+        content()
+    }
+}
 
 @Composable
 fun PollCategoryButton(
@@ -124,7 +148,8 @@ fun PollCategoryButton(
                 modifier = Modifier.align(CenterVertically).size(36.dp),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
-                    .size(size = 40)
+                    .decoderFactory(SvgDecoder.Factory())
+//                    .size(size = 40)
                     .build(),
                 placeholder = painterResource(PollIcon.Carrier),
                 contentDescription = ""

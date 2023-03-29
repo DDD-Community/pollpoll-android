@@ -64,6 +64,7 @@ internal fun InsertVoteRoute(
     modifier: Modifier = Modifier,
     viewModel: InsertVoteViewModel = hiltViewModel(),
     onCloseButtonClicked: () -> Unit,
+    onInsertSucceed: () -> Unit
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -85,6 +86,7 @@ internal fun InsertVoteRoute(
         onCloseButtonClicked = onCloseButtonClicked,
         onInsertButtonClicked = viewModel::insertPost,
         onVoteDateSelected = viewModel::changeDate,
+        onInsertSucceed = onInsertSucceed
 
     )
 }
@@ -104,6 +106,7 @@ fun InsertVoteScreen(
     onCloseButtonClicked: () -> Unit = {},
     onInsertButtonClicked: () -> Unit = {},
     onVoteDateSelected: (Long) -> Unit = {},
+    onInsertSucceed: () -> Unit = {},
 ) {
     val insertAppState = rememberInsertVoteState()
     var selectedOptionState by remember { mutableStateOf(VoteRadioList[2]) }

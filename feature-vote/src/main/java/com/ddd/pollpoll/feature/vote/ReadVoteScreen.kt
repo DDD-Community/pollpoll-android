@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,34 +33,41 @@ import kotlin.reflect.KFunction1
 @Composable
 internal fun ReadVoteRoute(
     modifier: Modifier = Modifier,
+    postId: Int,
     viewModel: ReadVoteViewModel = hiltViewModel(),
     onCloseButtonClicked: () -> Unit
 ) {
-    ReadVoteScreen(viewModel)
+    ReadVoteScreen(viewModel, postId, onCloseButtonClicked)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadVoteScreen(
-    viewModel: ReadVoteViewModel = hiltViewModel()
+    viewModel: ReadVoteViewModel = hiltViewModel(),
+    postId: Int,
+    onCloseButtonClicked: () -> Unit
 ) {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.setPostId(postId)
+    }
+
     val lastPost = viewModel.lastPost.collectAsState().value
     val selectedIndex = viewModel.selectedIndex.collectAsState().value
     val beforeVote = viewModel.beforeVote.collectAsState().value
     val afterVote = viewModel.afterVote.collectAsState().value
 
     Scaffold(topBar = {
-        Column() {
+        Column(Modifier.background(Color.White)) {
             PollTopBar(
                 title = {
-                    Text(text = "투표 작성")
+                    Text(text = "폴폴")
                 },
                 navigationIconColor = Color.Black,
                 titleContentColor = PollPollTheme.colors.gray_900,
                 actionIconColor = Color.Black,
 
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { onCloseButtonClicked() }) {
                         Icon(
                             painter = painterResource(id = PollIcon.LeftArrow),
                             contentDescription = ""
@@ -67,12 +75,12 @@ fun ReadVoteScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = PollIcon.Close),
-                            contentDescription = ""
-                        )
-                    }
+//                    IconButton(onClick = { }) {
+//                        Icon(
+//                            painter = painterResource(id = PollIcon.Close),
+//                            contentDescription = ""
+//                        )
+//                    }
                 }
             )
         }
@@ -81,6 +89,7 @@ fun ReadVoteScreen(
         Surface(modifier = Modifier.padding(it)) {
             Column(
                 modifier = Modifier
+                    .background(Color.White)
                     .padding(20.dp)
                     .fillMaxSize()
                     .verticalScroll(scrollState)
@@ -181,7 +190,7 @@ fun VoteContent(
     } else {
         Column(
             modifier = Modifier
-                .border(1.dp, color = PollPollTheme.colors.gray_200)
+                .border(1.dp, color = PollPollTheme.colors.gray_200, shape = RoundedCornerShape(20.dp))
                 .padding(horizontal = 20.dp, vertical = 30.dp)
                 .fillMaxWidth()
         ) {
@@ -199,8 +208,10 @@ fun VoteContent(
                 // 투표가 완료된 리스트
                 VoteResults(afterVote)
 
-                PollButton(onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
-                    reVote()
+                PollButton(
+                    shape = RoundedCornerShape(100.dp),
+                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                        reVote()
                 }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "다시 투표하기",
@@ -218,8 +229,10 @@ fun VoteContent(
                     Spacer(modifier = Modifier.size(10.dp))
                 }
 
-                PollButton(onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
-                    vote(selectedIndex.toList())
+                PollButton(
+                    shape = RoundedCornerShape(100.dp),
+                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                        vote(selectedIndex.toList())
                 }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "폴폴 참여하기",
@@ -361,7 +374,7 @@ fun VoteItem(vote: Vote, select: (Int)-> Unit) {
 @Composable
 fun ReadVoteScreenPreview() {
     PollPollTheme {
-        ReadVoteScreen()
+        ReadVoteScreen(postId = 0, onCloseButtonClicked = {})
     }
 }
 
@@ -369,6 +382,6 @@ fun ReadVoteScreenPreview() {
 @Composable
 private fun ReadVoteScreenScreenPortraitPreview() {
     PollPollTheme() {
-        ReadVoteScreen()
+        ReadVoteScreen(postId = 0, onCloseButtonClicked = {})
     }
 }

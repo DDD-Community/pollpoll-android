@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -114,12 +115,14 @@ internal fun NicknameScreen(
                 value = nickNameState,
                 shape = RoundedCornerShape(12.dp),
                 trailingIcon = {
-                    Icon(
-                        painter = painterResource(id = PollIcon.Close),
-                        contentDescription = "",
-                        Modifier.size(18.dp),
-                        tint = PollPollTheme.colors.gray_500,
-                    )
+                    IconButton(onClick = { nickNameState = "" }) {
+                        Icon(
+                            painter = painterResource(id = PollIcon.Close),
+                            contentDescription = "",
+                            Modifier.size(18.dp),
+                            tint = PollPollTheme.colors.gray_500,
+                        )
+                    }
                 },
                 textStyle = PollPollTheme.typography.heading05,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -127,8 +130,7 @@ internal fun NicknameScreen(
                     unfocusedBorderColor = PollPollTheme.colors.gray_300,
                     containerColor = PollPollTheme.colors.gray_050,
                 ),
-                onValueChange = {
-                },
+                onValueChange = { nickNameState = it },
             )
             Spacer(modifier = Modifier.height(40.dp))
             Row(

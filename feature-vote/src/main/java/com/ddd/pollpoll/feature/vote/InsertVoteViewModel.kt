@@ -72,7 +72,7 @@ class InsertVoteViewModel @Inject constructor(
         postRepository.insertPost(vote).asResult().collect {
             when (it) {
                 Result.Loading -> Log.d("TEST", "insertPost:  로딩")
-                is Result.Success -> Log.d("TEST", "insertPost:  success")
+                is Result.Success -> _uiState.update { InsertVoteUiState.Success("") }
                 is Result.Error -> Log.d("TEST", "insertPost:  실패${it.exception}")
             }
         }

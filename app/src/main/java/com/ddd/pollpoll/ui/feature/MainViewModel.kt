@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.PopularPost
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.PostRepository
 import com.ddd.pollpoll.core.network.model.GetPostResponse
+import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import com.ddd.pollpoll.feature.vote.Category
@@ -33,7 +35,7 @@ class MainViewModel @Inject constructor(
         MutableStateFlow(PopularUiState.Loading)
     val popularUiState: StateFlow<PopularUiState> = _popularUiState.asStateFlow()
 
-    val posts = MutableStateFlow<GetPostResponse?>(null)
+    val posts = MutableStateFlow<List<Post>>(emptyList())
 
     init {
         viewModelScope.launch {
@@ -84,7 +86,11 @@ class MainViewModel @Inject constructor(
                     Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
                     is Result.Success -> {
                         Log.e("MypollpollViewModel", "post Success ${result.data?.posts}")
-                        posts.value = result.data
+                        result.data?.posts?.let {
+                            posts.value = it.map { postResponse ->
+                                postResponse.asExternalModel()
+                            }
+                        }
                     }
                 }
             }

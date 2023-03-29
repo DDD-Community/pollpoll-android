@@ -89,6 +89,7 @@ dependencies {
     implementation(project(":feature-login"))
     implementation(project(":feature-vote"))
     implementation(project(":feature-mypollpoll"))
+    implementation(project(":feature-settings"))
     implementation(project(mapOf("path" to ":core-network")))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-designsystem"))

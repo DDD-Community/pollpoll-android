@@ -26,29 +26,48 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
-import com.ddd.pollpoll.designsystem.theme.PollPollColors
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier, viewModel: SettingsViewModel = hiltViewModel()) {
-
+fun SettingsScreenRoute(
+    modifier: Modifier = Modifier,
+    navigateUp: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
+) {
+    SettingsScreen(navigateUp)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
-
-) {
+fun SettingsScreen(navigateUp: () -> Unit) {
     Column(
         modifier = Modifier
             .background(color = PollPollTheme.colors.gray_050)
-            .padding(horizontal = 20.dp)
     ) {
-        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+        val settingCardModifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+        PollTopBar(
+            title = {
+                Text(text = "설정")
+            },
+            navigationIconColor = Color.Black,
+            titleContentColor = PollPollTheme.colors.gray_900,
+            actionIconColor = Color.Black,
+
+            navigationIcon = {
+                IconButton(onClick = { navigateUp() }) {
+                    Icon(
+                        painter = painterResource(id = PollIcon.LeftArrow),
+                        contentDescription = ""
+                    )
+                }
+            },
+            actions = { }
+        )
+        SettingsCard(settingCardModifier) {
             SettingCardItem(
                 modifier = Modifier
                     .padding(20.dp)
@@ -59,7 +78,7 @@ fun SettingsScreen(
             )
         }
         Spacer(modifier = Modifier.size(10.dp))
-        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+        SettingsCard(settingCardModifier) {
             SettingCardItem(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
@@ -72,7 +91,7 @@ fun SettingsScreen(
             )
         }
         Spacer(modifier = Modifier.size(10.dp))
-        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+        SettingsCard(settingCardModifier) {
             SettingCardItem(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
@@ -85,7 +104,7 @@ fun SettingsScreen(
             )
         }
         Spacer(modifier = Modifier.size(10.dp))
-        SettingsCard(modifier = Modifier.fillMaxWidth()) {
+        SettingsCard(settingCardModifier) {
             SettingCardItem(
                 modifier = Modifier
                     .padding(20.dp)

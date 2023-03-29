@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material)
     implementation(libs.compose.coil)
+    implementation(libs.svg.coil)
 
 
     // Tooling

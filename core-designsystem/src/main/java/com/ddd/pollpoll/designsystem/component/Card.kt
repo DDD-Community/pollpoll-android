@@ -40,13 +40,13 @@ fun PollPopularCard(
             Spacer(modifier = Modifier.width(PollPollTheme.spaces.large))
             Text(text = if (type == PollCardType.AB) "A / B" else "초이스", style = PollPollTheme.typography.body04, color = Color.White)
             Spacer(modifier = Modifier.weight(1f))
-            Icon(painterResource(id = PollIcon.Alarm), contentDescription = "")
+            Icon(painterResource(id = PollIcon.Alarm), contentDescription = "", tint = Color.White)
             Spacer(modifier = Modifier.width(5.dp))
             Text("2일 13:32:31", style = PollPollTheme.typography.body04, color = Color.White)
             Spacer(modifier = Modifier.width(PollPollTheme.spaces.large))
         }
         Column(
-            Modifier.padding(horizontal = 30.dp).fillMaxWidth(),
+            Modifier.background(PollPollTheme.colors.gray_050).padding(horizontal = 30.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
@@ -60,7 +60,7 @@ fun PollPopularCard(
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
-                    text = "256,834명 참여",
+                    text = "7명 참여",
                     style = PollPollTheme.typography.body03,
                     color = PollPollTheme.colors.gray_500
                 )
@@ -72,16 +72,16 @@ fun PollPopularCard(
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
-                    text = "22593명이 구경해요",
+                    text = "33명이 구경해요",
                     style = PollPollTheme.typography.body03,
                     color = PollPollTheme.colors.gray_500
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
             PollButton(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                modifier = Modifier.fillMaxWidth().height(42.dp),
                 shape = RoundedCornerShape(20.dp),
-                color = if (type == PollCardType.AB) PollButtonColor.BLUE else PollButtonColor.ORANGE
+                color = if (type == PollCardType.AB) PollButtonColor.BLUE else PollButtonColor.ORANGE,
             ) {
                 Text(
                     modifier = Modifier,
