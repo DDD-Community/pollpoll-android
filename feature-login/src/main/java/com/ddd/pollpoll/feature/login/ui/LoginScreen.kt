@@ -40,7 +40,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.designsystem.component.PollLoginButton
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
@@ -52,7 +51,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun LoginRoute(
     modifier: Modifier = Modifier.fillMaxSize(),

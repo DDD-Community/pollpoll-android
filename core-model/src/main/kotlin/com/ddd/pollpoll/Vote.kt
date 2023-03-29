@@ -1,5 +1,6 @@
 package com.ddd.pollpoll
 
+
 data class Vote(
     val category: CategoryEnum = CategoryEnum.Buy,
     val contents: String = "",

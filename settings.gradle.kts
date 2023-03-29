@@ -28,6 +28,8 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+
 rootProject.name = "PollPoll"
 
 include(":app")
