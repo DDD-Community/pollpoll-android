@@ -41,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.ddd.pollpoll.designsystem.component.PollLoginButton
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.R
@@ -51,6 +53,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
+
+//fun LoginScreenFactory(
+////    onBackClick: () -> Unit,
+//    navigateToMainScreen: () -> Unit,
+//    navigateToNickNameScreen: () -> Unit,
+//) : ComposeNavigationFa{
+//    composable(
+//        route = "login_route",
+//        arguments = listOf(
+////            navArgument(topicIdArg) { type = NavType.StringType }
+//        ),
+//    ) {
+//        LoginRoute(
+//            /*onBackClick = onBackClick*/
+//            navigateToMain = navigateToMainScreen,
+//            navigateToNickNameScreen = navigateToNickNameScreen,
+//        )
+//    }
+//}
 @Composable
 internal fun LoginRoute(
     modifier: Modifier = Modifier.fillMaxSize(),

@@ -56,21 +56,22 @@ class NicknameViewModel @Inject constructor(
                 Result.Loading -> RecommendNicknameUiState.Loading
             }
         }
+    }
 
-        fun insertNickName(nickName: String) = viewModelScope.launch {
-            nickNameRepository.putNickname(Nickname(nickName)).asResult().collect {
-                _insertNicknameUiState.value = when (it) {
-                    is Result.Success -> InsertNicknameUiState.Success
-                    is Result.Error -> InsertNicknameUiState.Error(
-                        it.exception ?: Exception("알수없는 오류"),
-                    )
+    fun insertNickName(nickName: String) = viewModelScope.launch {
+        nickNameRepository.putNickname(Nickname(nickName)).asResult().collect {
+            _insertNicknameUiState.value = when (it) {
+                is Result.Success -> InsertNicknameUiState.Success
+                is Result.Error -> InsertNicknameUiState.Error(
+                    it.exception ?: Exception("알수없는 오류"),
+                )
 
-                    Result.Loading -> InsertNicknameUiState.Loading
-                }
+                Result.Loading -> InsertNicknameUiState.Loading
             }
         }
     }
 }
+
 
 sealed interface RecommendNicknameUiState {
 
