@@ -25,6 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.core.network.model.GetPostResponse
+import com.ddd.pollpoll.designsystem.component.*
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.modifer.shadow
 import com.ddd.pollpoll.designsystem.component.DotsIndicator
@@ -56,6 +58,7 @@ private fun MainScreen(
     navigateToReadVote: (Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+
     Column(
         Modifier
             .fillMaxSize()
@@ -75,22 +78,21 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
     val horizontalState = rememberPagerState()
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
-            Column(
-                Modifier
-                    .background(Color.White)
-                    .fillMaxWidth(),
-            ) {
-                Spacer(modifier = Modifier.height(30.dp))
-                DotsIndicator(
-                    totalDots = 3,
-                    selectedIndex = horizontalState.currentPage,
-                    selectedColor = PollPollTheme.colors.primary_500,
-                    unSelectedColor = Color(0xFFF1F1F1),
-                )
-                Spacer(modifier = Modifier.height(30.dp))
+            Column() {
                 when (popularUiState) {
-                    PopularUiState.Loading -> {}
+                    PopularUiState.Loading -> {
+
+                    }
                     is PopularUiState.Success -> {
+                        val horizontalState = rememberPagerState()
+                        Spacer(modifier = Modifier.height(30.dp))
+                        PollPagerIndicator(
+                            numberOfPages = 3,
+                            selectedPage = horizontalState.currentPage,
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        )
+                        Spacer(modifier = Modifier.height(30.dp))
+
                         HorizontalPager(state = horizontalState, pageCount = 3) { page ->
                             when (page) {
                                 0 -> PopularScreen(topTitle = "참여가 많은 폴폴")
@@ -100,6 +102,7 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
                         }
                         popularUiState.categoryList
                     }
+                    is PopularUiState.Error -> {}
                 }
                 Spacer(modifier = Modifier.height(30.dp))
             }
@@ -205,6 +208,7 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
                 }
             }
         }
+        is CategoryUiState.Error -> {}
     }
 }
 
