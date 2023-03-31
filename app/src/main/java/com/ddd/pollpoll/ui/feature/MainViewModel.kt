@@ -7,7 +7,6 @@ import com.ddd.pollpoll.PopularPost
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.PostRepository
-import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
@@ -24,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
 ) : ViewModel() {
 
     private val _categoryUiState: MutableStateFlow<CategoryUiState> =
@@ -43,7 +42,7 @@ class MainViewModel @Inject constructor(
                 when (result) {
                     is Result.Error -> Log.e(
                         "MypollpollViewModel",
-                        "category Error ${result.exception}"
+                        "category Error ${result.exception}",
                     )
 
                     Result.Loading -> Log.e("MypollpollViewModel", "category Loading")
@@ -61,13 +60,13 @@ class MainViewModel @Inject constructor(
                 when (result) {
                     is Result.Error -> Log.e(
                         "MypollpollViewModel",
-                        "category Error ${result.exception}"
+                        "category Error ${result.exception}",
                     )
 
                     Result.Loading -> Log.e("MypollpollViewModel", "category Loading")
                     is Result.Success -> {
                         _popularUiState.update {
-                            Log.d("mainViemodel" , "${result.data}")
+                            Log.d("mainViemodel", "${result.data}")
                             PopularUiState.Success(result.data!!)
                         }
                     }
@@ -80,7 +79,7 @@ class MainViewModel @Inject constructor(
                 when (result) {
                     is Result.Error -> Log.e(
                         "MypollpollViewModel",
-                        "post Error ${result.exception}"
+                        "post Error ${result.exception}",
                     )
 
                     Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
@@ -100,12 +99,12 @@ class MainViewModel @Inject constructor(
 
 sealed interface CategoryUiState {
     object Loading : CategoryUiState
-    data class Error(val message : String) : CategoryUiState
+    data class Error(val message: String) : CategoryUiState
     data class Success(val categoryList: List<com.ddd.pollpoll.Category>) : CategoryUiState
 }
 
 sealed interface PopularUiState {
     object Loading : PopularUiState
-    data class Error(val message : String) : PopularUiState
+    data class Error(val message: String) : PopularUiState
     data class Success(val categoryList: PopularPost) : PopularUiState
 }

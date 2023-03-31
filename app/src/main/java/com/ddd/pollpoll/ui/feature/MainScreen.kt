@@ -25,11 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ddd.pollpoll.core.network.model.GetPostResponse
-import com.ddd.pollpoll.designsystem.component.*
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.modifer.shadow
-import com.ddd.pollpoll.designsystem.component.DotsIndicator
+import com.ddd.pollpoll.designsystem.component.*
 import com.ddd.pollpoll.designsystem.component.PollCardType
 import com.ddd.pollpoll.designsystem.component.PollCategoryButton
 import com.ddd.pollpoll.designsystem.component.PollPopularCard
@@ -81,15 +79,15 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
             Column() {
                 when (popularUiState) {
                     PopularUiState.Loading -> {
-
                     }
+
                     is PopularUiState.Success -> {
                         val horizontalState = rememberPagerState()
                         Spacer(modifier = Modifier.height(30.dp))
                         PollPagerIndicator(
                             numberOfPages = 3,
                             selectedPage = horizontalState.currentPage,
-                            modifier = Modifier.padding(horizontal = 20.dp)
+                            modifier = Modifier.padding(horizontal = 20.dp),
                         )
                         Spacer(modifier = Modifier.height(30.dp))
 
@@ -102,6 +100,7 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
                         }
                         popularUiState.categoryList
                     }
+
                     is PopularUiState.Error -> {}
                 }
                 Spacer(modifier = Modifier.height(30.dp))
@@ -206,9 +205,10 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                 }
+
+                is CategoryUiState.Error -> {}
             }
         }
-        is CategoryUiState.Error -> {}
     }
 }
 
