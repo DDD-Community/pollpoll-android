@@ -14,7 +14,7 @@ interface PollAPI {
     suspend fun postPosts(@Body posts: PostPostRequest): Response<ApiResponse<Unit>>
 
     @GET("/api/posts")
-    suspend fun getPosts(@Query("lastPostId") lastPostId: Int): Response<ApiResponse<GetPostResponse>>
+    suspend fun getPosts(@Query("lastPostId") lastPostId: Int? = null): Response<ApiResponse<GetPostResponse>>
 
     @GET("/api/posts/{postId}")
     suspend fun getPost(@Path("postId") postId: Int): Response<ApiResponse<PostResponse>>
@@ -29,7 +29,6 @@ interface PollAPI {
     @GET("/api/categories")
     suspend fun getCategories(): Response<ApiResponse<GetCategoriesResponse>>
 
-
     @GET("/api/user/nickname-recommend")
     suspend fun getNickNameRecommend(): Response<ApiResponse<GetNicknameRecommendResponse>>
 
@@ -41,5 +40,4 @@ interface PollAPI {
 
     @GET("/api/user/my-page")
     suspend fun getMyPage(@Query("type") type: String): Response<ApiResponse<GetMyPageResponse>>
-
 }

@@ -5,15 +5,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,9 +48,26 @@ internal fun MainScreenRoute(
 ) {
     val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle().value
     val popularUiState = viewModel.popularUiState.collectAsStateWithLifecycle().value
-    val posts = viewModel.posts.collectAsState().value
+    val posts = viewModel.posts
+    val lazyColumnListState = rememberLazyListState()
 
-    MainScreen(categoryUiState, popularUiState, posts, navigateToReadVote)
+    val shouldStartPaginate = remember {
+        derivedStateOf {
+            viewModel.canPaginate && (
+                // 현재 보이는것보다
+                lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                    ?: -9
+                ) >= (lazyColumnListState.layoutInfo.totalItemsCount - 1)
+        }
+    }
+
+    LaunchedEffect(key1 = shouldStartPaginate.value) {
+        if (shouldStartPaginate.value && viewModel.listState == ListState.IDLE) {
+            viewModel.getPost()
+        }
+    }
+
+    MainScreen(categoryUiState, popularUiState, posts, navigateToReadVote, lazyColumnListState)
 }
 
 @Composable
@@ -54,25 +76,38 @@ private fun MainScreen(
     popularUiState: PopularUiState,
     posts: List<Post>,
     navigateToReadVote: (Int) -> Unit,
+    lazyColumnListState: LazyListState,
 ) {
-    val scrollState = rememberScrollState()
-
-    Column(
+    LazyColumn(
         Modifier
             .fillMaxSize()
-            .background(Color(0xFFF1F1F1))
-            .verticalScroll(scrollState),
+            .background(Color(0xFFF1F1F1)),
+        state = lazyColumnListState,
     ) {
-        TopScreen(categoryUiState)
-        Spacer(modifier = Modifier.height(20.dp))
-        PopularListScreen(popularUiState)
-        PollList(posts = posts, navigateToReadVote)
+        item {
+            TopScreen(categoryUiState)
+            Spacer(modifier = Modifier.height(20.dp))
+            PopularListScreen(popularUiState)
+        }
+        items(
+            items = posts,
+            key = { it.postId },
+        ) { post ->
+            PollCard(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                post = post,
+                onClick = { navigateToReadVote(post.postId) },
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
+fun PopularListScreen(popularUiState: PopularUiState) {
     val horizontalState = rememberPagerState()
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
@@ -82,7 +117,6 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
                     }
 
                     is PopularUiState.Success -> {
-                        val horizontalState = rememberPagerState()
                         Spacer(modifier = Modifier.height(30.dp))
                         PollPagerIndicator(
                             numberOfPages = 3,
@@ -101,7 +135,8 @@ fun ColumnScope.PopularListScreen(popularUiState: PopularUiState) {
                         popularUiState.categoryList
                     }
 
-                    is PopularUiState.Error -> {}
+                    is PopularUiState.Error -> {
+                    }
                 }
                 Spacer(modifier = Modifier.height(30.dp))
             }
@@ -213,28 +248,24 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
 }
 
 @Composable
-fun PollList(posts: List<Post>, navigateToReadVote: (Int) -> Unit) {
-    for (post in posts) {
-        PollCard(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            post = post,
-            onClick = { navigateToReadVote(post.postId) },
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-    }
+fun PollList(
+    posts: List<Post>,
+    navigateToReadVote: (Int) -> Unit,
+    lazyColumnListState: LazyListState,
+) {
 }
 
 @Preview
 @Composable
 fun MainScreenPreview() {
     PollPollTheme() {
+        val lazyColumnListState = rememberLazyListState()
         MainScreen(
             categoryUiState = CategoryUiState.Loading,
             popularUiState = PopularUiState.Loading,
             posts = listOf(),
             navigateToReadVote = {},
+            lazyColumnListState = lazyColumnListState,
         )
     }
 }

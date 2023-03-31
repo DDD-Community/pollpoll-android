@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReadVoteViewModel @Inject constructor(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
 ) : ViewModel() {
 //    val posts = MutableStateFlow<GetPostResponse?>(null)
     val lastPost = MutableStateFlow<PostResponse?>(null)
@@ -59,7 +59,7 @@ class ReadVoteViewModel @Inject constructor(
                                 voteCount = postItem.count,
                                 isSelected = false,
                                 onClick = {},
-                                postItemId = postItem.postItemId
+                                postItemId = postItem.postItemId,
                             )
                             tempList.add(item)
                         }
@@ -87,7 +87,7 @@ class ReadVoteViewModel @Inject constructor(
                     voteCount = postItem.count,
                     isSelected = false,
                     onClick = {},
-                    postItemId = postItem.postItemId
+                    postItemId = postItem.postItemId,
                 )
                 tempList.add(item)
             }
@@ -118,8 +118,8 @@ class ReadVoteViewModel @Inject constructor(
                         voteCount = voteCountAfterVote,
                         isSelected = false,
                         onClick = {},
-                        item.postItemId
-                    )
+                        item.postItemId,
+                    ),
                 )
             }
             afterVote.value = tempList
@@ -146,5 +146,5 @@ data class Vote(
     val voteCount: Int,
     val isSelected: Boolean,
     val onClick: () -> Unit,
-    val postItemId: Int
+    val postItemId: Int,
 )

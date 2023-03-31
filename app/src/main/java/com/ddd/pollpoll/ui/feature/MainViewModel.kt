@@ -1,25 +1,28 @@
 package com.ddd.pollpoll.ui.feature
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.PopularPost
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.PostRepository
-import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
-import com.ddd.pollpoll.feature.vote.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// todo release후 대대적인 리펙토링
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
@@ -34,9 +37,14 @@ class MainViewModel @Inject constructor(
         MutableStateFlow(PopularUiState.Loading)
     val popularUiState: StateFlow<PopularUiState> = _popularUiState.asStateFlow()
 
-    val posts = MutableStateFlow<List<Post>>(emptyList())
+    val posts = mutableStateListOf<Post>()
+    private var lastPostId: Int? by mutableStateOf(null)
+    var canPaginate by mutableStateOf(false)
+    var listState by mutableStateOf(ListState.IDLE)
 
     init {
+        getPost()
+
         viewModelScope.launch {
             categoryRepository.getCategories().asResult().collect { result ->
                 when (result) {
@@ -73,28 +81,31 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
 
-        viewModelScope.launch {
-            postRepository.getPosts(100).asResult().collect { result ->
-                when (result) {
-                    is Result.Error -> Log.e(
-                        "MypollpollViewModel",
-                        "post Error ${result.exception}",
-                    )
+    fun getPost() = viewModelScope.launch {
+        if (lastPostId == null || (lastPostId != 1 && canPaginate) && listState == ListState.IDLE) {
+            listState = if (lastPostId == null) ListState.LOADING else ListState.PAGINATING
 
-                    Result.Loading -> Log.e("MypollpollViewModel", "post Loading")
-                    is Result.Success -> {
-                        Log.e("MypollpollViewModel", "post Success ${result.data?.posts}")
-                        result.data?.posts?.let {
-                            posts.value = it.map { postResponse ->
-                                postResponse.asExternalModel()
-                            }
-                        }
-                    }
-                }
+            postRepository.getPosts(lastPostId).catch {
+                listState =
+                    if (lastPostId == null) ListState.ERROR else ListState.PAGINATION_EXHAUST
+            }.collect {
+                canPaginate = it.last().postId != 1
+                posts.addAll(it)
+                listState = ListState.IDLE
+                if (canPaginate) lastPostId = it.last().postId
             }
         }
     }
+}
+
+enum class ListState {
+    IDLE,
+    LOADING,
+    PAGINATING,
+    ERROR,
+    PAGINATION_EXHAUST,
 }
 
 sealed interface CategoryUiState {

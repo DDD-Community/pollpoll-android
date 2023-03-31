@@ -17,10 +17,11 @@
 package com.ddd.pollpoll.core.data
 
 import com.ddd.pollpoll.PopularPost
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.Vote
-import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.core.network.model.PostResponse
 import com.ddd.pollpoll.core.network.model.PutVoteRequest
+import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.network.model.asNetworkModel
 import com.ddd.pollpoll.core.network.remote.PostRemoteSource
 import kotlinx.coroutines.flow.Flow
@@ -30,15 +31,16 @@ import javax.inject.Inject
 interface PostRepository {
     suspend fun insertPost(token: Vote): Flow<Unit>
     suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Flow<Unit>
-    suspend fun getPosts(lastPostId: Int): Flow<GetPostResponse>
+    suspend fun getPosts(lastPostId: Int? = null): Flow<List<Post>>
     suspend fun getPost(postId: Int): Flow<PostResponse>
 
     suspend fun getPopularPost(): Flow<PopularPost>
 }
 
 class PostRepositoryImp @Inject constructor(
-    private val postRemoteSource: PostRemoteSource
+    private val postRemoteSource: PostRemoteSource,
 ) : PostRepository {
+
     override suspend fun insertPost(vote: Vote): Flow<Unit> = flow {
         emit(postRemoteSource.insertPost(vote.asNetworkModel()))
     }
@@ -47,8 +49,8 @@ class PostRepositoryImp @Inject constructor(
         emit(postRemoteSource.putPoll(pollId, pollItemIds))
     }
 
-    override suspend fun getPosts(lastPostId: Int): Flow<GetPostResponse> = flow {
-        val result = postRemoteSource.getPosts(lastPostId)
+    override suspend fun getPosts(lastPostId: Int?): Flow<List<Post>> = flow {
+        val result = postRemoteSource.getPosts(lastPostId).asExternalModel()
         emit(result)
     }
 
