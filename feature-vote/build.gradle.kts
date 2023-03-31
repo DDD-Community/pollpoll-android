@@ -40,7 +40,7 @@ android {
             "-P",
             "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$buildDir/compose",
             "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose"
+            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose",
         )
     }
 }
@@ -74,7 +74,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.compose.material)
 
-
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Instrumented tests
@@ -83,6 +82,9 @@ dependencies {
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
+
+    implementation(libs.kotlin.immutable)
+
     kapt(libs.hilt.compiler)
     // Hilt and instrumented tests.
     androidTestImplementation(libs.hilt.android.testing)

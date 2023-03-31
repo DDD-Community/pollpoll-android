@@ -10,6 +10,9 @@ import com.ddd.pollpoll.core.data.PostRepository
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -69,23 +72,23 @@ class InsertVoteViewModel @Inject constructor(
             title = _uiState.value.title,
 
         )
-        postRepository.insertPost(vote).asResult().collect {
-            when (it) {
+        postRepository.insertPost(vote).asResult().collect { result ->
+            when (result) {
                 Result.Loading -> Log.d("TEST", "insertPost:  로딩")
-                is Result.Success -> _uiState.update { InsertVoteUiState.Success("") }
-                is Result.Error -> Log.d("TEST", "insertPost:  실패${it.exception}")
+                is Result.Success -> _uiState.update { it.copy(isInsertSuccess = true) }
+                is Result.Error -> Log.d("TEST", "insertPost:  실패${result.exception}")
             }
         }
     }
 
     fun addVoteList() {
         val pollList = _uiState.value.pollItems.plus(PollItem(""))
-        _uiState.update { it.copy(pollItems = pollList) }
+        _uiState.update { it.copy(pollItems = pollList.toImmutableList()) }
     }
 
     fun changeVoteList(index: Int, pollItem: PollItem) {
         val pollList = _uiState.value.pollItems.toMutableList().apply { set(index, pollItem) }
-        _uiState.update { it.copy(pollItems = pollList) }
+        _uiState.update { it.copy(pollItems = pollList.toImmutableList()) }
     }
 }
 
@@ -95,8 +98,9 @@ data class InsertVoteUiState(
     val contents: String = "",
     val milliseconds: Long = 0,
     val multipleChoice: Boolean = false,
-    val pollItems: List<PollItem> = listOf(PollItem(""), PollItem("")),
+    val pollItems: ImmutableList<PollItem> = persistentListOf(PollItem(""), PollItem("")),
     val insertVoteStep: InsertVoteStep = InsertVoteStep.SelectCategory,
+    val isInsertSuccess: Boolean = false,
 ) {
     val isVoteNotEmpty: Boolean
         get() = title.isBlank() &&

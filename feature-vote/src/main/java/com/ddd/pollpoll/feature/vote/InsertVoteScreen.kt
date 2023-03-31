@@ -64,10 +64,10 @@ internal fun InsertVoteRoute(
     modifier: Modifier = Modifier,
     viewModel: InsertVoteViewModel = hiltViewModel(),
     onCloseButtonClicked: () -> Unit,
-    onInsertSucceed: () -> Unit
+    onInsertSucceed: () -> Unit,
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
-
+    if (uiState.isInsertSuccess) onInsertSucceed()
     InsertVoteScreen(
         modifier = modifier,
         insertVoteUiState = uiState,
@@ -86,7 +86,7 @@ internal fun InsertVoteRoute(
         onCloseButtonClicked = onCloseButtonClicked,
         onInsertButtonClicked = viewModel::insertPost,
         onVoteDateSelected = viewModel::changeDate,
-        onInsertSucceed = onInsertSucceed
+        onInsertSucceed = onInsertSucceed,
 
     )
 }
