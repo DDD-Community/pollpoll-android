@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,8 +23,10 @@ import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.reflect.KFunction1
 
@@ -189,12 +189,26 @@ fun VoteContent(
     if (lastPost == null) {
         Text(text = "loading...")
     } else {
+        var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
+        val timeDiff = lastPost.pollEndAt - currentTime
+        val isPollEnd = (timeDiff) < 0
+        val timeProgress = timeDiff.absoluteValue.toFloat() / (lastPost.pollEndAt - lastPost.postCreatedAt).toFloat()
+
+        LaunchedEffect(key1 = Unit) {
+            while (true) {
+                delay(1000)
+                currentTime = System.currentTimeMillis()
+            }
+        }
+
         Column(
             modifier = Modifier
                 .border(1.dp, color = PollPollTheme.colors.gray_200, shape = RoundedCornerShape(20.dp))
                 .padding(horizontal = 20.dp, vertical = 30.dp)
                 .fillMaxWidth()
         ) {
+
+
             ParticipantsText(lastPost.participantCount)
             Spacer(modifier = Modifier.size(15.dp))
             Text(
@@ -205,43 +219,60 @@ fun VoteContent(
             VoteDueDateText(Date(lastPost.pollEndAt))
             Spacer(modifier = Modifier.size(30.dp))
 
-            if (voted) {
-                // 투표가 완료된 리스트
-                VoteResults(afterVote)
-
-                PollButton(
-                    shape = RoundedCornerShape(100.dp),
-                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
-                        reVote()
-                }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "다시 투표하기",
-                        color = Color.White,
-                        style = PollPollTheme.typography.body03
-                    )
-                }
-
-            } else {
-                // 투표가 완료되지 않은 리스트
-                // 클릭 가능한 아이템들
-                // 아이템 클릭한걸 뷰모델로 넘기고, 선택 혹은 이미 선택된거면 해제
-                for (beforeItem in beforeVote) {
-                    VoteItem(beforeItem, selectIndex)
+            if (timeDiff < 0) {
+                for (post in lastPost.pollItems!!) {
+                    VoteResultItem(Vote(0, post.name, 0f,post.count, false, {}, post.postItemId))
                     Spacer(modifier = Modifier.size(10.dp))
                 }
-
                 PollButton(
                     shape = RoundedCornerShape(100.dp),
-                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
-                        vote(selectedIndex.toList())
-                }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                    onClick = { }, enabled = false, modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "폴폴 참여하기",
+                        text = "종료된 투표",
                         color = Color.White,
                         style = PollPollTheme.typography.body03
                     )
                 }
+            } else {
+                if (voted) {
+                    // 투표가 완료된 리스트
+                    VoteResults(afterVote)
+
+                    PollButton(
+                        shape = RoundedCornerShape(100.dp),
+                        onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                            reVote()
+                        }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "다시 투표하기",
+                            color = Color.White,
+                            style = PollPollTheme.typography.body03
+                        )
+                    }
+
+                } else {
+                    // 투표가 완료되지 않은 리스트
+                    // 클릭 가능한 아이템들
+                    // 아이템 클릭한걸 뷰모델로 넘기고, 선택 혹은 이미 선택된거면 해제
+                    for (beforeItem in beforeVote) {
+                        VoteItem(beforeItem, selectIndex)
+                        Spacer(modifier = Modifier.size(10.dp))
+                    }
+
+                    PollButton(
+                        shape = RoundedCornerShape(100.dp),
+                        onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                            vote(selectedIndex.toList())
+                        }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "폴폴 참여하기",
+                            color = Color.White,
+                            style = PollPollTheme.typography.body03
+                        )
+                    }
+                }
             }
+
 
 
         }
