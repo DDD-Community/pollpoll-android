@@ -220,8 +220,17 @@ fun VoteContent(
             Spacer(modifier = Modifier.size(30.dp))
 
             if (timeDiff < 0) {
+                var total = 0f
                 for (post in lastPost.pollItems!!) {
-                    VoteResultItem(Vote(0, post.name, 0f,post.count, false, {}, post.postItemId))
+                    total += post.count.toFloat()
+                }
+
+                for (post in lastPost.pollItems!!) {
+                    if (total > 0) {
+                        VoteResultItem(Vote(0, post.name, post.count/total, post.count, false, {}, post.postItemId))
+                    } else {
+                        VoteResultItem(Vote(0, post.name, 0f, post.count, false, {}, post.postItemId))
+                    }
                     Spacer(modifier = Modifier.size(10.dp))
                 }
                 PollButton(
