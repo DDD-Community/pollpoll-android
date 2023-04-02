@@ -24,6 +24,7 @@ import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
@@ -101,7 +102,7 @@ fun ReadVoteScreen(
                 VoteContent(
                     lastPost, viewModel.voted.value,
                     viewModel::vote, viewModel::reVote, selectedIndex, viewModel::selectIndex,
-                    beforeVote, afterVote)
+                    beforeVote, afterVote, viewModel.alreadyVotedPostIds.value)
             }
         }
     }
@@ -184,7 +185,8 @@ fun VoteContent(
     selectedIndex: Set<Int>,
     selectIndex: (Int) -> Unit,
     beforeVote: List<Vote>,
-    afterVote: List<Vote>
+    afterVote: List<Vote>,
+    alreadyVotedPostIds: List<Int>
 ) {
     if (lastPost == null) {
         Text(text = "loading...")
@@ -219,70 +221,83 @@ fun VoteContent(
             VoteDueDateText(Date(lastPost.pollEndAt))
             Spacer(modifier = Modifier.size(30.dp))
 
-            if (timeDiff < 0) {
-                var total = 0f
-                for (post in lastPost.pollItems!!) {
-                    total += post.count.toFloat()
-                }
-
-                for (post in lastPost.pollItems!!) {
-                    if (total > 0) {
-                        VoteResultItem(Vote(0, post.name, post.count/total, post.count, false, {}, post.postItemId))
-                    } else {
-                        VoteResultItem(Vote(0, post.name, 0f, post.count, false, {}, post.postItemId))
-                    }
-                    Spacer(modifier = Modifier.size(10.dp))
-                }
+            if (false) {
+                VoteResults(beforeVote)
                 PollButton(
                     shape = RoundedCornerShape(100.dp),
-                    onClick = { }, enabled = false, modifier = Modifier.fillMaxWidth()) {
+                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                        reVote()
+                    }, enabled = true, modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "종료된 투표",
+                        text = "다시 투표하기",
                         color = Color.White,
                         style = PollPollTheme.typography.body03
                     )
                 }
             } else {
-                if (voted) {
-                    // 투표가 완료된 리스트
-                    VoteResults(afterVote)
-
-                    PollButton(
-                        shape = RoundedCornerShape(100.dp),
-                        onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
-                            reVote()
-                        }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "다시 투표하기",
-                            color = Color.White,
-                            style = PollPollTheme.typography.body03
-                        )
+                if (timeDiff < 0) {
+                    var total = 0f
+                    for (post in lastPost.pollItems!!) {
+                        total += post.count.toFloat()
                     }
 
-                } else {
-                    // 투표가 완료되지 않은 리스트
-                    // 클릭 가능한 아이템들
-                    // 아이템 클릭한걸 뷰모델로 넘기고, 선택 혹은 이미 선택된거면 해제
-                    for (beforeItem in beforeVote) {
-                        VoteItem(beforeItem, selectIndex)
+                    for (post in lastPost.pollItems!!) {
+                        if (total > 0) {
+                            VoteResultItem(Vote(0, post.name, post.count/total, post.count, false, {}, post.postItemId))
+                        } else {
+                            VoteResultItem(Vote(0, post.name, 0f, post.count, false, {}, post.postItemId))
+                        }
                         Spacer(modifier = Modifier.size(10.dp))
                     }
-
                     PollButton(
                         shape = RoundedCornerShape(100.dp),
-                        onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
-                            vote(selectedIndex.toList())
-                        }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                        onClick = { }, enabled = false, modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "폴폴 참여하기",
+                            text = "종료된 투표",
                             color = Color.White,
                             style = PollPollTheme.typography.body03
                         )
+                    }
+                } else {
+                    if (voted) {
+                        // 투표가 완료된 리스트
+                        VoteResults(afterVote)
+
+                        PollButton(
+                            shape = RoundedCornerShape(100.dp),
+                            onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                                reVote()
+                            }, enabled = true, modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "다시 투표하기",
+                                color = Color.White,
+                                style = PollPollTheme.typography.body03
+                            )
+                        }
+
+                    } else {
+                        // 투표가 완료되지 않은 리스트
+                        // 클릭 가능한 아이템들
+                        // 아이템 클릭한걸 뷰모델로 넘기고, 선택 혹은 이미 선택된거면 해제
+                        for (beforeItem in beforeVote) {
+                            VoteItem(beforeItem, selectIndex)
+                            Spacer(modifier = Modifier.size(10.dp))
+                        }
+
+                        PollButton(
+                            shape = RoundedCornerShape(100.dp),
+                            onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                                vote(selectedIndex.toList())
+                            }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "폴폴 참여하기",
+                                color = Color.White,
+                                style = PollPollTheme.typography.body03
+                            )
+                        }
                     }
                 }
             }
-
-
 
         }
     }
