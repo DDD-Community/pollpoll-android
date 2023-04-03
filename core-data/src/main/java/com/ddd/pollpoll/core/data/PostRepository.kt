@@ -31,7 +31,7 @@ import javax.inject.Inject
 interface PostRepository {
     suspend fun insertPost(token: Vote): Flow<Unit>
     suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Flow<Unit>
-    suspend fun getPosts(lastPostId: Int? = null): Flow<List<Post>>
+    suspend fun getPosts(lastPostId: Int? = null, keyword: String? = null): Flow<List<Post>>
     suspend fun getPost(postId: Int): Flow<PostResponse>
 
     suspend fun getPopularPost(): Flow<PopularPost>
@@ -49,8 +49,8 @@ class PostRepositoryImp @Inject constructor(
         emit(postRemoteSource.putPoll(pollId, pollItemIds))
     }
 
-    override suspend fun getPosts(lastPostId: Int?): Flow<List<Post>> = flow {
-        val result = postRemoteSource.getPosts(lastPostId).asExternalModel()
+    override suspend fun getPosts(lastPostId: Int?, keyword: String?): Flow<List<Post>> = flow {
+        val result = postRemoteSource.getPosts(lastPostId, keyword).asExternalModel()
         emit(result)
     }
 

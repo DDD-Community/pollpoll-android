@@ -14,7 +14,7 @@ interface PollAPI {
     suspend fun postPosts(@Body posts: PostPostRequest): Response<ApiResponse<Unit>>
 
     @GET("/api/posts")
-    suspend fun getPosts(@Query("lastPostId") lastPostId: Int? = null): Response<ApiResponse<GetPostResponse>>
+    suspend fun getPosts(@Query("lastPostId") lastPostId: Int? = null, @Query("keyword") keyword: String? = null): Response<ApiResponse<GetPostResponse>>
 
     @GET("/api/posts/{postId}")
     suspend fun getPost(@Path("postId") postId: Int): Response<ApiResponse<PostResponse>>
