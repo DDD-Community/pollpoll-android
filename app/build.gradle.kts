@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import dev.iurysouza.modulegraph.*
 
 @Suppress("DSL_SCOPE_VIOLATION") // Remove when fixed https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
@@ -21,6 +22,15 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.dependency.update)
+    id("dev.iurysouza.modulegraph")
+}
+
+// ./gradlew createModuleGraph
+moduleGraphConfig {
+    readmePath.set("$projectDir/README.md")
+    heading.set("### Dependency Diagram")
+    theme.set(Theme.NEUTRAL) // optional
+    orientation.set(Orientation.LEFT_TO_RIGHT) // optional
 }
 
 android {
@@ -43,7 +53,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -59,7 +72,7 @@ android {
             "-P",
             "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$buildDir/compose",
             "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose"
+            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose",
         )
     }
 

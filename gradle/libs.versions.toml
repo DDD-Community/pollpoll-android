@@ -36,6 +36,8 @@ coilsvg = "2.2.2"
 
 immutable = "0.3.5"
 
+graph ="0.3.0"
+
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidxComposeMaterial" }
@@ -112,3 +114,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 dependency-update = { id = "com.github.ben-manes.versions", version.ref = "benManes" }
+modulegraph = { id = "dev.iurysouza.modulegraph", version.ref = "graph" }

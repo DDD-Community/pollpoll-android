@@ -54,6 +54,11 @@ fun emptySearchScreen() {
     }
 }
 
+@Composable
+fun SearchBarScreen(){
+
+}
+
 @Preview
 @Composable
 fun emptySearchScreenPreview() {

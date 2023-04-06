@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import dev.iurysouza.modulegraph.*
 
 plugins {
     alias(libs.plugins.dependency.update) apply false
+    alias(libs.plugins.modulegraph) apply false
 }
 
 // Root build.gradle.kts
