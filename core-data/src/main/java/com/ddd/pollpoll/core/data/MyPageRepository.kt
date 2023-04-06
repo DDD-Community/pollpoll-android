@@ -17,8 +17,7 @@
 package com.ddd.pollpoll.core.data
 
 import com.ddd.pollpoll.MyPageType
-import com.ddd.pollpoll.core.network.model.GetCategoriesResponse
-import com.ddd.pollpoll.core.network.model.asExternalModel
+import com.ddd.pollpoll.core.data.model.asExternalModel
 import com.ddd.pollpoll.core.network.remote.MyPageRemoteSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

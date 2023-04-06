@@ -1,7 +1,5 @@
 package com.ddd.pollpoll.core.network.model
 
-import com.ddd.pollpoll.Post
-
 data class GetPostResponse(
     val posts: List<PostResponse>,
 )
@@ -28,27 +26,3 @@ data class PostItem(
     val count: Int,
 )
 
-fun PostItem.asExternalModel() = com.ddd.pollpoll.PostItem(
-    postItemId = this.postItemId,
-    name = this.name,
-    count = this.count,
-
-)
-
-fun PostResponse.asExternalModel() = Post(
-    categoryName = this.categoryName,
-    contents = this.contents,
-    nickname = this.nickname,
-    participantCount = this.participantCount,
-    pollEndAt = this.pollEndAt,
-    pollId = this.pollId,
-    pollItemCount = this.pollItemCount,
-    postCreatedAt = this.postCreatedAt,
-    postHits = this.postHits,
-    postId = this.postId,
-    pollItems = this.pollItems?.map { it.asExternalModel() } ?: listOf(),
-    title = title,
-    watcherCount = watcherCount,
-)
-
-fun GetPostResponse.asExternalModel() = posts.flatMap { listOf(it.asExternalModel()) }

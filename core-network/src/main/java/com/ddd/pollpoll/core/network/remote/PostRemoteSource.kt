@@ -2,6 +2,7 @@ package com.ddd.pollpoll.core.network.remote
 
 import com.ddd.pollpoll.PopularPost
 import com.ddd.pollpoll.core.network.handle.executeHandle
+import com.ddd.pollpoll.core.network.model.GetPopularResponse
 import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.core.network.model.PostPostRequest
 import com.ddd.pollpoll.core.network.model.PostResponse
@@ -16,7 +17,7 @@ interface PostRemoteSource {
     suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest)
     suspend fun getPosts(lastPostId: Int?, keyword: String?): GetPostResponse
     suspend fun getPost(postId: Int): PostResponse
-    suspend fun getPopularPosts(): PopularPost
+    suspend fun getPopularPosts(): GetPopularResponse
 }
 
 class PostRemoteSourceImp @Inject constructor(
@@ -26,5 +27,5 @@ class PostRemoteSourceImp @Inject constructor(
     override suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Unit = pollAPI.putPoll(pollId, pollItemIds).executeHandle()
     override suspend fun getPosts(lastPostId: Int?, keyword: String?): GetPostResponse = pollAPI.getPosts(lastPostId).executeHandle()
     override suspend fun getPost(postId: Int): PostResponse = pollAPI.getPost(postId).executeHandle()
-    override suspend fun getPopularPosts(): PopularPost = pollAPI.getPopularPost().executeHandle().asExternalModel()
+    override suspend fun getPopularPosts(): GetPopularResponse = pollAPI.getPopularPost().executeHandle()
 }

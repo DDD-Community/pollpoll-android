@@ -62,7 +62,6 @@ android {
 
 dependencies {
     implementation(project(":core-testing"))
-    implementation(project(":core-model"))
     implementation(project(":core-datastore"))
     implementation(project(":core-common"))
     // Core Android dependencies
