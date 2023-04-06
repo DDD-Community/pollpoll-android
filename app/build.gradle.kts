@@ -22,16 +22,11 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.dependency.update)
-    id("dev.iurysouza.modulegraph")
+
 }
 
 // ./gradlew createModuleGraph
-moduleGraphConfig {
-    readmePath.set("$projectDir/README.md")
-    heading.set("### Dependency Diagram")
-    theme.set(Theme.NEUTRAL) // optional
-    orientation.set(Orientation.LEFT_TO_RIGHT) // optional
-}
+
 
 android {
     namespace = "com.ddd.pollpoll"

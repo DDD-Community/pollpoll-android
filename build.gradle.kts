@@ -17,7 +17,15 @@ import dev.iurysouza.modulegraph.*
 
 plugins {
     alias(libs.plugins.dependency.update) apply false
-    alias(libs.plugins.modulegraph) apply false
+    alias(libs.plugins.modulegraph) apply true
+
 }
 
 // Root build.gradle.kts
+
+moduleGraphConfig {
+    readmePath.set("$projectDir/README.md")
+    heading.set("### Dependency Diagram")
+    theme.set(Theme.NEUTRAL) // optional
+    orientation.set(Orientation.LEFT_TO_RIGHT) // optional
+}
