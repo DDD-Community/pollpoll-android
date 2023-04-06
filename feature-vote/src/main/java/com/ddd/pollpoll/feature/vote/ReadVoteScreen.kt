@@ -3,7 +3,6 @@ package com.ddd.pollpoll.feature.vote
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,8 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-
-import com.ddd.pollpoll.core.network.model.PostResponse
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.designsystem.component.PollButton
 import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollTopBar
@@ -35,7 +33,7 @@ internal fun ReadVoteRoute(
     modifier: Modifier = Modifier,
     postId: Int,
     viewModel: ReadVoteViewModel = hiltViewModel(),
-    onCloseButtonClicked: () -> Unit
+    onCloseButtonClicked: () -> Unit,
 ) {
     ReadVoteScreen(viewModel, postId, onCloseButtonClicked)
 }
@@ -45,7 +43,7 @@ internal fun ReadVoteRoute(
 fun ReadVoteScreen(
     viewModel: ReadVoteViewModel = hiltViewModel(),
     postId: Int,
-    onCloseButtonClicked: () -> Unit
+    onCloseButtonClicked: () -> Unit,
 ) {
     LaunchedEffect(key1 = Unit) {
         viewModel.setPostId(postId)
@@ -70,7 +68,7 @@ fun ReadVoteScreen(
                     IconButton(onClick = { onCloseButtonClicked() }) {
                         Icon(
                             painter = painterResource(id = PollIcon.LeftArrow),
-                            contentDescription = ""
+                            contentDescription = "",
                         )
                     }
                 },
@@ -81,7 +79,7 @@ fun ReadVoteScreen(
 //                            contentDescription = ""
 //                        )
 //                    }
-                }
+                },
             )
         }
     }) {
@@ -92,22 +90,28 @@ fun ReadVoteScreen(
                     .background(Color.White)
                     .padding(20.dp)
                     .fillMaxSize()
-                    .verticalScroll(scrollState)
+                    .verticalScroll(scrollState),
             ) {
                 VoteInfo(lastPost)
                 Spacer(modifier = Modifier.size(20.dp))
 
                 VoteContent(
-                    lastPost, viewModel.voted.value,
-                    viewModel::vote, viewModel::reVote, selectedIndex, viewModel::selectIndex,
-                    beforeVote, afterVote)
+                    lastPost,
+                    viewModel.voted.value,
+                    viewModel::vote,
+                    viewModel::reVote,
+                    selectedIndex,
+                    viewModel::selectIndex,
+                    beforeVote,
+                    afterVote,
+                )
             }
         }
     }
 }
 
 @Composable
-fun VoteInfo(lastPost: PostResponse?) {
+fun VoteInfo(lastPost: Post?) {
     if (lastPost == null) {
         Text(text = "loading...")
     } else {
@@ -117,7 +121,7 @@ fun VoteInfo(lastPost: PostResponse?) {
             Text(
                 text = "${lastPost.categoryName}",
                 color = PollPollTheme.colors.gray_900,
-                style = PollPollTheme.typography.body04
+                style = PollPollTheme.typography.body04,
             )
         }
         Spacer(modifier = Modifier.size(12.dp))
@@ -125,7 +129,7 @@ fun VoteInfo(lastPost: PostResponse?) {
             Text(
                 text = "${lastPost.nickname}",
                 color = PollPollTheme.colors.gray_900,
-                style = PollPollTheme.typography.body03
+                style = PollPollTheme.typography.body03,
             )
         }
         Spacer(modifier = Modifier.size(5.dp))
@@ -134,7 +138,7 @@ fun VoteInfo(lastPost: PostResponse?) {
             Text(
                 text = " | ",
                 color = PollPollTheme.colors.gray_400,
-                style = PollPollTheme.typography.body03
+                style = PollPollTheme.typography.body03,
             )
             HitsText(lastPost.watcherCount)
         }
@@ -142,17 +146,15 @@ fun VoteInfo(lastPost: PostResponse?) {
         Text(
             text = "${lastPost.title}",
             color = PollPollTheme.colors.gray_900,
-            style = PollPollTheme.typography.heading03
+            style = PollPollTheme.typography.heading03,
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
             text = "${lastPost.contents}",
             color = PollPollTheme.colors.gray_700,
-            style = PollPollTheme.typography.body02
+            style = PollPollTheme.typography.body02,
         )
     }
-
-
 }
 
 @Composable
@@ -161,7 +163,7 @@ fun TimeText(date: Date) {
     Text(
         text = sdf.format(date),
         color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body03
+        style = PollPollTheme.typography.body03,
     )
 }
 
@@ -170,20 +172,20 @@ fun HitsText(hits: Int) {
     Text(
         text = "조회수 $hits",
         color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body03
+        style = PollPollTheme.typography.body03,
     )
 }
 
 @Composable
 fun VoteContent(
-    lastPost: PostResponse?,
+    lastPost: Post?,
     voted: Boolean,
     vote: KFunction1<List<Int>, Unit>,
     reVote: () -> Unit,
     selectedIndex: Set<Int>,
     selectIndex: (Int) -> Unit,
     beforeVote: List<Vote>,
-    afterVote: List<Vote>
+    afterVote: List<Vote>,
 ) {
     if (lastPost == null) {
         Text(text = "loading...")
@@ -192,14 +194,14 @@ fun VoteContent(
             modifier = Modifier
                 .border(1.dp, color = PollPollTheme.colors.gray_200, shape = RoundedCornerShape(20.dp))
                 .padding(horizontal = 20.dp, vertical = 30.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             ParticipantsText(lastPost.participantCount)
             Spacer(modifier = Modifier.size(15.dp))
             Text(
                 text = "${lastPost.title}".replace(" ", "\u00A0"),
                 color = PollPollTheme.colors.gray_700,
-                style = PollPollTheme.typography.heading04
+                style = PollPollTheme.typography.heading04,
             )
             VoteDueDateText(Date(lastPost.pollEndAt))
             Spacer(modifier = Modifier.size(30.dp))
@@ -210,16 +212,18 @@ fun VoteContent(
 
                 PollButton(
                     shape = RoundedCornerShape(100.dp),
-                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                    onClick = { // 뷰모델에 있는 선택된것들로 최종 선택
                         reVote()
-                }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                    },
+                    enabled = selectedIndex.isNotEmpty(),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     Text(
                         text = "다시 투표하기",
                         color = Color.White,
-                        style = PollPollTheme.typography.body03
+                        style = PollPollTheme.typography.body03,
                     )
                 }
-
             } else {
                 // 투표가 완료되지 않은 리스트
                 // 클릭 가능한 아이템들
@@ -231,30 +235,29 @@ fun VoteContent(
 
                 PollButton(
                     shape = RoundedCornerShape(100.dp),
-                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                    onClick = { // 뷰모델에 있는 선택된것들로 최종 선택
                         vote(selectedIndex.toList())
-                }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                    },
+                    enabled = selectedIndex.isNotEmpty(),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     Text(
                         text = "폴폴 참여하기",
                         color = Color.White,
-                        style = PollPollTheme.typography.body03
+                        style = PollPollTheme.typography.body03,
                     )
                 }
             }
-
-
         }
     }
-
 }
-
 
 @Composable
 fun ParticipantsText(participants: Int) {
     Text(
         text = "총 ${participants}명 참여",
         color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body04
+        style = PollPollTheme.typography.body04,
     )
     Spacer(modifier = Modifier.size(15.dp))
 }
@@ -265,48 +268,51 @@ fun VoteDueDateText(date: Date) {
     Text(
         text = sdf.format(date),
         color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body03
+        style = PollPollTheme.typography.body03,
     )
 }
-
 
 @Composable
 fun VoteResults(items: List<Vote>) {
     for ((index, item) in items.withIndex()) {
-        VoteResultItem(item.copy(index = index, onClick = {
-
-        }))
+        VoteResultItem(
+            item.copy(index = index, onClick = {
+            }),
+        )
         Spacer(modifier = Modifier.size(10.dp))
     }
 }
 
 @Composable
 fun VoteResultItem(vote: Vote) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .clickable {
-
-        }
-    ){
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+            },
+    ) {
         val backgroundModifier =
-            if (vote.isSelected) Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .background(PollPollTheme.colors.primary_100)
-                .border(
-                    width = 1.dp,
-                    color = PollPollTheme.colors.primary_500,
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(10.dp)
-            else Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .background(PollPollTheme.colors.gray_100)
-                .padding(10.dp)
+            if (vote.isSelected) {
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(PollPollTheme.colors.primary_100)
+                    .border(
+                        width = 1.dp,
+                        color = PollPollTheme.colors.primary_500,
+                        shape = RoundedCornerShape(20.dp),
+                    )
+                    .padding(10.dp)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(PollPollTheme.colors.gray_100)
+                    .padding(10.dp)
+            }
         Row(
-            modifier = backgroundModifier
-        ){
+            modifier = backgroundModifier,
+        ) {
             val color = PollPollTheme.colors.gray_700
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
             Spacer(modifier = Modifier.weight(1f))
@@ -323,51 +329,56 @@ fun VoteResultItem(vote: Vote) {
                     }
                 }
                 .background(PollPollTheme.colors.primary_500)
-                .padding(10.dp)
-        ){
+                .padding(10.dp),
+        ) {
             val color = Color.White
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
             Spacer(modifier = Modifier.weight(1f))
             Text(text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})", style = PollPollTheme.typography.body03, color = color)
         }
     }
-
 }
 
 @Composable
-fun VoteItem(vote: Vote, select: (Int)-> Unit) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .clickable {
-            select(vote.index)
-        }
-    ){
+fun VoteItem(vote: Vote, select: (Int) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                select(vote.index)
+            },
+    ) {
         val backgroundModifier =
-            if (vote.isSelected) Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .background(PollPollTheme.colors.primary_100)
-                .border(
-                    width = 1.dp,
-                    color = PollPollTheme.colors.primary_500,
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(10.dp)
-            else Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .background(PollPollTheme.colors.gray_100)
-                .padding(10.dp)
+            if (vote.isSelected) {
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(PollPollTheme.colors.primary_100)
+                    .border(
+                        width = 1.dp,
+                        color = PollPollTheme.colors.primary_500,
+                        shape = RoundedCornerShape(20.dp),
+                    )
+                    .padding(10.dp)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(PollPollTheme.colors.gray_100)
+                    .padding(10.dp)
+            }
         Row(
-            modifier = backgroundModifier
-        ){
+            modifier = backgroundModifier,
+        ) {
             val color =
-                if (vote.isSelected) PollPollTheme.colors.primary_500
-                else PollPollTheme.colors.gray_900
+                if (vote.isSelected) {
+                    PollPollTheme.colors.primary_500
+                } else {
+                    PollPollTheme.colors.gray_900
+                }
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
         }
     }
-
 }
 
 @Preview
