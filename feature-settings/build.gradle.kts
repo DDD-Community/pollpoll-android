@@ -65,7 +65,7 @@ android {
 dependencies {
     implementation(project(":core-data"))
     implementation(project(":core-ui"))
-    implementation(project(mapOf("path" to ":core-designsystem")))
+    implementation(project(":core-designsystem"))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-common"))
     // Core Android dependencies

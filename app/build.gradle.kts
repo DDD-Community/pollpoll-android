@@ -22,11 +22,9 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.dependency.update)
-
 }
 
 // ./gradlew createModuleGraph
-
 
 android {
     namespace = "com.ddd.pollpoll"
@@ -98,7 +96,7 @@ dependencies {
     implementation(project(":feature-vote"))
     implementation(project(":feature-mypollpoll"))
     implementation(project(":feature-settings"))
-    implementation(project(mapOf("path" to ":core-network")))
+    implementation(project(":core-network"))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-designsystem"))
     implementation(project(":core-common"))
