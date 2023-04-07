@@ -4,9 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.PostRepository
-import com.ddd.pollpoll.core.network.model.PostResponse
-import com.ddd.pollpoll.core.network.model.PutVoteRequest
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,10 +15,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReadVoteViewModel @Inject constructor(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
 ) : ViewModel() {
 //    val posts = MutableStateFlow<GetPostResponse?>(null)
-    val lastPost = MutableStateFlow<PostResponse?>(null)
+    val lastPost = MutableStateFlow<Post?>(null)
     val beforeVote = MutableStateFlow<List<Vote>>(emptyList())
     val afterVote = MutableStateFlow<List<Vote>>(emptyList())
     val selectedIndex = MutableStateFlow<Set<Int>>(emptySet())
@@ -59,7 +58,7 @@ class ReadVoteViewModel @Inject constructor(
                                 voteCount = postItem.count,
                                 isSelected = false,
                                 onClick = {},
-                                postItemId = postItem.postItemId
+                                postItemId = postItem.postItemId,
                             )
                             tempList.add(item)
                         }
@@ -87,7 +86,7 @@ class ReadVoteViewModel @Inject constructor(
                     voteCount = postItem.count,
                     isSelected = false,
                     onClick = {},
-                    postItemId = postItem.postItemId
+                    postItemId = postItem.postItemId,
                 )
                 tempList.add(item)
             }
@@ -103,6 +102,7 @@ class ReadVoteViewModel @Inject constructor(
             }
             val tempList = mutableListOf<Vote>()
             val tempPostItemList = mutableListOf<Int>()
+
             for ((i, item) in it.withIndex()) {
                 val voteCountAfterVote = if (votedIndex.contains(i)) {
                     tempPostItemList.add(item.postItemId)
@@ -118,8 +118,8 @@ class ReadVoteViewModel @Inject constructor(
                         voteCount = voteCountAfterVote,
                         isSelected = false,
                         onClick = {},
-                        item.postItemId
-                    )
+                        item.postItemId,
+                    ),
                 )
             }
             afterVote.value = tempList
@@ -127,7 +127,7 @@ class ReadVoteViewModel @Inject constructor(
             voted.value = true
 
             viewModelScope.launch {
-                postRepository.putPoll(lastPost.value!!.pollId, PutVoteRequest(tempPostItemList)).asResult().collect {
+                postRepository.putPoll(lastPost.value!!.pollId, tempPostItemList).asResult().collect {
                     when (it) {
                         Result.Loading -> Log.d("TEST", "putPoll:  로딩")
                         is Result.Success -> Log.d("TEST", "putPoll:  success")
@@ -146,5 +146,5 @@ data class Vote(
     val voteCount: Int,
     val isSelected: Boolean,
     val onClick: () -> Unit,
-    val postItemId: Int
+    val postItemId: Int,
 )

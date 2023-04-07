@@ -28,13 +28,15 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+
 rootProject.name = "PollPoll"
 
+include(":core-ui")
 include(":app")
 include(":core-data")
 include(":core-database")
 include(":core-testing")
-include(":core-ui")
 include(":feature-login")
 include(":core-network")
 include(":core-designsystem")

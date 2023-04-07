@@ -26,7 +26,7 @@ fun lightColors() = PollPollColors(
     gray_500 = Gray500,
     gray_700 = Gray700,
     gray_900 = Gray900,
-    isLight = false
+    isLight = false,
 
 )
 
@@ -57,10 +57,8 @@ data class CustomSpaces(
     val small: Dp = 4.dp,
     val medium: Dp = 8.dp,
     val large: Dp = 20.dp,
-    val extraLarge: Dp = 40.dp
+    val extraLarge: Dp = 40.dp,
 )
-
-
 
 @Composable
 fun PollPollTheme(
@@ -69,16 +67,15 @@ fun PollPollTheme(
     colors: PollPollColors = PollPollTheme.colors,
     darkColors: PollPollColors? = null,
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val currentColor = remember { if (darkColors != null && darkTheme) darkColors else colors }
     val rememberedColors = remember { currentColor.copy() }.apply { updateColorsFrom(currentColor) }
 
-
     CompositionLocalProvider(
         LocalColors provides rememberedColors,
         LocalSpaces provides spaces,
-        LocalTypography provides typography
+        LocalTypography provides typography,
     ) {
         ProvideTextStyle(typography.heading05, content = content)
     }

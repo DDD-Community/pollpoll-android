@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PollPollTheme() {
                 Surface(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
                     MainNavigation()
                 }

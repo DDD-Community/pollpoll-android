@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import dev.iurysouza.modulegraph.*
 
 @Suppress("DSL_SCOPE_VIOLATION") // Remove when fixed https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
@@ -22,6 +23,8 @@ plugins {
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.dependency.update)
 }
+
+// ./gradlew createModuleGraph
 
 android {
     namespace = "com.ddd.pollpoll"
@@ -43,17 +46,27 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
+        freeCompilerArgs += listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$buildDir/compose",
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose",
+        )
     }
 
     buildFeatures {
@@ -83,7 +96,6 @@ dependencies {
     implementation(project(":feature-vote"))
     implementation(project(":feature-mypollpoll"))
     implementation(project(":feature-settings"))
-    implementation(project(mapOf("path" to ":core-network")))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-designsystem"))
     implementation(project(":core-common"))

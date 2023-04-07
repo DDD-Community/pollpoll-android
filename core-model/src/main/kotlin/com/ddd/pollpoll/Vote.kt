@@ -6,11 +6,11 @@ data class Vote(
     val milliseconds: Long = 0,
     val multipleChoice: Boolean = false,
     val pollItems: List<PollItem> = listOf(PollItem(""), PollItem("")),
-    val title: String = ""
+    val title: String = "",
 )
 
 data class PollItem(
-    val name: String
+    val name: String,
 )
 
 enum class CategoryEnum(val categoryId: Int) {
@@ -19,5 +19,5 @@ enum class CategoryEnum(val categoryId: Int) {
     Carrier2(1),
     Love(1),
     Group(1),
-    Worry(1)
+    Worry(1),
 }

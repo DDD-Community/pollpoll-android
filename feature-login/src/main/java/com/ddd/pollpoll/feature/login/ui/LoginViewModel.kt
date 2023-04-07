@@ -67,7 +67,7 @@ class LoginViewModel @Inject constructor(
                 Result.Loading -> _uiState.update { LoginUiState.Loading }
 
                 is Result.Success -> {
-                    _uiState.update { if (result.data?.hasNickname != true) LoginUiState.HasNickName else LoginUiState.NotNickName }
+                    _uiState.update { if (result.data?.hasNickname == true) LoginUiState.HasNickName else LoginUiState.NotNickName }
                 }
             }
         }

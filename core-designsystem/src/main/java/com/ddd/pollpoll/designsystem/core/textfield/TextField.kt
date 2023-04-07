@@ -4,6 +4,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,7 +12,6 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -30,31 +30,39 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.ddd.pollpoll.designsystem.theme.Gray900
+import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PollCoreTextField(
     value: String,
+    modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
-    placeholderText: String,
     textStyle: TextStyle,
     textFieldColors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     paddingValues: PaddingValues,
-    keyboardActions: KeyboardActions,
-    keyboardOptions: KeyboardOptions,
-    maxLength: Int = 0,
-    focusedChanged: (FocusState) -> Unit = {}
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    focusedChanged: (FocusState) -> Unit = {},
+    trailingIcon: @Composable (() -> Unit)? = null,
+    shape: Shape = TextFieldDefaults.filledShape,
+    placeholder: @Composable() (() -> Unit)? = null,
+    textFiledType: TextFieldType = TextFieldType.Filled,
 ) {
     PollCoreTextField(
+        modifier = modifier,
         colors = textFieldColors,
         textStyle = textStyle,
         value = value,
         onValueChange = onValueChange,
-        placeholder = { Text(text = placeholderText) },
+        placeholder = placeholder,
         contentPadding = paddingValues,
         focusedChanged = focusedChanged,
         keyboardActions = keyboardActions,
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
+        trailingIcon = trailingIcon,
+        shape = shape,
+        textFiledType = textFiledType,
     )
 }
 
@@ -84,7 +92,8 @@ internal fun PollCoreTextField(
     shape: Shape = TextFieldDefaults.filledShape,
     colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     selectionColors: TextSelectionColors = TextSelectionColors(Color.Black, Color.White),
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    textFiledType: TextFieldType,
 ) {
     val textColor = textStyle.color.takeOrElse {
         rememberUpdatedState(if (enabled) Gray900 else Color.White).value
@@ -99,7 +108,7 @@ internal fun PollCoreTextField(
                 .width(320.dp)
                 .defaultMinSize(
                     minWidth = 320.dp,
-                    minHeight = 0.dp
+                    minHeight = 0.dp,
                 )
                 .onFocusChanged(focusedChanged),
             onValueChange = onValueChange,
@@ -116,25 +125,61 @@ internal fun PollCoreTextField(
             minLines = minLines,
             decorationBox =
             @Composable { innerTextField ->
+                when (textFiledType) {
+                    TextFieldType.Filled ->
+                        TextFieldDefaults.TextFieldDecorationBox(
+                            value = value,
+                            visualTransformation = visualTransformation,
+                            innerTextField = innerTextField,
+                            placeholder = placeholder,
+                            label = label,
+                            leadingIcon = leadingIcon,
+                            trailingIcon = trailingIcon,
+                            supportingText = supportingText,
+                            shape = shape,
+                            singleLine = singleLine,
+                            enabled = enabled,
+                            isError = isError,
+                            interactionSource = interactionSource,
+                            colors = colors,
+                            contentPadding = contentPadding,
+                        )
 
-                TextFieldDecorationBox(
-                    value = value,
-                    visualTransformation = visualTransformation,
-                    innerTextField = innerTextField,
-                    placeholder = placeholder,
-                    label = label,
-                    leadingIcon = leadingIcon,
-                    trailingIcon = trailingIcon,
-                    supportingText = supportingText,
-                    shape = shape,
-                    singleLine = singleLine,
-                    enabled = enabled,
-                    isError = isError,
-                    interactionSource = interactionSource,
-                    colors = colors,
-                    contentPadding = contentPadding
-                )
-            }
+                    TextFieldType.Outlined -> {
+                        TextFieldDefaults.OutlinedTextFieldDecorationBox(
+                            value = value,
+                            visualTransformation = visualTransformation,
+                            innerTextField = innerTextField,
+                            placeholder = placeholder,
+                            label = label,
+                            leadingIcon = leadingIcon,
+                            trailingIcon = trailingIcon,
+                            supportingText = supportingText,
+                            singleLine = singleLine,
+                            enabled = enabled,
+                            isError = isError,
+                            interactionSource = interactionSource,
+                            colors = colors,
+                            contentPadding = contentPadding,
+                            container = {
+                                TextFieldDefaults.OutlinedBorderContainerBox(
+                                    enabled,
+                                    isError,
+                                    interactionSource,
+                                    TextFieldDefaults.outlinedTextFieldColors(
+                                        focusedBorderColor = PollPollTheme.colors.gray_300,
+                                        containerColor = PollPollTheme.colors.gray_050,
+                                        unfocusedBorderColor = PollPollTheme.colors.gray_300,
+                                    ),
+                                    shape = RoundedCornerShape(12.dp),
+                                    focusedBorderThickness = 1.dp,
+                                    unfocusedBorderThickness = 1.dp,
+                                )
+                            },
+                        )
+                    }
+                }
+            },
         )
     }
 }
@@ -143,7 +188,11 @@ internal fun PollCoreTextField(
 internal fun cursorColor(
     isError: Boolean,
     errorCursorColor: Color,
-    cursorColor: Color
+    cursorColor: Color,
 ): State<Color> {
     return rememberUpdatedState(if (isError) errorCursorColor else cursorColor)
+}
+
+enum class TextFieldType {
+    Filled, Outlined
 }
