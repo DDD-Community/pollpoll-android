@@ -10,7 +10,6 @@ import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,35 +23,67 @@ class SearchViewModel @Inject constructor(
     var canPaginate by mutableStateOf(false)
     var listState by mutableStateOf(ListState.NONE)
 
-    // 검색하면, lastPostId가 초기화 되어야함.
+    // Resets lastPostId when a search is performed
     fun searchPost(searchText: String) {
-        lastPostId = null
-        canPaginate = false
-        listState = ListState.IDLE
-        posts.clear()
+        resetLastPostId()
+        clearPosts()
+        updateListState(ListState.IDLE)
         getPost(searchText)
     }
 
     fun getPost(searchText: String) = viewModelScope.launch {
-        if (lastPostId == null || (lastPostId != 1 && canPaginate) && listState == ListState.IDLE) {
-            listState = if (lastPostId == null) ListState.LOADING else ListState.PAGINATING
-            postRepository.getPosts(lastPostId, searchText).catch {
-                when (it) {
-                    is NullPointerException -> {
-                        listState =
-                            if (lastPostId == null) ListState.EMPTY else ListState.PAGINATION_EXHAUST
-                    }
+        if (shouldFetchPosts()) {
+            updateListState(loadingState())
+            fetchPosts(searchText)
+        }
+    }
 
-                    else -> {
-                        listState = ListState.ERROR
-                    }
+    private fun shouldFetchPosts() =
+        lastPostId == null || (lastPostId != 1 && canPaginate) && listState == ListState.IDLE
+
+    private fun loadingState() = if (lastPostId == null) ListState.LOADING else ListState.PAGINATING
+
+    private fun fetchPosts(searchText: String) {
+        viewModelScope.launch {
+            postRepository.getPosts(lastPostId, searchText)
+                .catch { handleException(it) }
+                .collect { newPosts ->
+                    updatePosts(newPosts)
                 }
-            }.collect { post ->
-                canPaginate = post.last().postId != 1
-                posts.addAll(post)
-                listState = ListState.IDLE
-                if (canPaginate) lastPostId = post.last().postId
+        }
+    }
+
+    private fun handleException(exception: Throwable) {
+        when (exception) {
+            is NullPointerException -> {
+                updateListState(
+                    if (lastPostId == null) ListState.EMPTY else ListState.PAGINATION_EXHAUST,
+                )
+            }
+
+            else -> {
+                updateListState(ListState.ERROR)
             }
         }
+    }
+
+    private fun updatePosts(newPosts: List<Post>) {
+        canPaginate = newPosts.last().postId != 1
+        posts.addAll(newPosts)
+        updateListState(ListState.IDLE)
+        if (canPaginate) lastPostId = newPosts.last().postId
+    }
+
+    private fun resetLastPostId() {
+        lastPostId = null
+        canPaginate = false
+    }
+
+    private fun clearPosts() {
+        posts.clear()
+    }
+
+    private fun updateListState(newState: ListState) {
+        listState = newState
     }
 }

@@ -63,7 +63,7 @@ fun SearchScreenRoute(
         onBackButtonClicked = { backToMain() },
         onSearchButtonClicked = { viewModel.searchPost(it) },
         lazyColumnListState = lazyColumnListState,
-        onPageStarted = { viewModel.getPost(it) },
+        onLoadMoreData = { viewModel.getPost(it) },
         navigateToReadVote = navigateToReadVote,
     )
 }
@@ -77,7 +77,7 @@ fun SearchScreen(
     onBackButtonClicked: () -> Unit = {},
     onSearchButtonClicked: (String) -> Unit = {},
     shouldStartPaginate: Boolean,
-    onPageStarted: (String) -> Unit = {},
+    onLoadMoreData: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -85,7 +85,7 @@ fun SearchScreen(
 
     LaunchedEffect(key1 = shouldStartPaginate) {
         if (shouldStartPaginate && listState == ListState.IDLE) {
-            onPageStarted(textValue)
+            onLoadMoreData(textValue)
         }
     }
 
@@ -102,9 +102,6 @@ fun SearchScreen(
                 "더이상 불러올 데이터가 없습니다.",
                 Toast.LENGTH_SHORT,
             ).show()
-        }
-        if (shouldStartPaginate && listState == ListState.IDLE) {
-            onPageStarted(textValue)
         }
     }
 
