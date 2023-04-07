@@ -7,7 +7,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -32,19 +31,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.modifer.shadow
+import com.ddd.pollpoll.core.ui.PollCardLazyList
 import com.ddd.pollpoll.designsystem.component.*
-import com.ddd.pollpoll.designsystem.component.PollCardType
-import com.ddd.pollpoll.designsystem.component.PollCategoryButton
-import com.ddd.pollpoll.designsystem.component.PollPopularCard
-import com.ddd.pollpoll.designsystem.component.PollRoundedButton
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
-import com.ddd.pollpoll.feature.mypollpoll.ui.PollCard
 
 @Composable
 internal fun MainScreenRoute(
     viewModel: MainViewModel = hiltViewModel(),
     navigateToReadVote: (Int) -> Unit,
+    navigateToSearch: () -> Unit,
 ) {
     val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle().value
     val popularUiState = viewModel.popularUiState.collectAsStateWithLifecycle().value
@@ -67,7 +63,7 @@ internal fun MainScreenRoute(
         }
     }
 
-    MainScreen(categoryUiState, popularUiState, posts, navigateToReadVote, lazyColumnListState)
+    MainScreen(categoryUiState, popularUiState, posts, navigateToReadVote, lazyColumnListState, navigateToSearch)
 }
 
 @Composable
@@ -77,6 +73,7 @@ private fun MainScreen(
     posts: List<Post>,
     navigateToReadVote: (Int) -> Unit,
     lazyColumnListState: LazyListState,
+    onSearchClick: () -> Unit = {},
 ) {
     LazyColumn(
         Modifier
@@ -85,23 +82,11 @@ private fun MainScreen(
         state = lazyColumnListState,
     ) {
         item {
-            TopScreen(categoryUiState)
+            TopScreen(categoryUiState, onSearchClick = onSearchClick)
             Spacer(modifier = Modifier.height(20.dp))
             PopularListScreen(popularUiState)
         }
-        items(
-            items = posts,
-            key = { it.postId },
-        ) { post ->
-            PollCard(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                post = post,
-                onClick = { navigateToReadVote(post.postId) },
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+        PollCardLazyList(posts, navigateToReadVote)
     }
 }
 
@@ -178,7 +163,10 @@ fun PopularScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf())) {
+fun TopScreen(
+    categoryUiState: CategoryUiState = CategoryUiState.Success(listOf()),
+    onSearchClick: () -> Unit = {},
+) {
     val listState = rememberScrollState()
     Surface(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)) {
         Column(
@@ -209,7 +197,7 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
                         .clip(
                             RoundedCornerShape(12.dp),
                         ),
-                    onClick = { /*TODO*/ },
+                    onClick = { onSearchClick() },
                     contentPadding = PaddingValues(0.dp),
                 ) {
                     Image(
@@ -245,14 +233,6 @@ fun TopScreen(categoryUiState: CategoryUiState = CategoryUiState.Success(listOf(
             }
         }
     }
-}
-
-@Composable
-fun PollList(
-    posts: List<Post>,
-    navigateToReadVote: (Int) -> Unit,
-    lazyColumnListState: LazyListState,
-) {
 }
 
 @Preview

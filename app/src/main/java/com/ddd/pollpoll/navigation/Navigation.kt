@@ -51,7 +51,6 @@ import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToSettings
 import com.ddd.pollpoll.feature.settings.ui.navigation.settingsScreen
 import com.ddd.pollpoll.feature.vote.navigation.*
-import com.ddd.pollpoll.feature.vote.navigation.mainRoute
 
 val bottomInvisibleList = listOf(
     loginRoute,
@@ -77,12 +76,20 @@ fun MainNavigation() {
                         navController.navigateToInsertVote()
                     },
                 ) {
-                    Icon(painter = painterResource(id = PollIcon.Insert), "", tint = PollPollTheme.colors.gray_050)
+                    Icon(
+                        painter = painterResource(id = PollIcon.Insert),
+                        "",
+                        tint = PollPollTheme.colors.gray_050,
+                    )
                 }
             }
         },
     ) { paddingValues ->
-        NavHost(modifier = Modifier.padding(paddingValues), navController = navController, startDestination = "login_route") {
+        NavHost(
+            modifier = Modifier.padding(paddingValues),
+            navController = navController,
+            startDestination = "login_route",
+        ) {
             loginScreen(
                 navigateToMainScreen = { navController.navigateToMain() },
                 navigateToNickNameScreen = { navController.navigateToNickNameScreen() },
@@ -97,19 +104,30 @@ fun MainNavigation() {
             readVoteScreen(
                 onBackClick = { navController.popBackStack() },
             )
-            myPollPollScreen (
-                navigateToSettings = { navController.navigateToSettings()},
+            myPollPollScreen(
+                navigateToSettings = { navController.navigateToSettings() },
                 navigateToReadVote = { postId ->
                     navController.navigateToReadVote(postId)
-                }
+                },
             )
             settingsScreen(
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
             )
             MainScreen(
                 navigateToReadVote = { postId ->
                     navController.navigateToReadVote(postId)
-                }
+                },
+                navigateToSearch = {
+                    navController.navigateToSearch()
+                },
+            )
+            SearchScreen(
+                navigateToReadVote = { postId ->
+                    navController.navigateToReadVote(postId)
+                },
+                backToMain = {
+                    navController.popBackStack()
+                },
             )
         }
     }

@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.PostRepository
-import com.ddd.pollpoll.core.network.model.PostResponse
-import com.ddd.pollpoll.core.network.model.PutVoteRequest
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -104,7 +102,7 @@ class ReadVoteViewModel @Inject constructor(
             }
             val tempList = mutableListOf<Vote>()
             val tempPostItemList = mutableListOf<Int>()
-            
+
             for ((i, item) in it.withIndex()) {
                 val voteCountAfterVote = if (votedIndex.contains(i)) {
                     tempPostItemList.add(item.postItemId)

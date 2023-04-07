@@ -18,6 +18,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -60,7 +61,9 @@ android {
 }
 
 dependencies {
-    // Core Android dependencies
+    implementation(project(":core-model"))
+    implementation(project(":core-designsystem"))
+
     implementation(libs.androidx.core.ktx)
 
     // Compose

@@ -12,7 +12,6 @@
 graph LR
 
   core-network --> core-testing
-  core-network --> core-model
   core-network --> core-datastore
   core-network --> core-common
   core-designsystem --> core-ui
@@ -20,7 +19,6 @@ graph LR
   feature-mypollpoll --> core-data
   feature-mypollpoll --> core-ui
   feature-mypollpoll --> core-designsystem
-  feature-mypollpoll --> core-network
   feature-mypollpoll --> core-model
   feature-mypollpoll --> core-common
   feature-login --> core-testing
@@ -40,8 +38,6 @@ graph LR
   feature-vote --> core-data
   feature-vote --> core-model
   feature-vote --> core-ui
-  feature-vote --> core-network
-  feature-vote --> feature-login
   feature-vote --> core-designsystem
   feature-vote --> core-common
   core-data --> core-database
@@ -55,7 +51,6 @@ graph LR
   app --> feature-vote
   app --> feature-mypollpoll
   app --> feature-settings
-  app --> core-network
   app --> core-designsystem
   app --> core-common
   app --> core-model
@@ -65,7 +60,6 @@ graph LR
   app --> feature-vote
   app --> feature-mypollpoll
   app --> feature-settings
-  app --> core-network
   app --> core-designsystem
   app --> core-common
   app --> core-model
@@ -75,7 +69,6 @@ graph LR
   app --> feature-vote
   app --> feature-mypollpoll
   app --> feature-settings
-  app --> core-network
   app --> core-designsystem
   app --> core-common
   app --> core-model
@@ -85,7 +78,6 @@ graph LR
   app --> feature-vote
   app --> feature-mypollpoll
   app --> feature-settings
-  app --> core-network
   app --> core-designsystem
   app --> core-common
   app --> core-model

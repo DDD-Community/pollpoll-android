@@ -40,7 +40,7 @@ class MainViewModel @Inject constructor(
     val posts = mutableStateListOf<Post>()
     private var lastPostId: Int? by mutableStateOf(null)
     var canPaginate by mutableStateOf(false)
-    var listState by mutableStateOf(ListState.IDLE)
+    var listState by mutableStateOf(ListState.EMPTY)
 
     init {
         getPost()
@@ -101,10 +101,26 @@ class MainViewModel @Inject constructor(
 }
 
 enum class ListState {
+
+    NONE,
+    // 빈상태
+    EMPTY,
+
+    // 대기중
     IDLE,
+
+    // 페이지 로딩중
     LOADING,
+
+    // 페이지중
     PAGINATING,
+
+
+
+    // 에러남,
     ERROR,
+
+    // 페이지 끝
     PAGINATION_EXHAUST,
 }
 

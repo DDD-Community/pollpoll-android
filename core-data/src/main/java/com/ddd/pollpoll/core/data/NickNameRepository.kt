@@ -22,6 +22,7 @@ import com.ddd.pollpoll.core.data.model.asExternalModel
 import com.ddd.pollpoll.core.network.model.*
 import com.ddd.pollpoll.core.network.remote.NickNameRemoteSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 

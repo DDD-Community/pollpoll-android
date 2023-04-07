@@ -26,7 +26,6 @@ android {
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -54,7 +53,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core-ui"))
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
 
@@ -69,7 +67,6 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.compose.coil)
     implementation(libs.svg.coil)
-
 
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)

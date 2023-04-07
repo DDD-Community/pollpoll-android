@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 interface PostRepository {
     suspend fun insertPost(token: Vote): Flow<Unit>
-    suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Flow<Unit>
+    suspend fun putPoll(pollId: Int, pollItemIds: List<Int>): Flow<Unit>
     suspend fun getPosts(lastPostId: Int? = null, keyword: String? = null): Flow<List<Post>>
     suspend fun getPost(postId: Int): Flow<Post>
 
@@ -56,12 +56,13 @@ class PostRepositoryImp @Inject constructor(
         )
     }
 
-    override suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Flow<Unit> = flow {
-        emit(postRemoteSource.putPoll(pollId, pollItemIds))
+    override suspend fun putPoll(pollId: Int, pollItemIds: List<Int>): Flow<Unit> = flow {
+        emit(postRemoteSource.putPoll(pollId, PutVoteRequest(pollItemIds)))
     }
 
     override suspend fun getPosts(lastPostId: Int?, keyword: String?): Flow<List<Post>> = flow {
         val result = postRemoteSource.getPosts(lastPostId, keyword).asExternalModel()
+        if(result.isEmpty())  throw NullPointerException("No data")
         emit(result)
     }
 

@@ -134,7 +134,11 @@ fun VoteInfo(lastPost: Post?) {
         }
         Spacer(modifier = Modifier.size(5.dp))
         Row() {
-            TimeText(Date(lastPost.postCreatedAt))
+            Text(
+                text = Date(lastPost.postCreatedAt).convertMMddHHmm(),
+                color = PollPollTheme.colors.gray_400,
+                style = PollPollTheme.typography.body03,
+            )
             Text(
                 text = " | ",
                 color = PollPollTheme.colors.gray_400,
@@ -157,14 +161,9 @@ fun VoteInfo(lastPost: Post?) {
     }
 }
 
-@Composable
-fun TimeText(date: Date) {
+fun Date.convertMMddHHmm(): String {
     val sdf = SimpleDateFormat("MM.dd HH:mm")
-    Text(
-        text = sdf.format(date),
-        color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body03,
-    )
+    return sdf.format(this)
 }
 
 @Composable
@@ -192,7 +191,11 @@ fun VoteContent(
     } else {
         Column(
             modifier = Modifier
-                .border(1.dp, color = PollPollTheme.colors.gray_200, shape = RoundedCornerShape(20.dp))
+                .border(
+                    1.dp,
+                    color = PollPollTheme.colors.gray_200,
+                    shape = RoundedCornerShape(20.dp),
+                )
                 .padding(horizontal = 20.dp, vertical = 30.dp)
                 .fillMaxWidth(),
         ) {
@@ -316,7 +319,11 @@ fun VoteResultItem(vote: Vote) {
             val color = PollPollTheme.colors.gray_700
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})", style = PollPollTheme.typography.body03, color = color)
+            Text(
+                text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})",
+                style = PollPollTheme.typography.body03,
+                color = color,
+            )
         }
 
         Row(
@@ -334,7 +341,11 @@ fun VoteResultItem(vote: Vote) {
             val color = Color.White
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})", style = PollPollTheme.typography.body03, color = color)
+            Text(
+                text = "${(vote.percent * 100f).roundToInt()}% (${vote.voteCount})",
+                style = PollPollTheme.typography.body03,
+                color = color,
+            )
         }
     }
 }

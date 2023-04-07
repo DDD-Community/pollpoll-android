@@ -96,7 +96,6 @@ dependencies {
     implementation(project(":feature-vote"))
     implementation(project(":feature-mypollpoll"))
     implementation(project(":feature-settings"))
-    implementation(project(":core-network"))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-designsystem"))
     implementation(project(":core-common"))

@@ -2,6 +2,7 @@ package com.ddd.pollpoll.designsystem.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,7 +26,12 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PollSearchBar(value: String, onValueChange: (String) -> Unit) {
+fun PollSearchBar(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onCloseButtonClicked: () -> Unit = {},
+    onSearchButtonClicked: () -> Unit = {},
+) {
     PollCoreTextField(
         value = value,
         textFieldColors = TextFieldDefaults.textFieldColors(
@@ -35,6 +41,9 @@ fun PollSearchBar(value: String, onValueChange: (String) -> Unit) {
         modifier = Modifier,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = { onSearchButtonClicked() },
         ),
 
         placeholder = {
@@ -47,14 +56,14 @@ fun PollSearchBar(value: String, onValueChange: (String) -> Unit) {
         trailingIcon = {
             Row() {
                 if (value.isNotEmpty()) {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = onCloseButtonClicked) {
                         Icon(
                             painter = painterResource(id = PollIcon.CloseButton),
                             contentDescription = "",
                         )
                     }
                 }
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = onSearchButtonClicked) {
                     Icon(
                         painter = painterResource(id = PollIcon.Search),
                         contentDescription = "",
