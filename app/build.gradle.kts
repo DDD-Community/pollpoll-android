@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import dev.iurysouza.modulegraph.*
 
 @Suppress("DSL_SCOPE_VIOLATION") // Remove when fixed https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
@@ -142,4 +141,8 @@ dependencies {
     // Instrumented tests: jUnit rules and runners
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
+
+    testImplementation(libs.junit5.api)
+    testRuntimeOnly(libs.junit5.engine)
+    testRuntimeOnly(libs.junit5.vintage)
 }

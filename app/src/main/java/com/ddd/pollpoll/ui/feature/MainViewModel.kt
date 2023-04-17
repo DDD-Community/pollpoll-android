@@ -115,8 +115,6 @@ enum class ListState {
     // 페이지중
     PAGINATING,
 
-
-
     // 에러남,
     ERROR,
 

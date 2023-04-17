@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.junit5)
 }
 
 android {
@@ -68,8 +69,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.arch.core)
 
-
-
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     // Hilt and instrumented tests.
@@ -87,4 +86,9 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.okhttp.mockserver)
     implementation(libs.androidx.datastore)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.junit5.api)
+    testRuntimeOnly(libs.junit5.engine)
+    testRuntimeOnly(libs.junit5.vintage)
 }
