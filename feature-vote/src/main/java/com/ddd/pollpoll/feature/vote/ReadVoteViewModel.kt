@@ -55,8 +55,14 @@ class ReadVoteViewModel @Inject constructor(
                     val votes = lastPost.value?.pollItems
                     votes?.let {
                         val tempList = mutableListOf<Vote>()
+                        val votedIndex = mutableListOf<Int>()
                         for ((index, postItem) in it.withIndex()) {
-                            val selfPolledCunt = if (postItem.isPolled) 1 else 0
+                            val selfPolledCunt = if (postItem.isPolled) {
+                                votedIndex.add(index)
+                                1
+                            } else {
+                                0
+                            }
                             val item = Vote(
                                 index = index,
                                 text = postItem.name,
@@ -69,6 +75,10 @@ class ReadVoteViewModel @Inject constructor(
                             tempList.add(item)
                         }
                         beforeVote.value = tempList
+
+                        if (votedIndex.isNotEmpty()) {
+                            setAfterVote(it, votedIndex)
+                        }
                     }
 
                 }
