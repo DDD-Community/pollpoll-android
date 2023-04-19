@@ -56,11 +56,12 @@ class ReadVoteViewModel @Inject constructor(
                     votes?.let {
                         val tempList = mutableListOf<Vote>()
                         for ((index, postItem) in it.withIndex()) {
+                            val selfPolledCunt = if (postItem.isPolled) 1 else 0
                             val item = Vote(
                                 index = index,
                                 text = postItem.name,
                                 percent = 0f,
-                                voteCount = postItem.count,
+                                voteCount = postItem.count - selfPolledCunt,
                                 isSelected = false,
                                 onClick = {},
                                 postItemId = postItem.pollItemId
@@ -85,11 +86,12 @@ class ReadVoteViewModel @Inject constructor(
         votes?.let {
             val tempList = mutableListOf<Vote>()
             for ((index, postItem) in it.withIndex()) {
+                val selfPolledCunt = if (postItem.isPolled) 1 else 0
                 val item = Vote(
                     index = index,
                     text = postItem.name,
                     percent = 0f,
-                    voteCount = postItem.count,
+                    voteCount = postItem.count - selfPolledCunt,
                     isSelected = false,
                     onClick = {},
                     postItemId = postItem.pollItemId
@@ -126,11 +128,12 @@ class ReadVoteViewModel @Inject constructor(
         val tempList = mutableListOf<Vote>()
         val tempPostItemList = mutableListOf<Int>()
         for ((i, item) in it.withIndex()) {
+            val selfPolledCunt = if (item.isPolled) 1 else 0
             val voteCountAfterVote = if (votedIndex.contains(i)) {
                 tempPostItemList.add(item.pollItemId)
-                item.count + 1
+                item.count + 1 - selfPolledCunt
             } else {
-                item.count
+                item.count - selfPolledCunt
             }
             tempList.add(
                 Vote(
