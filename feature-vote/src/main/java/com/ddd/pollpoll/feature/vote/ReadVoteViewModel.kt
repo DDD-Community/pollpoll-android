@@ -28,21 +28,7 @@ class ReadVoteViewModel @Inject constructor(
     val afterVote = MutableStateFlow<List<Vote>>(emptyList())
     val selectedIndex = MutableStateFlow<Set<Int>>(emptySet())
     val selectedPostItemIds = MutableStateFlow<List<Int>>(emptyList())
-    val alreadyVotedPostIds = MutableStateFlow<List<Int>>(emptyList())
 
-    init {
-        viewModelScope.launch {
-            selectMyPollType("PARTICIPATE_POLL")
-            alreadyVotedPostIds.combine(lastPost) { ids, post ->
-                Log.e("ReadVoteViewModel", "ids: $ids post:$post")
-                if (ids.contains(post?.postId)) {
-                    post?.let {
-                        setAfterVote(it.pollItems!!, emptyList())
-                    }
-                }
-            }.collect {}
-        }
-    }
 
     fun selectIndex(index: Int) {
         val tempSet = selectedIndex.value.toMutableSet()
@@ -180,7 +166,6 @@ class ReadVoteViewModel @Inject constructor(
                         for (post in myPageType.posts) {
                             tempList.add(post.postId)
                         }
-                        alreadyVotedPostIds.value = tempList
                     }
                 }
             }
