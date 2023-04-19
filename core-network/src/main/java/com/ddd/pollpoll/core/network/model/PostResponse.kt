@@ -23,13 +23,15 @@ data class PostResponse(
 )
 
 data class PostItem(
-    val postItemId: Int,
+    val isPolled: Boolean,
+    val pollItemId: Int,
     val name: String,
     val count: Int
 )
 
 fun PostItem.asExternalModel() = com.ddd.pollpoll.PostItem(
-    postItemId = this.postItemId,
+    isPolled = this.isPolled,
+    pollItemId = this.pollItemId,
     name = this.name,
     count = this.count
 

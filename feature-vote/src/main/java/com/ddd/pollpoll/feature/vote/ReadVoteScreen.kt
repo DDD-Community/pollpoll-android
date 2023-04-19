@@ -24,7 +24,6 @@ import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
@@ -228,9 +227,9 @@ fun VoteContent(
 
                 for (post in lastPost.pollItems!!) {
                     if (total > 0) {
-                        VoteResultItem(Vote(0, post.name, post.count/total, post.count, false, {}, post.postItemId))
+                        VoteResultItem(Vote(0, post.name, post.count/total, post.count, false, {}, post.pollItemId))
                     } else {
-                        VoteResultItem(Vote(0, post.name, 0f, post.count, false, {}, post.postItemId))
+                        VoteResultItem(Vote(0, post.name, 0f, post.count, false, {}, post.pollItemId))
                     }
                     Spacer(modifier = Modifier.size(10.dp))
                 }

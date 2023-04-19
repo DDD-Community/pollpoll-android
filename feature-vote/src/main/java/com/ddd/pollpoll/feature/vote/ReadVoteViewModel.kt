@@ -13,7 +13,6 @@ import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -64,7 +63,7 @@ class ReadVoteViewModel @Inject constructor(
                                 voteCount = postItem.count,
                                 isSelected = false,
                                 onClick = {},
-                                postItemId = postItem.postItemId
+                                postItemId = postItem.pollItemId
                             )
                             tempList.add(item)
                         }
@@ -93,7 +92,7 @@ class ReadVoteViewModel @Inject constructor(
                     voteCount = postItem.count,
                     isSelected = false,
                     onClick = {},
-                    postItemId = postItem.postItemId
+                    postItemId = postItem.pollItemId
                 )
                 tempList.add(item)
             }
@@ -128,7 +127,7 @@ class ReadVoteViewModel @Inject constructor(
         val tempPostItemList = mutableListOf<Int>()
         for ((i, item) in it.withIndex()) {
             val voteCountAfterVote = if (votedIndex.contains(i)) {
-                tempPostItemList.add(item.postItemId)
+                tempPostItemList.add(item.pollItemId)
                 item.count + 1
             } else {
                 item.count
@@ -141,7 +140,7 @@ class ReadVoteViewModel @Inject constructor(
                     voteCount = voteCountAfterVote,
                     isSelected = false,
                     onClick = {},
-                    item.postItemId
+                    item.pollItemId
                 )
             )
         }

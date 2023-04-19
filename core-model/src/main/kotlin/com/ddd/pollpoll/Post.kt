@@ -1,7 +1,8 @@
 package com.ddd.pollpoll
 
 data class PostItem(
-    val postItemId: Int,
+    val isPolled: Boolean,
+    val pollItemId: Int,
     val name: String,
     val count: Int
 )
