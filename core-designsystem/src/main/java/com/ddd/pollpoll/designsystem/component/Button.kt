@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,13 +17,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -44,7 +43,7 @@ fun PollLoginButton(
     enabled: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(horizontal = 88.dp, 14.dp),
     @DrawableRes iconRes: Int = PollIcon.Google,
-    text: String = "구글 ID 로그인"
+    text: String = "구글 ID 로그인",
 ) {
     OutlinedButton(
         onClick = onClick,
@@ -53,7 +52,7 @@ fun PollLoginButton(
         enabled = enabled,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = PollPollTheme.colors.gray_700,
-            containerColor = Color.White
+            containerColor = Color.White,
         ),
         border = BorderStroke(
             width = PollButtonDefaults.OutlinedButtonBorderWidth,
@@ -61,19 +60,19 @@ fun PollLoginButton(
                 PollPollTheme.colors.gray_200
             } else {
                 MaterialTheme.colorScheme.onSurface.copy(
-                    alpha = PollButtonDefaults.DisabledOutlinedButtonBorderAlpha
+                    alpha = PollButtonDefaults.DisabledOutlinedButtonBorderAlpha,
                 )
-            }
+            },
         ),
         contentPadding = contentPadding,
         content = {
             Image(
                 imageVector = ImageVector.vectorResource(id = iconRes),
-                contentDescription = ""
+                contentDescription = "",
             )
             Spacer(modifier = modifier.width(10.dp))
             Text(text = text, style = PollPollTheme.typography.body02)
-        }
+        },
 
     )
 }
@@ -86,41 +85,43 @@ fun PollButton(
     shape: Shape = RoundedCornerShape(0.dp),
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     color: PollButtonColor = PollButtonColor.ORANGE,
-    content: @Composable RowScope.() -> Unit = {}
+    content: @Composable RowScope.() -> Unit = {},
 ) {
     Button(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (color == PollButtonColor.BLUE) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500,
-            disabledContainerColor = PollPollTheme.colors.gray_300
+            disabledContainerColor = PollPollTheme.colors.gray_300,
         ),
         contentPadding = contentPadding,
         enabled = enabled,
         shape = shape,
-        onClick = onClick
+        onClick = onClick,
     ) {
         content()
     }
 }
+
 @Composable
 fun PollRoundedButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     enabled: Boolean = true,
-    shape: Shape = RoundedCornerShape(0.dp),
+    shape: Shape = RoundedCornerShape(12.dp),
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    color: PollButtonColor = PollButtonColor.ORANGE,
-    content: @Composable RowScope.() -> Unit = {}
+    containerColor: Color = PollPollTheme.colors.gray_050,
+    content: @Composable RowScope.() -> Unit = {},
 ) {
     Button(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (color == PollButtonColor.BLUE) PollPollTheme.colors.secondary_500 else PollPollTheme.colors.primary_500,
-            disabledContainerColor = PollPollTheme.colors.gray_300
+            containerColor = containerColor,
+            disabledContainerColor = PollPollTheme.colors.gray_300,
         ),
         enabled = enabled,
         shape = shape,
-        onClick = onClick
+        onClick = onClick,
+        contentPadding = contentPadding,
     ) {
         content()
     }
@@ -131,7 +132,7 @@ fun PollCategoryButton(
     onClick: () -> Unit = {},
     clicked: Boolean = false,
     imageUrl: String = "",
-    text: String = "전체"
+    text: String = "전체",
 ) {
     Column() {
         Button(
@@ -139,20 +140,19 @@ fun PollCategoryButton(
             modifier = Modifier.size(60.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (clicked) PollPollTheme.colors.primary_500 else Color(0xFFF5F5F5)
+                containerColor = if (clicked) PollPollTheme.colors.primary_500 else Color(0xFFF5F5F5),
             ),
             elevation = ButtonDefaults.buttonElevation(2.dp),
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(0.dp),
         ) {
             AsyncImage(
                 modifier = Modifier.align(CenterVertically).size(36.dp),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(imageUrl)
                     .decoderFactory(SvgDecoder.Factory())
-//                    .size(size = 40)
                     .build(),
                 placeholder = painterResource(PollIcon.Carrier),
-                contentDescription = ""
+                contentDescription = "",
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -160,7 +160,7 @@ fun PollCategoryButton(
             modifier = Modifier.align(CenterHorizontally),
             text = text,
             color = if (clicked) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_900,
-            style = PollPollTheme.typography.heading05
+            style = PollPollTheme.typography.heading05,
         )
     }
 }
@@ -183,7 +183,22 @@ enum class PollButtonColor {
 @Composable
 fun PollButtonPreview() {
     PollPollTheme {
-        PollButton()
+        PollButton() {
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PollRoundButtonPreview() {
+    PollPollTheme {
+        PollRoundedButton(modifier = Modifier.size(45.dp), contentPadding = PaddingValues(0.dp)) {
+            Image(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                painter = painterResource(id = PollIcon.Search),
+                contentDescription = "",
+            )
+        }
     }
 }
 

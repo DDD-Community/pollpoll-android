@@ -17,8 +17,8 @@
 package com.ddd.pollpoll.core.data
 
 import com.ddd.pollpoll.Login
+import com.ddd.pollpoll.core.data.model.asExternalModel
 import com.ddd.pollpoll.core.network.model.LoginRequest
-import com.ddd.pollpoll.core.network.model.asExternalModel
 import com.ddd.pollpoll.core.network.remote.LoginRemoteSource
 import com.ddd.pollpoll.datastore.PollPollDataStore
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +31,7 @@ interface LoginRepository {
 
 class LoginRepositoryImp @Inject constructor(
     private val loginRemoteSource: LoginRemoteSource,
-    private val pollDataStore: PollPollDataStore
+    private val pollDataStore: PollPollDataStore,
 ) : LoginRepository {
 
     override suspend fun loginGoogle(token: String): Flow<Login> = flow {

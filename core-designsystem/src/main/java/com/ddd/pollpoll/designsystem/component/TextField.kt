@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -44,24 +45,28 @@ fun PollTextField(
     textStyle: TextStyle = PollPollTheme.typography.heading05,
     contextPadding: PaddingValues = PaddingValues(top = 6.dp, bottom = 20.dp),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     var focusState by remember { mutableStateOf(false) }
     Column() {
         PollCoreTextField(
             value = text,
-            placeholderText = placeholderText,
+            placeholder = { Text(text = placeholderText) },
             textStyle = textStyle,
-            onValueChange = onValueChange,
+            onValueChange = { textValue ->
+                maxLength?.let { maxLength ->
+                    if (textValue.length <= maxLength) onValueChange(textValue)
+                } ?: onValueChange(textValue)
+            },
             paddingValues = contextPadding,
             textFieldColors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
                 unfocusedIndicatorColor = PollPollTheme.colors.gray_300,
-                focusedIndicatorColor = PollPollTheme.colors.gray_900
+                focusedIndicatorColor = PollPollTheme.colors.gray_900,
             ),
             keyboardActions = keyboardActions,
             keyboardOptions = keyboardOptions,
-            focusedChanged = { focusState = it.isFocused }
+            focusedChanged = { focusState = it.isFocused },
         )
         maxLength?.let { max ->
 
@@ -74,7 +79,7 @@ fun PollTextField(
                     append("/ ${max}자")
                 },
                 color = PollPollTheme.colors.gray_400,
-                style = PollPollTheme.typography.body04
+                style = PollPollTheme.typography.body04,
             )
         }
     }
@@ -90,14 +95,14 @@ fun PollTextFieldPreview() {
                 text,
                 onValueChange = { text = it },
                 placeholderText = "제목을 입력해주세요",
-                maxLength = 50
+                maxLength = 50,
             )
 
             PollTextField(
                 text,
                 onValueChange = { text = it },
                 placeholderText = "제목을 입력해주세요",
-                maxLength = 50
+                maxLength = 50,
             )
         }
     }

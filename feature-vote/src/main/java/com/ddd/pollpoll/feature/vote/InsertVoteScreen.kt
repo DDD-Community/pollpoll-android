@@ -22,7 +22,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -45,10 +44,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.PollItem
-import com.ddd.pollpoll.Vote
 import com.ddd.pollpoll.designsystem.component.PollAlertDialog
 import com.ddd.pollpoll.designsystem.component.PollButton
 import com.ddd.pollpoll.designsystem.component.PollIconButtonText
@@ -62,21 +59,18 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalMaterialApi::class)
 @Composable
 internal fun InsertVoteRoute(
     modifier: Modifier = Modifier,
     viewModel: InsertVoteViewModel = hiltViewModel(),
     onCloseButtonClicked: () -> Unit,
-    onInsertSucceed: () -> Unit
+    onInsertSucceed: () -> Unit,
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val voteState: Vote by viewModel.vote.collectAsStateWithLifecycle()
-
+    if (uiState.isInsertSuccess) onInsertSucceed()
     InsertVoteScreen(
         modifier = modifier,
-        vote = voteState,
-        uiState = uiState,
+        insertVoteUiState = uiState,
         chooseCategory = viewModel::selectCategory,
         titleValueChange = viewModel::changeTitle,
         contentValueChange = viewModel::changeContent,
@@ -92,17 +86,16 @@ internal fun InsertVoteRoute(
         onCloseButtonClicked = onCloseButtonClicked,
         onInsertButtonClicked = viewModel::insertPost,
         onVoteDateSelected = viewModel::changeDate,
-        onInsertSucceed = onInsertSucceed
+        onInsertSucceed = onInsertSucceed,
 
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun InsertVoteScreen(
     modifier: Modifier,
-    vote: Vote,
-    uiState: InsertVoteUiState,
+    insertVoteUiState: InsertVoteUiState,
     chooseCategory: (Category) -> Unit,
     titleValueChange: (String) -> Unit,
     contentValueChange: (String) -> Unit,
@@ -155,16 +148,16 @@ fun InsertVoteScreen(
             sheetState = insertAppState.bottomSheetState,
         ) {
             Surface(modifier = Modifier.padding(scaffoldPadding)) {
-                when (uiState) {
-                    InsertVoteUiState.SelectCategory -> {
+                when (insertVoteUiState.insertVoteStep) {
+                    InsertVoteStep.SelectCategory -> {
                         ChoiceCategoryScreen(onClick = chooseCategory)
                     }
 
-                    is InsertVoteUiState.InsertTitle -> {
+                    InsertVoteStep.InsertTitle -> {
                         InsertContentScreen(
-                            vote.category.toCategory(),
-                            vote.title,
-                            vote.contents,
+                            insertVoteUiState.category.toCategory(),
+                            insertVoteUiState.title,
+                            insertVoteUiState.contents,
                             titleValueChange = titleValueChange,
                             contentValueChange = contentValueChange,
                             progressBarChanged = { insertAppState.setProgressBar(it.progressBar) },
@@ -179,9 +172,9 @@ fun InsertVoteScreen(
                         )
                     }
 
-                    is InsertVoteUiState.AddVoteCategory -> {
+                    InsertVoteStep.AddVoteCategory -> {
                         AddVoteCategoryScreen(
-                            vote.category.toCategory(),
+                            insertVoteUiState.category.toCategory(),
                             onDialogClick = {
                                 insertAppState.coroutineScope.launch {
                                     insertAppState.bottomSheetState.show()
@@ -190,7 +183,7 @@ fun InsertVoteScreen(
                             selectedDate = selectedOptionState,
                             onAddCategory = onAddCategory,
                             onTextChanged = onTextChanged,
-                            voteList = vote.pollItems,
+                            voteList = insertVoteUiState.pollItems,
                             progressBarChanged = {
                                 insertAppState.setProgressBar(it.progressBar)
                             },
@@ -199,14 +192,6 @@ fun InsertVoteScreen(
                                 onBackButtonClicked()
                             },
                         )
-                    }
-
-                    is InsertVoteUiState.Back -> {
-                        onCloseButtonClicked()
-                    }
-
-                    is InsertVoteUiState.Success -> {
-                        onInsertSucceed()
                     }
                 }
             }

@@ -29,14 +29,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
+import com.ddd.pollpoll.core.ui.PollCard
 import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Cloud
@@ -92,16 +91,15 @@ fun MypollpollScreen(
                 actionIconColor = Color.Black,
 
                 navigationIcon = {
-
                 },
                 actions = {
                     IconButton(onClick = { navigateToSettings() }) {
                         Icon(
                             painter = painterResource(id = PollIcon.Settings),
-                            contentDescription = ""
+                            contentDescription = "",
                         )
                     }
-                }
+                },
             )
         }
     }) {
@@ -109,7 +107,7 @@ fun MypollpollScreen(
             Column(
                 modifier = Modifier
                     .background(color = PollPollTheme.colors.gray_050)
-                    .fillMaxSize()
+                    .fillMaxSize(),
             ) {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
                     MyPollPollHeader(uiState, myPollClicked, participatePollClicked, watchPollClicked)
@@ -132,7 +130,7 @@ fun MyPollPollHeader(
             modifier = Modifier
                 .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
                 .background(color = Color.White)
-                .padding(horizontal = 20.dp, vertical = 15.dp)
+                .padding(horizontal = 20.dp, vertical = 15.dp),
         ) {
             PollRecord(Writing, "내가 쓴 투표", uiState.myPollSelected, uiState.myPollCount, myPollClicked)
             Spacer(Modifier.weight(1f))

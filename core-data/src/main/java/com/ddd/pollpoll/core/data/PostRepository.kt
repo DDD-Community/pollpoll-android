@@ -17,11 +17,12 @@
 package com.ddd.pollpoll.core.data
 
 import com.ddd.pollpoll.PopularPost
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.Vote
-import com.ddd.pollpoll.core.network.model.GetPostResponse
-import com.ddd.pollpoll.core.network.model.PostResponse
+import com.ddd.pollpoll.core.data.model.asExternalModel
+import com.ddd.pollpoll.core.network.model.PollItem
+import com.ddd.pollpoll.core.network.model.PostPostRequest
 import com.ddd.pollpoll.core.network.model.PutVoteRequest
-import com.ddd.pollpoll.core.network.model.asNetworkModel
 import com.ddd.pollpoll.core.network.remote.PostRemoteSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -29,36 +30,49 @@ import javax.inject.Inject
 
 interface PostRepository {
     suspend fun insertPost(token: Vote): Flow<Unit>
-    suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Flow<Unit>
-    suspend fun getPosts(lastPostId: Int): Flow<GetPostResponse>
-    suspend fun getPost(postId: Int): Flow<PostResponse>
+    suspend fun putPoll(pollId: Int, pollItemIds: List<Int>): Flow<Unit>
+    suspend fun getPosts(lastPostId: Int? = null, keyword: String? = null): Flow<List<Post>>
+    suspend fun getPost(postId: Int): Flow<Post>
 
     suspend fun getPopularPost(): Flow<PopularPost>
 }
 
 class PostRepositoryImp @Inject constructor(
-    private val postRemoteSource: PostRemoteSource
+    private val postRemoteSource: PostRemoteSource,
 ) : PostRepository {
+
     override suspend fun insertPost(vote: Vote): Flow<Unit> = flow {
-        emit(postRemoteSource.insertPost(vote.asNetworkModel()))
+        emit(
+            postRemoteSource.insertPost(
+                PostPostRequest(
+                    categoryId = vote.category.categoryId,
+                    contents = vote.contents,
+                    milliseconds = vote.milliseconds,
+                    multipleChoice = vote.multipleChoice,
+                    pollItems = vote.pollItems.map { PollItem(it.name) },
+                    title = vote.title,
+                ),
+            ),
+        )
     }
 
-    override suspend fun putPoll(pollId: Int, pollItemIds: PutVoteRequest): Flow<Unit> = flow {
-        emit(postRemoteSource.putPoll(pollId, pollItemIds))
+    override suspend fun putPoll(pollId: Int, pollItemIds: List<Int>): Flow<Unit> = flow {
+        emit(postRemoteSource.putPoll(pollId, PutVoteRequest(pollItemIds)))
     }
 
-    override suspend fun getPosts(lastPostId: Int): Flow<GetPostResponse> = flow {
-        val result = postRemoteSource.getPosts(lastPostId)
+    override suspend fun getPosts(lastPostId: Int?, keyword: String?): Flow<List<Post>> = flow {
+        val result = postRemoteSource.getPosts(lastPostId, keyword).asExternalModel()
+        if(result.isEmpty())  throw NullPointerException("No data")
         emit(result)
     }
 
-    override suspend fun getPost(postId: Int): Flow<PostResponse> = flow {
-        val result = postRemoteSource.getPost(postId)
+    override suspend fun getPost(postId: Int): Flow<Post> = flow {
+        val result = postRemoteSource.getPost(postId).asExternalModel()
         emit(result)
     }
 
     override suspend fun getPopularPost(): Flow<PopularPost> = flow {
-        val result = postRemoteSource.getPopularPosts()
+        val result = postRemoteSource.getPopularPosts().asExternalModel()
         emit(result)
     }
 }

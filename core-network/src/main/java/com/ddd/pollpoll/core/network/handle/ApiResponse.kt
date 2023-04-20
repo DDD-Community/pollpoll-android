@@ -5,7 +5,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 data class ApiResponse<T>(
-    val data: T
+    val data: T,
 )
 
 suspend fun <T> Response<ApiResponse<T>>.executeHandle(): T {
@@ -14,7 +14,9 @@ suspend fun <T> Response<ApiResponse<T>>.executeHandle(): T {
         val body = response.body()?.data
         if (response.isSuccessful) {
             body ?: throw ResponseNullException(response.message())
-        } else throw HttpException(response)
+        } else {
+            throw HttpException(response)
+        }
     } catch (e: HttpException) {
         throw Exception()
     }

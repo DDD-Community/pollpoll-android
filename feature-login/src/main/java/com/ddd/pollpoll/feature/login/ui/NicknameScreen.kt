@@ -29,20 +29,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ddd.pollpoll.designsystem.component.PollButton
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.login.R
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 internal fun NicknameRoute(
     modifier: Modifier = Modifier.fillMaxSize(),
@@ -57,8 +56,8 @@ internal fun NicknameRoute(
         navigateToMain = navigateToMainScreen,
         insertNicknameUiState = insertNicknameUiState,
         recommendNicknameUiState = recommendNicknameUiState,
-        onRecommendButtonClicked = { viewModel.recommendNickname() },
-        onInsertNickNameButtonClicked = { viewModel.insertNickName(it) },
+        onRecommendButtonClicked = viewModel::recommendNickname,
+        onInsertNickNameButtonClicked = viewModel::insertNickName,
     )
 }
 

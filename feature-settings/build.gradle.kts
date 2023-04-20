@@ -43,22 +43,29 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
+        freeCompilerArgs += listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$buildDir/compose",
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose"
+        )
     }
 }
 
 dependencies {
     implementation(project(":core-data"))
     implementation(project(":core-ui"))
-    implementation(project(mapOf("path" to ":core-designsystem")))
+    implementation(project(":core-designsystem"))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-common"))
     // Core Android dependencies

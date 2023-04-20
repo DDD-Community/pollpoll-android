@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.network.model.PostResponse
 import com.ddd.pollpoll.designsystem.component.PollButton
 import com.ddd.pollpoll.designsystem.component.PollLabel
@@ -177,7 +178,7 @@ fun HitsText(hits: Int) {
 
 @Composable
 fun VoteContent(
-    lastPost: PostResponse?,
+    lastPost: Post?,
     voted: Boolean,
     vote: KFunction1<List<Int>, Unit>,
     reVote: () -> Unit,
@@ -214,7 +215,7 @@ fun VoteContent(
             Text(
                 text = "${lastPost.title}".replace(" ", "\u00A0"),
                 color = PollPollTheme.colors.gray_700,
-                style = PollPollTheme.typography.heading04
+                style = PollPollTheme.typography.heading04,
             )
             VoteDueDateText(Date(lastPost.pollEndAt))
             Spacer(modifier = Modifier.size(30.dp))
@@ -268,19 +269,19 @@ fun VoteContent(
                         Spacer(modifier = Modifier.size(10.dp))
                     }
 
-                    PollButton(
-                        shape = RoundedCornerShape(100.dp),
-                        onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
-                            vote(selectedIndex.toList())
-                        }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = "폴폴 참여하기",
-                            color = Color.White,
-                            style = PollPollTheme.typography.body03
-                        )
-                    }
+                PollButton(
+                    shape = RoundedCornerShape(100.dp),
+                    onClick = {  // 뷰모델에 있는 선택된것들로 최종 선택
+                        vote(selectedIndex.toList())
+                }, enabled = selectedIndex.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "폴폴 참여하기",
+                        color = Color.White,
+                        style = PollPollTheme.typography.body03
+                    )
                 }
             }
+
 
         }
     }
@@ -406,7 +407,6 @@ fun VoteItem(vote: Vote, select: (Int)-> Unit) {
             Text(text = vote.text, style = PollPollTheme.typography.body03, color = color)
         }
     }
-
 }
 
 @Preview

@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import com.ddd.pollpoll.CategoryEnum
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 
-data class Category(val categoryId: CategoryEnum, @DrawableRes val iconDrawable: Int, val text: String)
+data class Category(val categoryEnum: CategoryEnum, @DrawableRes val iconDrawable: Int, val text: String)
 
 val CategoryList = listOf<Category>(
     Category(CategoryEnum.Buy, PollIcon.Buy, "구매"),
@@ -17,4 +17,4 @@ val CategoryList = listOf<Category>(
 
 internal val defalutCategory = Category(CategoryEnum.Buy, PollIcon.Buy, "구매")
 
-fun CategoryEnum.toCategory() = CategoryList.first() { this == it.categoryId }
+fun CategoryEnum.toCategory() = CategoryList.first() { this == it.categoryEnum }

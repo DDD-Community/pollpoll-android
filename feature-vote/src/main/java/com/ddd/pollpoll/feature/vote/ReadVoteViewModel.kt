@@ -4,11 +4,9 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.MyPageRepository
 import com.ddd.pollpoll.core.data.PostRepository
-import com.ddd.pollpoll.core.network.model.PostItem
-import com.ddd.pollpoll.core.network.model.PostResponse
-import com.ddd.pollpoll.core.network.model.PutVoteRequest
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +20,7 @@ class ReadVoteViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository
 ) : ViewModel() {
 //    val posts = MutableStateFlow<GetPostResponse?>(null)
-    val lastPost = MutableStateFlow<PostResponse?>(null)
+    val lastPost = MutableStateFlow<Post?>(null)
     val beforeVote = MutableStateFlow<List<Vote>>(emptyList())
     val afterVote = MutableStateFlow<List<Vote>>(emptyList())
     val selectedIndex = MutableStateFlow<Set<Int>>(emptySet())

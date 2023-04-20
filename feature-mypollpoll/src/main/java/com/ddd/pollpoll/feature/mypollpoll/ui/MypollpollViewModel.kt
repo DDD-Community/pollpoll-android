@@ -23,15 +23,12 @@ import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.MyPageRepository
 import com.ddd.pollpoll.core.data.PostRepository
-import com.ddd.pollpoll.core.network.model.GetPostResponse
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 data class MyPollPollUiState(
     val myPollSelected: Boolean,
@@ -47,7 +44,7 @@ data class MyPollPollUiState(
 class MypollpollViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val postRepository: PostRepository,
-    private val myPageRepository: MyPageRepository
+    private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
     val posts = MutableStateFlow<List<Post>>(emptyList())
     val uiState = MutableStateFlow(MyPollPollUiState(true, 0, false, 0, false, 0))
@@ -59,7 +56,7 @@ class MypollpollViewModel @Inject constructor(
         uiState.value = uiState.value.copy(
             myPollSelected = true,
             participatePollSelected = false,
-            watchPollSelected = false
+            watchPollSelected = false,
         )
     }
     fun participatePollClicked() {
@@ -69,7 +66,7 @@ class MypollpollViewModel @Inject constructor(
         uiState.value = uiState.value.copy(
             myPollSelected = false,
             participatePollSelected = true,
-            watchPollSelected = false
+            watchPollSelected = false,
         )
     }
     fun watchPollClicked() {
@@ -79,7 +76,7 @@ class MypollpollViewModel @Inject constructor(
         uiState.value = uiState.value.copy(
             myPollSelected = false,
             participatePollSelected = false,
-            watchPollSelected = true
+            watchPollSelected = true,
         )
     }
 
@@ -88,7 +85,7 @@ class MypollpollViewModel @Inject constructor(
             when (result) {
                 is Result.Error -> Log.e(
                     "MypollpollViewModel",
-                    "getMyPageType Error ${result.exception}, Type : $type"
+                    "getMyPageType Error ${result.exception}, Type : $type",
                 )
 
                 Result.Loading -> Log.e("MypollpollViewModel", "getMyPageType Loading, Type : $type")
@@ -99,7 +96,7 @@ class MypollpollViewModel @Inject constructor(
                         uiState.value = uiState.value.copy(
                             myPollCount = myPageType.myPollCount,
                             participateCount = myPageType.participatePollCount,
-                            watchPollCount = myPageType.watchPollCount
+                            watchPollCount = myPageType.watchPollCount,
                         )
                         posts.value = myPageType.posts
                     }
@@ -112,6 +109,5 @@ class MypollpollViewModel @Inject constructor(
         viewModelScope.launch {
             selectMyPollType("MY_POLL")
         }
-
     }
 }
