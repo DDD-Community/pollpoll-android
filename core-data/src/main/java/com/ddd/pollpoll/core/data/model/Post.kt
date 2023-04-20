@@ -6,7 +6,8 @@ import com.ddd.pollpoll.core.network.model.PostItem
 import com.ddd.pollpoll.core.network.model.PostResponse
 
 fun PostItem.asExternalModel() = com.ddd.pollpoll.PostItem(
-    postItemId = this.postItemId,
+    isPolled = this.isPolled,
+    pollItemId = this.pollItemId,
     name = this.name,
     count = this.count,
 

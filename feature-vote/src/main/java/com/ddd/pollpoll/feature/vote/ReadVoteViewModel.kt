@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.Post
+import com.ddd.pollpoll.PostItem
 import com.ddd.pollpoll.core.data.MyPageRepository
 import com.ddd.pollpoll.core.data.PostRepository
 import com.ddd.pollpoll.core.result.Result
@@ -17,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ReadVoteViewModel @Inject constructor(
     private val postRepository: PostRepository,
-    private val myPageRepository: MyPageRepository
+    private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
 //    val posts = MutableStateFlow<GetPostResponse?>(null)
     val lastPost = MutableStateFlow<Post?>(null)
@@ -25,7 +26,6 @@ class ReadVoteViewModel @Inject constructor(
     val afterVote = MutableStateFlow<List<Vote>>(emptyList())
     val selectedIndex = MutableStateFlow<Set<Int>>(emptySet())
     val selectedPostItemIds = MutableStateFlow<List<Int>>(emptyList())
-
 
     fun selectIndex(index: Int) {
         val tempSet = selectedIndex.value.toMutableSet()
@@ -68,7 +68,7 @@ class ReadVoteViewModel @Inject constructor(
                                 voteCount = postItem.count - selfPolledCunt,
                                 isSelected = false,
                                 onClick = {},
-                                postItemId = postItem.pollItemId
+                                postItemId = postItem.pollItemId,
                             )
                             tempList.add(item)
                         }
@@ -78,7 +78,6 @@ class ReadVoteViewModel @Inject constructor(
                             setAfterVote(it, votedIndex)
                         }
                     }
-
                 }
             }
         }
@@ -102,7 +101,7 @@ class ReadVoteViewModel @Inject constructor(
                     voteCount = postItem.count - selfPolledCunt,
                     isSelected = false,
                     onClick = {},
-                    postItemId = postItem.pollItemId
+                    postItemId = postItem.pollItemId,
                 )
                 tempList.add(item)
             }
@@ -110,14 +109,13 @@ class ReadVoteViewModel @Inject constructor(
         }
     }
 
-
     fun vote(votedIndex: List<Int>) {
         lastPost.value?.pollItems?.let {
             val tempPostItemList = setAfterVote(it, votedIndex)
 //            selectedPostItemIds.value = tempPostItemList.toList()
 
             viewModelScope.launch {
-                postRepository.putPoll(lastPost.value!!.pollId, PutVoteRequest(tempPostItemList)).asResult().collect {
+                postRepository.putPoll(lastPost.value!!.pollId, tempPostItemList).asResult().collect {
                     when (it) {
                         Result.Loading -> Log.d("TEST", "putPoll:  로딩")
                         is Result.Success -> Log.d("TEST", "putPoll:  success")
@@ -128,7 +126,7 @@ class ReadVoteViewModel @Inject constructor(
         }
     }
 
-    private fun setAfterVote(it: List<PostItem>, votedIndex: List<Int>):MutableList<Int> {
+    private fun setAfterVote(it: List<PostItem>, votedIndex: List<Int>): MutableList<Int> {
         var voteParticipantCount = votedIndex.size // 투표한 수 만큼 시작
         for (item in it) {
             voteParticipantCount += item.count
@@ -151,8 +149,8 @@ class ReadVoteViewModel @Inject constructor(
                     voteCount = voteCountAfterVote,
                     isSelected = false,
                     onClick = {},
-                    item.pollItemId
-                )
+                    item.pollItemId,
+                ),
             )
         }
         afterVote.value = tempList
@@ -165,7 +163,7 @@ class ReadVoteViewModel @Inject constructor(
             when (result) {
                 is Result.Error -> Log.e(
                     "ReadVoteViewModel",
-                    "getMyPageType Error ${result.exception}, Type : $type"
+                    "getMyPageType Error ${result.exception}, Type : $type",
                 )
 
                 Result.Loading -> Log.e("ReadVoteViewModel", "getMyPageType Loading, Type : $type")
@@ -190,5 +188,5 @@ data class Vote(
     val voteCount: Int,
     val isSelected: Boolean,
     val onClick: () -> Unit,
-    val postItemId: Int
+    val postItemId: Int,
 )

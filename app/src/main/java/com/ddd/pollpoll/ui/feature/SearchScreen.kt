@@ -97,11 +97,7 @@ fun SearchScreen(
             ListState.NONE -> {}
             ListState.EMPTY -> {}
             ListState.PAGINATING -> {}
-            ListState.PAGINATION_EXHAUST -> Toast.makeText(
-                context,
-                "더이상 불러올 데이터가 없습니다.",
-                Toast.LENGTH_SHORT,
-            ).show()
+            ListState.PAGINATION_EXHAUST -> {}
         }
         if (shouldStartPaginate && listState == ListState.IDLE) {
             onPageStarted(textValue)

@@ -29,13 +29,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.pollpoll.Post
+import com.ddd.pollpoll.core.ui.PollCard
 import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
-import com.ddd.pollpoll.core.ui.PollCard
 import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Cloud
@@ -52,7 +54,7 @@ internal fun MyPollPollRoute(
     modifier: Modifier = Modifier,
     navigateToSettings: () -> Unit,
     navigateToReadVote: (Int) -> Unit,
-    viewModel: MypollpollViewModel = hiltViewModel()
+    viewModel: MypollpollViewModel = hiltViewModel(),
 ) {
     val posts = viewModel.posts.collectAsState().value
     val uiState = viewModel.uiState.collectAsState().value
@@ -64,7 +66,7 @@ internal fun MyPollPollRoute(
         uiState,
         viewModel::myPollClicked,
         viewModel::participatePollClicked,
-        viewModel::watchPollClicked
+        viewModel::watchPollClicked,
     )
 }
 
@@ -110,7 +112,12 @@ fun MypollpollScreen(
                     .fillMaxSize(),
             ) {
                 Column(Modifier.verticalScroll(rememberScrollState())) {
-                    MyPollPollHeader(uiState, myPollClicked, participatePollClicked, watchPollClicked)
+                    MyPollPollHeader(
+                        uiState,
+                        myPollClicked,
+                        participatePollClicked,
+                        watchPollClicked,
+                    )
                     MyPollPollBody(posts, navigateToReadVote)
                 }
             }
@@ -132,18 +139,41 @@ fun MyPollPollHeader(
                 .background(color = Color.White)
                 .padding(horizontal = 20.dp, vertical = 15.dp),
         ) {
-            PollRecord(Writing, "내가 쓴 투표", uiState.myPollSelected, uiState.myPollCount, myPollClicked)
+            PollRecord(
+                Writing,
+                "내가 쓴 투표",
+                uiState.myPollSelected,
+                uiState.myPollCount,
+                myPollClicked,
+            )
             Spacer(Modifier.weight(1f))
-            PollRecord(Fire, "참여한 투표", uiState.participatePollSelected, uiState.participateCount, participatePollClicked)
+            PollRecord(
+                Fire,
+                "참여한 투표",
+                uiState.participatePollSelected,
+                uiState.participateCount,
+                participatePollClicked,
+            )
             Spacer(Modifier.weight(1f))
-            PollRecord(Cloud, "구경한 투표", uiState.watchPollSelected, uiState.watchPollCount, watchPollClicked)
+            PollRecord(
+                Cloud,
+                "구경한 투표",
+                uiState.watchPollSelected,
+                uiState.watchPollCount,
+                watchPollClicked,
+            )
         }
 
-        Row(modifier = Modifier
-            .offset(y = (-10).dp)
-            .padding(horizontal = 45.dp)) {
+        Row(
+            modifier = Modifier
+                .offset(y = (-10).dp)
+                .padding(horizontal = 45.dp),
+        ) {
             if (!uiState.myPollSelected) Spacer(modifier = Modifier.weight(1f))
-            Image(imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle), contentDescription = null)
+            Image(
+                imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle),
+                contentDescription = null,
+            )
             if (!uiState.watchPollSelected) Spacer(modifier = Modifier.weight(1f))
         }
     }
@@ -155,21 +185,25 @@ fun PollRecord(
     title: String,
     selected: Boolean = false,
     count: Int = 0,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 
 ) {
     Box(
         modifier = Modifier
             .clip(
-                RoundedCornerShape(12.dp)
+                RoundedCornerShape(12.dp),
             )
             .height(114.dp)
-            .width(100.dp)
+            .width(100.dp),
     ) {
-        val contentColor = if (selected) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_400
-        val bgColor = if (selected) PollPollTheme.colors.primary_050 else PollPollTheme.colors.gray_050
-        val circleColor = if (selected) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_400
-        val iconColor = if (selected) PollPollTheme.colors.primary_050 else PollPollTheme.colors.gray_400
+        val contentColor =
+            if (selected) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_400
+        val bgColor =
+            if (selected) PollPollTheme.colors.primary_050 else PollPollTheme.colors.gray_050
+        val circleColor =
+            if (selected) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_400
+        val iconColor =
+            if (selected) PollPollTheme.colors.primary_050 else PollPollTheme.colors.gray_400
 
         Column(
             modifier = Modifier
@@ -181,7 +215,7 @@ fun PollRecord(
                 .height(94.dp)
                 .width(100.dp)
                 .background(color = bgColor),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.size(32.dp))
             Text(text = title, style = PollPollTheme.typography.body02, color = contentColor)
@@ -190,14 +224,14 @@ fun PollRecord(
                 Text(
                     text = count.toString(),
                     style = PollPollTheme.typography.heading05,
-                    modifier = Modifier.alignByBaseline()
+                    modifier = Modifier.alignByBaseline(),
                 )
                 Spacer(Modifier.size(3.dp))
                 Text(
                     text = "개",
                     style = PollPollTheme.typography.body04,
                     color = PollPollTheme.colors.gray_500,
-                    modifier = Modifier.alignByBaseline()
+                    modifier = Modifier.alignByBaseline(),
                 )
             }
         }
@@ -207,7 +241,7 @@ fun PollRecord(
                 .clip(CircleShape)
                 .size(40.dp)
                 .background(color = contentColor)
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopCenter),
         ) {
             Icon(
                 painter = painterResource(id = iconRes),
@@ -215,7 +249,7 @@ fun PollRecord(
                 tint = Color.White,
                 modifier = Modifier
                     .size(24.dp)
-                    .align(Alignment.Center)
+                    .align(Alignment.Center),
             )
         }
     }
@@ -227,13 +261,13 @@ fun MyPollPollBody(posts: List<Post>, navigateToReadVote: (Int) -> Unit) {
         Spacer(modifier = Modifier.weight(1f))
         Icon(
             painter = painterResource(id = PollIcon.CheckCircle),
-            contentDescription = ""
+            contentDescription = "",
         )
         Spacer(modifier = Modifier.width(5.dp))
         Text(
             text = "진행중",
             color = PollPollTheme.colors.gray_500,
-            style = PollPollTheme.typography.body03
+            style = PollPollTheme.typography.body03,
         )
     }
     for (post in posts) {
@@ -244,7 +278,7 @@ fun MyPollPollBody(posts: List<Post>, navigateToReadVote: (Int) -> Unit) {
             post = post,
             onClick = {
                 navigateToReadVote(post.postId)
-            }
+            },
         )
         Spacer(modifier = Modifier.height(20.dp))
     }
@@ -257,22 +291,23 @@ fun PollCard(
     expireDate: Date = Date(),
     participantsCount: Int = 0,
     onClick: () -> Unit = {},
-    post: Post
+    post: Post,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = Color.White,
         ),
-        onClick = {onClick()}
+        onClick = { onClick() },
     ) {
         var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
         val timeDiff = post.pollEndAt - currentTime
         val isPollEnd = (timeDiff) < 0
-        val timeProgress = timeDiff.absoluteValue.toFloat() / (post.pollEndAt - post.postCreatedAt).toFloat()
+        val timeProgress =
+            timeDiff.absoluteValue.toFloat() / (post.pollEndAt - post.postCreatedAt).toFloat()
 
-            LaunchedEffect(key1 = Unit) {
+        LaunchedEffect(key1 = Unit) {
             while (true) {
                 delay(1000)
                 currentTime = System.currentTimeMillis()
@@ -286,7 +321,7 @@ fun PollCard(
                 Text(
                     text = "${post.categoryName}",
                     color = PollPollTheme.colors.gray_900,
-                    style = PollPollTheme.typography.body04
+                    style = PollPollTheme.typography.body04,
                 )
             }
             Spacer(modifier = Modifier.size(15.dp))
@@ -294,7 +329,7 @@ fun PollCard(
             Text(
                 text = "${post.title}",
                 color = PollPollTheme.colors.gray_900,
-                style = PollPollTheme.typography.heading05
+                style = PollPollTheme.typography.heading05,
             )
             Spacer(modifier = Modifier.size(10.dp))
             Text(
@@ -303,7 +338,7 @@ fun PollCard(
                 style = PollPollTheme.typography.heading05,
                 fontWeight = FontWeight.Normal,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
 
             Spacer(modifier = Modifier.size(25.dp))
@@ -314,7 +349,7 @@ fun PollCard(
                 Icon(
                     painter = painterResource(id = PollIcon.Alarm),
                     contentDescription = "",
-                    tint = iconColor
+                    tint = iconColor,
                 )
                 Spacer(modifier = Modifier.size(3.dp))
                 TimeText(post.pollEndAt, currentTime)
@@ -323,32 +358,43 @@ fun PollCard(
 
             val timeProgress =
 
-            if (isPollEnd)
-                PollProgressBar(progress = 0f)
-            else
-                PollProgressBar(timeProgress)
+                if (isPollEnd) {
+                    PollProgressBar(progress = 0f)
+                } else {
+                    PollProgressBar(timeProgress)
+                }
 
             Spacer(modifier = Modifier.size(32.dp))
-                Button(
-                    onClick = { onClick() },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = PollPollTheme.colors.gray_050)
-                ) {
-
-                    if (isPollEnd) {
-                        Text(
-                            text = "투표 결과 볼래요",
-                            color = PollPollTheme.colors.gray_700,
-                            style = PollPollTheme.typography.body03
-                        )
-                    } else {
-                        Text(text = "지금 ", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
-                        Text(text = "${post.participantCount}명", color = PollPollTheme.colors.primary_500, style = PollPollTheme.typography.body03)
-                        Text(text = " 참여 중이에요", color = PollPollTheme.colors.gray_700, style = PollPollTheme.typography.body03)
+            Button(
+                onClick = { onClick() },
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = PollPollTheme.colors.gray_050),
+            ) {
+                if (isPollEnd) {
+                    Text(
+                        text = "투표 결과 볼래요",
+                        color = PollPollTheme.colors.gray_700,
+                        style = PollPollTheme.typography.body03,
+                    )
+                } else {
+                    Text(
+                        text = "지금 ",
+                        color = PollPollTheme.colors.gray_700,
+                        style = PollPollTheme.typography.body03,
+                    )
+                    Text(
+                        text = "${post.participantCount}명",
+                        color = PollPollTheme.colors.primary_500,
+                        style = PollPollTheme.typography.body03,
+                    )
+                    Text(
+                        text = " 참여 중이에요",
+                        color = PollPollTheme.colors.gray_700,
+                        style = PollPollTheme.typography.body03,
+                    )
                 }
             }
-
         }
     }
 }
@@ -372,14 +418,13 @@ fun TimeText(expireDateTime: Long, currentTime: Long) {
         Text(
             text = "종료된 투표",
             color = PollPollTheme.colors.gray_300,
-            style = PollPollTheme.typography.body03
+            style = PollPollTheme.typography.body03,
         )
-
     } else {
         Text(
             text = "${diffDays}일 $hoursString:$minuteString:$secondsString 남았어요!",
             color = PollPollTheme.colors.gray_400,
-            style = PollPollTheme.typography.body03
+            style = PollPollTheme.typography.body03,
         )
     }
 }
@@ -389,33 +434,32 @@ fun HitsText(hits: Int) {
     Text(
         text = "조회수 $hits",
         color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body03
+        style = PollPollTheme.typography.body03,
     )
 }
 
 // Previews
 
-
-//modifier: Modifier = Modifier,
-//navigateToSettings: () -> Unit,
-//posts: GetPostResponse?,
-//uiState: MyPollPollUiState,
-//myPollClicked: () -> Unit,
-//participatePollClicked: () -> Unit,
-//watchPollClicked: () -> Unit,
+// modifier: Modifier = Modifier,
+// navigateToSettings: () -> Unit,
+// posts: GetPostResponse?,
+// uiState: MyPollPollUiState,
+// myPollClicked: () -> Unit,
+// participatePollClicked: () -> Unit,
+// watchPollClicked: () -> Unit,
 
 @Preview(showBackground = true)
 @Composable
 private fun PollRecordPreview() {
     PollPollTheme {
         MypollpollScreen(
-            navigateToSettings = {} ,
-            navigateToReadVote = {} ,
+            navigateToSettings = {},
+            navigateToReadVote = {},
             posts = emptyList(),
             uiState = MyPollPollUiState(true, 0, false, 0, false, 0),
             myPollClicked = {},
             participatePollClicked = {},
-            watchPollClicked = {}
+            watchPollClicked = {},
         )
     }
 }

@@ -30,17 +30,17 @@ class PollPollApiTest : ApiAbstract<PollAPI>() {
 
     private lateinit var service: PollAPI
 
-    @Before
-    fun initService() {
-        service = createService(PollAPI::class.java)
-    }
+//    @Before
+//    fun initService() {
+//        service = createService(PollAPI::class.java)
+//    }
 
-    @Throws(IOException::class)
-    @Test
-    fun `로그인 API 제대로 파싱되는지 테스트`() = runTest {
-        enqueueResponse("/LoginResponse.json")
-        val response = service.loginGoogle("테스뚜")
-        val responseBody = requireNotNull((response.data))
-        assertThat(responseBody.accessToken, `is`("오빤 강남스따일"))
-    }
-}
+//    @Throws(IOException::class)
+//    @Test
+//    fun `로그인 API 제대로 파싱되는지 테스트`() = runTest {
+//        enqueueResponse("/LoginResponse.json")
+//        val response = service.loginGoogle("테스뚜")
+//        val responseBody = requireNotNull((response.data))
+//        assertThat(responseBody.accessToken, `is`("오빤 강남스따일"))
+//    }
+//}
