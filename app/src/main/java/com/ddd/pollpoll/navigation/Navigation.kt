@@ -14,7 +14,7 @@
  * limitations under the License.
  */ // ktlint-disable filename
 
-package com.ddd.pollpoll.ui
+package com.ddd.pollpoll.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +46,11 @@ import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
 import com.ddd.pollpoll.feature.login.ui.navigation.navigateToNickNameScreen
 import com.ddd.pollpoll.feature.login.ui.navigation.nickNameRoute
 import com.ddd.pollpoll.feature.login.ui.navigation.nickNameScreen
+import com.ddd.pollpoll.feature.main.navigation.MainScreen
+import com.ddd.pollpoll.feature.main.navigation.SearchScreen
+import com.ddd.pollpoll.feature.main.navigation.mainRoute
+import com.ddd.pollpoll.feature.main.navigation.navigateToMain
+import com.ddd.pollpoll.feature.main.navigation.navigateToSearch
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
 import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToSettings

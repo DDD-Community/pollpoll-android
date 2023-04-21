@@ -1,13 +1,13 @@
-package com.ddd.pollpoll.feature.vote.navigation
+package com.ddd.pollpoll.feature.main.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.ddd.pollpoll.ui.feature.MainScreenRoute
+import com.ddd.pollpoll.feature.main.MainScreenRoute
 
 // internal const val topicIdArg = "topicId"
 
-internal const val mainRoute = "main_route"
+ const val mainRoute = "main_route"
 
 fun NavController.navigateToMain() {
 //    val encodedId = Uri.encode(topicId)

@@ -1,4 +1,4 @@
-package com.ddd.pollpoll.ui.feature
+package com.ddd.pollpoll.feature.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

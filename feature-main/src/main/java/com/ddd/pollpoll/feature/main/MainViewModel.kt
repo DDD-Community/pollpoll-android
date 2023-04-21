@@ -1,4 +1,4 @@
-package com.ddd.pollpoll.ui.feature
+package com.ddd.pollpoll.feature.main
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -103,6 +103,7 @@ class MainViewModel @Inject constructor(
 enum class ListState {
 
     NONE,
+
     // 빈상태
     EMPTY,
 
@@ -114,8 +115,6 @@ enum class ListState {
 
     // 페이지중
     PAGINATING,
-
-
 
     // 에러남,
     ERROR,

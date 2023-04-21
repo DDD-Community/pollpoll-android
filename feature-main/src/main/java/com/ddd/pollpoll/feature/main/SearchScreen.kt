@@ -1,4 +1,4 @@
-package com.ddd.pollpoll.ui.feature
+package com.ddd.pollpoll.feature.main
 
 import android.widget.Toast
 import androidx.compose.foundation.Image

@@ -15,7 +15,7 @@ androidxTestRunner = "1.5.1"
 coroutines = "1.6.4"
 hilt = "2.44.2"
 junit = "4.13.2"
-kotlin = "1.8.10"
+kotlin = "1.8.20"
 ksp = "1.8.10-1.0.9"
 splashscreen = "1.0.0"
 benManes = "0.44.0"
@@ -37,6 +37,8 @@ coilsvg = "2.2.2"
 immutable = "0.3.5"
 
 graph ="0.3.0"
+
+composeCompilerReport = "1.0.1"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -115,3 +117,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 dependency-update = { id = "com.github.ben-manes.versions", version.ref = "benManes" }
 modulegraph = { id = "dev.iurysouza.modulegraph", version.ref = "graph" }
+compose-compiler-report = { id = "dev.shreyaspatil.compose-compiler-report-generator", version.ref = "composeCompilerReport" }

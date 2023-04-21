@@ -1,4 +1,4 @@
-package com.ddd.pollpoll.ui.feature
+package com.ddd.pollpoll.feature.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
