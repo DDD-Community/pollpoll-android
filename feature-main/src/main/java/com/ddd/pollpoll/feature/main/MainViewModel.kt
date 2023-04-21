@@ -13,6 +13,8 @@ import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.PostRepository
 import com.ddd.pollpoll.core.result.Result
 import com.ddd.pollpoll.core.result.asResult
+import com.ddd.pollpoll.feature.main.model.PostUi
+import com.ddd.pollpoll.feature.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +39,7 @@ class MainViewModel @Inject constructor(
         MutableStateFlow(PopularUiState.Loading)
     val popularUiState: StateFlow<PopularUiState> = _popularUiState.asStateFlow()
 
-    val posts = mutableStateListOf<Post>()
+    val posts = mutableStateListOf<PostUi>()
     private var lastPostId: Int? by mutableStateOf(null)
     var canPaginate by mutableStateOf(false)
     var listState by mutableStateOf(ListState.EMPTY)
@@ -92,7 +94,7 @@ class MainViewModel @Inject constructor(
                     if (lastPostId == null) ListState.ERROR else ListState.PAGINATION_EXHAUST
             }.collect {
                 canPaginate = it.last().postId != 1
-                posts.addAll(it)
+                posts.addAll(it.map(Post::toUiModel))
                 listState = ListState.IDLE
                 if (canPaginate) lastPostId = it.last().postId
             }

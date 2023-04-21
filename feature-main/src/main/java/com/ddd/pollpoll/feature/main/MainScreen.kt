@@ -35,6 +35,10 @@ import com.ddd.pollpoll.core.ui.PollCardLazyList
 import com.ddd.pollpoll.designsystem.component.*
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import com.ddd.pollpoll.feature.main.model.PostUi
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun MainScreenRoute(
@@ -44,7 +48,7 @@ internal fun MainScreenRoute(
 ) {
     val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle().value
     val popularUiState = viewModel.popularUiState.collectAsStateWithLifecycle().value
-    val posts = viewModel.posts
+    val posts = viewModel.posts.toImmutableList()
     val lazyColumnListState = rememberLazyListState()
 
     val shouldStartPaginate = remember {
@@ -63,17 +67,54 @@ internal fun MainScreenRoute(
         }
     }
 
-    MainScreen(categoryUiState, popularUiState, posts, navigateToReadVote, lazyColumnListState, navigateToSearch)
+    MainScreen(
+        categoryUiState,
+        popularUiState,
+        posts,
+        navigateToReadVote,
+        lazyColumnListState,
+        navigateToSearch,
+    )
 }
 
 @Composable
 private fun MainScreen(
     categoryUiState: CategoryUiState,
     popularUiState: PopularUiState,
-    posts: List<Post>,
+    posts: ImmutableList<PostUi> = persistentListOf(),
     navigateToReadVote: (Int) -> Unit,
     lazyColumnListState: LazyListState,
     onSearchClick: () -> Unit = {},
+    test: PostUi = PostUi(
+        categoryName = "Cary Talley",
+        contents = "tractatos",
+        nickname = "Isaac Carroll",
+        participantCount = 4552,
+        pollEndAt = 5694,
+        pollId = 9692,
+        pollItemCount = 4886,
+        postCreatedAt = 3952,
+        postHits = 1606,
+        postId = 2683,
+        pollItems = null,
+        title = "iusto",
+        watcherCount = 3137,
+    ),
+    test2: Post = Post(
+        categoryName = "Krista Shields",
+        contents = "fames",
+        nickname = "Charmaine Donovan",
+        participantCount = 1723,
+        pollEndAt = 4587,
+        pollId = 4978,
+        pollItemCount = 2135,
+        postCreatedAt = 8718,
+        postHits = 7796,
+        postId = 2492,
+        pollItems = listOf(),
+        title = "consectetur",
+        watcherCount = 7757,
+    ),
 ) {
     LazyColumn(
         Modifier
@@ -243,7 +284,7 @@ fun MainScreenPreview() {
         MainScreen(
             categoryUiState = CategoryUiState.Loading,
             popularUiState = PopularUiState.Loading,
-            posts = listOf(),
+            posts = persistentListOf(),
             navigateToReadVote = {},
             lazyColumnListState = lazyColumnListState,
         )

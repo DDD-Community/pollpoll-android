@@ -30,12 +30,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.ui.PollCardLazyList
 import com.ddd.pollpoll.designsystem.component.PollSearchBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.icon.PollIcon.SearchEmpty
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import com.ddd.pollpoll.feature.main.model.PostUi
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SearchScreenRoute(
@@ -43,7 +46,7 @@ fun SearchScreenRoute(
     navigateToReadVote: (Int) -> Unit,
     backToMain: () -> Unit,
 ) {
-    val posts = viewModel.posts
+    val posts = viewModel.posts.toImmutableList()
     val lazyColumnListState = rememberLazyListState()
     val listState = viewModel.listState
     val shouldStartPaginate = remember {
@@ -71,7 +74,7 @@ fun SearchScreenRoute(
 @Composable
 fun SearchScreen(
     listState: ListState,
-    posts: List<Post>,
+    posts: ImmutableList<PostUi> = persistentListOf(),
     lazyColumnListState: LazyListState,
     navigateToReadVote: (Int) -> Unit,
     onBackButtonClicked: () -> Unit = {},
@@ -217,7 +220,7 @@ fun SearchScreenEmptyPreview() {
     PollPollTheme {
         SearchScreen(
             listState = ListState.IDLE,
-            posts = listOf(),
+            posts = persistentListOf(),
             lazyColumnListState = rememberLazyListState(),
             navigateToReadVote = {},
             shouldStartPaginate = false,
@@ -225,9 +228,8 @@ fun SearchScreenEmptyPreview() {
     }
 }
 
-private val fakePost = listOf<Post>(
-
-    Post(
+private val fakePost = persistentListOf<PostUi>(
+    PostUi(
         categoryName = "Trent McFadden",
         contents = "regione",
         nickname = "Haley Sloan",
@@ -238,11 +240,11 @@ private val fakePost = listOf<Post>(
         postCreatedAt = 4168,
         postHits = 3609,
         postId = 3571,
-        pollItems = listOf(),
+        pollItems = persistentListOf(),
         title = "mutat",
         watcherCount = 2567,
     ),
-    Post(
+    PostUi(
         categoryName = "Trent McFadden",
         contents = "regione",
         nickname = "Haley Sloan",
@@ -253,7 +255,7 @@ private val fakePost = listOf<Post>(
         postCreatedAt = 4168,
         postHits = 3609,
         postId = 3572,
-        pollItems = listOf(),
+        pollItems = persistentListOf(),
         title = "mutat",
         watcherCount = 2567,
     ),

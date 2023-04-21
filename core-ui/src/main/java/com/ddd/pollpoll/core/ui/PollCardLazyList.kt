@@ -30,18 +30,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import com.ddd.pollpoll.feature.main.model.PostUi
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.absoluteValue
 
 fun LazyListScope.PollCardLazyList(
-    posts: List<Post>,
+    posts: List<PostUi>,
     navigateToReadVote: (Int) -> Unit,
 ) {
     items(
@@ -66,9 +66,8 @@ fun PollCard(
     expireDate: Date = Date(),
     participantsCount: Int = 0,
     onClick: () -> Unit = {},
-    post: Post,
+    post: PostUi,
 ) {
-
     var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
     val timeDiff = post.pollEndAt - currentTime
     val isPollEnd = (timeDiff) < 0
@@ -204,8 +203,8 @@ fun TimeText(expireDateTime: Long, currentTime: Long) {
         )
     }
 }
-//@Composable
-//fun TimeProgressText(expireDate: Date) {
+// @Composable
+// fun TimeProgressText(expireDate: Date) {
 //    // date gap millisceond to date
 //    val expireDateTime = expireDate.time
 //    var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
@@ -234,4 +233,4 @@ fun TimeText(expireDateTime: Long, currentTime: Long) {
 //        color = PollPollTheme.colors.gray_400,
 //        style = PollPollTheme.typography.body03,
 //    )
-//}
+// }
