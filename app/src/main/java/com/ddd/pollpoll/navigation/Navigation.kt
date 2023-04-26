@@ -53,7 +53,10 @@ import com.ddd.pollpoll.feature.main.navigation.navigateToMain
 import com.ddd.pollpoll.feature.main.navigation.navigateToSearch
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
+import com.ddd.pollpoll.feature.settings.ui.navigation.OpenSourceScreen
+import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToOpenSource
 import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToSettings
+import com.ddd.pollpoll.feature.settings.ui.navigation.openSourceRoute
 import com.ddd.pollpoll.feature.settings.ui.navigation.settingsScreen
 import com.ddd.pollpoll.feature.vote.navigation.*
 
@@ -61,6 +64,7 @@ val bottomInvisibleList = listOf(
     loginRoute,
     insertVoteRoute,
     nickNameRoute,
+    openSourceRoute
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,7 +121,9 @@ fun MainNavigation() {
             )
             settingsScreen(
                 navigateUp = { navController.navigateUp() },
+                navigateToAboutLibraries = { navController.navigateToOpenSource() },
             )
+            OpenSourceScreen()
             MainScreen(
                 navigateToReadVote = { postId ->
                     navController.navigateToReadVote(postId)

@@ -18,6 +18,7 @@ import dev.iurysouza.modulegraph.*
 plugins {
     alias(libs.plugins.dependency.update) apply false
     alias(libs.plugins.modulegraph) apply true
+    alias(libs.plugins.aboutlibraries.plugin) apply true
 
 }
 

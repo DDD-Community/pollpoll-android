@@ -11,15 +11,20 @@ fun NavController.navigateToSettings() {
 //    val encodedId = Uri.encode(topicId)
     this.navigate(settingsRoute)
 }
+
 fun NavGraphBuilder.settingsScreen(
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    navigateToAboutLibraries: () -> Unit,
 ) {
     composable(
         route = settingsRoute,
         arguments = listOf(
 //            navArgument(topicIdArg) { type = NavType.StringType }
-        )
+        ),
     ) {
-        SettingsScreenRoute(navigateUp = navigateUp)
+        SettingsScreenRoute(
+            navigateUp = navigateUp,
+            navigateToAboutLibraries = navigateToAboutLibraries,
+        )
     }
 }

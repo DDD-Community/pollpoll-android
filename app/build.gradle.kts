@@ -23,6 +23,7 @@ plugins {
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.dependency.update)
     alias(libs.plugins.compose.compiler.report)
+    id("com.mikepenz.aboutlibraries.plugin")
 }
 
 // ./gradlew createModuleGraph
