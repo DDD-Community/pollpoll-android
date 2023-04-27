@@ -1,6 +1,7 @@
 package com.ddd.pollpoll.feature.main.model
 
 import androidx.compose.runtime.Stable
+import com.ddd.pollpoll.PollEndDate
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.PostItem
 import kotlinx.collections.immutable.ImmutableList
@@ -12,7 +13,7 @@ data class PostUi(
     val contents: String,
     val nickname: String,
     val participantCount: Int,
-    val pollEndAt: Long,
+    val pollEndAt: PollEndDate,
     val pollId: Int,
     val pollItemCount: Int,
     val postCreatedAt: Long,

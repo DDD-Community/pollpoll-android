@@ -33,7 +33,6 @@ interface PostRepository {
     suspend fun putPoll(pollId: Int, pollItemIds: List<Int>): Flow<Unit>
     suspend fun getPosts(lastPostId: Int? = null, keyword: String? = null): Flow<List<Post>>
     suspend fun getPost(postId: Int): Flow<Post>
-
     suspend fun getPopularPost(): Flow<PopularPost>
 }
 
@@ -62,7 +61,7 @@ class PostRepositoryImp @Inject constructor(
 
     override suspend fun getPosts(lastPostId: Int?, keyword: String?): Flow<List<Post>> = flow {
         val result = postRemoteSource.getPosts(lastPostId, keyword).asExternalModel()
-        if(result.isEmpty())  throw NullPointerException("No data")
+        if (result.isEmpty()) throw NullPointerException("No data")
         emit(result)
     }
 

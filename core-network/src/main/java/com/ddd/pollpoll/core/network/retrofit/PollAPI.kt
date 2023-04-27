@@ -14,7 +14,10 @@ interface PollAPI {
     suspend fun postPosts(@Body posts: PostPostRequest): Response<ApiResponse<Unit>>
 
     @GET("/api/posts")
-    suspend fun getPosts(@Query("lastPostId") lastPostId: Int? = null, @Query("keyword") keyword: String? = null): Response<ApiResponse<GetPostResponse>>
+    suspend fun getPosts(
+        @Query("lastPostId") lastPostId: Int? = null,
+        @Query("keyword") keyword: String? = null
+    ): Response<ApiResponse<GetPostResponse>>
 
     @GET("/api/posts/{postId}")
     suspend fun getPost(@Path("postId") postId: Int): Response<ApiResponse<PostResponse>>
@@ -23,7 +26,10 @@ interface PollAPI {
     suspend fun getPopularPost(): Response<ApiResponse<GetPopularResponse>>
 
     @PUT("/api/polls/{pollId}/participate")
-    suspend fun putPoll(@Path("pollId")pollId: Int, @Body pollItemIds: PutVoteRequest): Response<ApiResponse<Unit>>
+    suspend fun putPoll(
+        @Path("pollId") pollId: Int,
+        @Body pollItemIds: PutVoteRequest
+    ): Response<ApiResponse<Unit>>
 //    suspend fun putPoll(@Path("pollId")pollId: Int, @Query("pollItemIds")pollItemIds: PutVoteRequest): Response<ApiResponse<Unit>>
 
     @GET("/api/categories")
@@ -39,5 +45,5 @@ interface PollAPI {
     suspend fun getHasNickname(): Response<ApiResponse<GetHasNicknameResponse>>
 
     @GET("/api/user/my-page")
-    suspend fun getMyPage(@Query("type") type: String): Response<ApiResponse<GetMyPageResponse>>
+    suspend fun getMyPage(@Query("lastPostId") lastPostId: Int? = null, @Query("type") type: String): Response<ApiResponse<GetMyPageResponse>>
 }

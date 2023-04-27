@@ -18,6 +18,9 @@ package com.ddd.pollpoll.feature.mypollpoll.ui
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -29,22 +32,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddd.pollpoll.Post
-import com.ddd.pollpoll.core.ui.PollCard
-import com.ddd.pollpoll.designsystem.component.PollLabel
-import com.ddd.pollpoll.designsystem.component.PollProgressBar
+import com.ddd.pollpoll.MyPagePollType
+import com.ddd.pollpoll.core.ui.PollCardLazyList
 import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Cloud
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Fire
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Writing
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
-import kotlinx.coroutines.delay
+import com.ddd.pollpoll.feature.main.model.PostUi
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
@@ -56,17 +55,34 @@ internal fun MyPollPollRoute(
     navigateToReadVote: (Int) -> Unit,
     viewModel: MypollpollViewModel = hiltViewModel(),
 ) {
-    val posts = viewModel.posts.collectAsState().value
+    val posts = viewModel.posts
     val uiState = viewModel.uiState.collectAsState().value
+    val lazyColumnListState = rememberLazyListState()
+    val shouldStartPaginate = remember {
+        derivedStateOf {
+            viewModel.canPaginate && (
+                // 현재 보이는것보다
+                lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                    ?: -9
+                ) >= (lazyColumnListState.layoutInfo.totalItemsCount - 1)
+        }
+    }
+
+    LaunchedEffect(key1 = shouldStartPaginate.value) {
+        if (shouldStartPaginate.value && viewModel.listState == MypollpollViewModel.ListState.IDLE) {
+            viewModel.getPost()
+        }
+    }
     MypollpollScreen(
         modifier = modifier,
         navigateToSettings,
         navigateToReadVote,
         posts,
         uiState,
-        viewModel::myPollClicked,
-        viewModel::participatePollClicked,
-        viewModel::watchPollClicked,
+        { viewModel.changePollType(MyPagePollType.MY_POLL) },
+        { viewModel.changePollType(MyPagePollType.PARTICIPATE_POLL) },
+        { viewModel.changePollType(MyPagePollType.WATCH_POLL) },
+        lazyColumnListState = lazyColumnListState,
     )
 }
 
@@ -76,11 +92,12 @@ fun MypollpollScreen(
     modifier: Modifier = Modifier,
     navigateToSettings: () -> Unit,
     navigateToReadVote: (Int) -> Unit,
-    posts: List<Post>,
+    posts: List<PostUi>,
     uiState: MyPollPollUiState,
     myPollClicked: () -> Unit,
     participatePollClicked: () -> Unit,
     watchPollClicked: () -> Unit,
+    lazyColumnListState: LazyListState,
 ) {
     Scaffold(topBar = {
         Column(Modifier.background(Color.White)) {
@@ -111,14 +128,36 @@ fun MypollpollScreen(
                     .background(color = PollPollTheme.colors.gray_050)
                     .fillMaxSize(),
             ) {
-                Column(Modifier.verticalScroll(rememberScrollState())) {
-                    MyPollPollHeader(
-                        uiState,
-                        myPollClicked,
-                        participatePollClicked,
-                        watchPollClicked,
-                    )
-                    MyPollPollBody(posts, navigateToReadVote)
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize(),
+                    state = lazyColumnListState,
+                ) {
+                    item {
+                        MyPollPollHeader(
+                            uiState,
+                            myPollClicked,
+                            participatePollClicked,
+                            watchPollClicked,
+                        )
+                    }
+                    item {
+                        Row(Modifier.padding(top = 5.dp, bottom = 12.dp, end = 10.dp)) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(id = PollIcon.CheckCircle),
+                                contentDescription = "",
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = "진행중",
+                                color = PollPollTheme.colors.gray_500,
+                                style = PollPollTheme.typography.body03,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+                    PollCardLazyList(posts, navigateToReadVote)
                 }
             }
         }
@@ -142,7 +181,7 @@ fun MyPollPollHeader(
             PollRecord(
                 Writing,
                 "내가 쓴 투표",
-                uiState.myPollSelected,
+                uiState.myPagePollType == MyPagePollType.MY_POLL,
                 uiState.myPollCount,
                 myPollClicked,
             )
@@ -150,7 +189,7 @@ fun MyPollPollHeader(
             PollRecord(
                 Fire,
                 "참여한 투표",
-                uiState.participatePollSelected,
+                uiState.myPagePollType == MyPagePollType.PARTICIPATE_POLL,
                 uiState.participateCount,
                 participatePollClicked,
             )
@@ -158,7 +197,7 @@ fun MyPollPollHeader(
             PollRecord(
                 Cloud,
                 "구경한 투표",
-                uiState.watchPollSelected,
+                uiState.myPagePollType == MyPagePollType.WATCH_POLL,
                 uiState.watchPollCount,
                 watchPollClicked,
             )
@@ -169,12 +208,24 @@ fun MyPollPollHeader(
                 .offset(y = (-10).dp)
                 .padding(horizontal = 45.dp),
         ) {
-            if (!uiState.myPollSelected) Spacer(modifier = Modifier.weight(1f))
+            if (uiState.myPagePollType != MyPagePollType.MY_POLL) {
+                Spacer(
+                    modifier = Modifier.weight(
+                        1f,
+                    ),
+                )
+            }
             Image(
                 imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle),
                 contentDescription = null,
             )
-            if (!uiState.watchPollSelected) Spacer(modifier = Modifier.weight(1f))
+            if (uiState.myPagePollType != MyPagePollType.WATCH_POLL) {
+                Spacer(
+                    modifier = Modifier.weight(
+                        1f,
+                    ),
+                )
+            }
         }
     }
 }
@@ -255,46 +306,6 @@ fun PollRecord(
     }
 }
 
-@Composable
-fun MyPollPollBody(posts: List<Post>, navigateToReadVote: (Int) -> Unit) {
-    Row(Modifier.padding(top = 5.dp, bottom = 12.dp, end = 10.dp)) {
-        Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            painter = painterResource(id = PollIcon.CheckCircle),
-            contentDescription = "",
-        )
-        Spacer(modifier = Modifier.width(5.dp))
-        Text(
-            text = "진행중",
-            color = PollPollTheme.colors.gray_500,
-            style = PollPollTheme.typography.body03,
-        )
-    }
-    for (post in posts) {
-        PollCard(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            post = post,
-            onClick = {
-                navigateToReadVote(post.postId)
-            },
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PollCard(
-    modifier: Modifier = Modifier,
-    expireDate: Date = Date(),
-    participantsCount: Int = 0,
-    onClick: () -> Unit = {},
-    post: Post,
-) {
-
-}
 
 @Composable
 fun TimeText(expireDateTime: Long, currentTime: Long) {
@@ -353,10 +364,11 @@ private fun PollRecordPreview() {
             navigateToSettings = {},
             navigateToReadVote = {},
             posts = emptyList(),
-            uiState = MyPollPollUiState(true, 0, false, 0, false, 0),
+            uiState = MyPollPollUiState(MyPagePollType.MY_POLL, 0, 0, 0),
             myPollClicked = {},
             participatePollClicked = {},
             watchPollClicked = {},
+            lazyColumnListState = rememberLazyListState(),
         )
     }
 }

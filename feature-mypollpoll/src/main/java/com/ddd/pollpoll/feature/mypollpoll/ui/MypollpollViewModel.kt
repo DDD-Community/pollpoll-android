@@ -16,98 +16,107 @@
 
 package com.ddd.pollpoll.feature.mypollpoll.ui
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ddd.pollpoll.MyPagePollType
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.MyPageRepository
 import com.ddd.pollpoll.core.data.PostRepository
-import com.ddd.pollpoll.core.result.Result
-import com.ddd.pollpoll.core.result.asResult
+import com.ddd.pollpoll.feature.main.model.PostUi
+import com.ddd.pollpoll.feature.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MyPollPollUiState(
-    val myPollSelected: Boolean,
+    val myPagePollType: MyPagePollType,
     val myPollCount: Int,
-    val participatePollSelected: Boolean,
     val participateCount: Int,
-    val watchPollSelected: Boolean,
     val watchPollCount: Int,
 
 )
 
 @HiltViewModel
 class MypollpollViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository,
-    private val postRepository: PostRepository,
     private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
-    val posts = MutableStateFlow<List<Post>>(emptyList())
-    val uiState = MutableStateFlow(MyPollPollUiState(true, 0, false, 0, false, 0))
 
-    fun myPollClicked() {
-        viewModelScope.launch {
-            selectMyPollType("MY_POLL")
-        }
-        uiState.value = uiState.value.copy(
-            myPollSelected = true,
-            participatePollSelected = false,
-            watchPollSelected = false,
-        )
-    }
-    fun participatePollClicked() {
-        viewModelScope.launch {
-            selectMyPollType("PARTICIPATE_POLL")
-        }
-        uiState.value = uiState.value.copy(
-            myPollSelected = false,
-            participatePollSelected = true,
-            watchPollSelected = false,
-        )
-    }
-    fun watchPollClicked() {
-        viewModelScope.launch {
-            selectMyPollType("WATCH_POLL")
-        }
-        uiState.value = uiState.value.copy(
-            myPollSelected = false,
-            participatePollSelected = false,
-            watchPollSelected = true,
-        )
+    val uiState =
+        MutableStateFlow(MyPollPollUiState(myPagePollType = MyPagePollType.MY_POLL, 0, 0, 0))
+    val posts = mutableStateListOf<PostUi>()
+    private var lastPostId: Int? by mutableStateOf(null)
+    var canPaginate by mutableStateOf(false)
+    var listState by mutableStateOf(ListState.EMPTY)
+
+    init {
+        getPost()
     }
 
-    private suspend fun selectMyPollType(type: String) {
-        myPageRepository.getMyPageType(type).asResult().collect { result ->
-            when (result) {
-                is Result.Error -> Log.e(
-                    "MypollpollViewModel",
-                    "getMyPageType Error ${result.exception}, Type : $type",
-                )
+    fun changePollType(myPagePollType: MyPagePollType) {
+        if (uiState.value.myPagePollType == myPagePollType) return
+        lastPostId = null
+        listState = ListState.IDLE
+        posts.clear()
+        uiState.value = uiState.value.copy(myPagePollType = myPagePollType)
+        getPost()
+    }
 
-                Result.Loading -> Log.e("MypollpollViewModel", "getMyPageType Loading, Type : $type")
-                is Result.Success -> {
-                    Log.e("MypollpollViewModel", "getMyPageType Success ${result.data}, Type : $type")
-                    result.data?.let { myPageType ->
-                        Log.e("MypollpollViewModel", "myPageType : $myPageType")
-                        uiState.value = uiState.value.copy(
-                            myPollCount = myPageType.myPollCount,
-                            participateCount = myPageType.participatePollCount,
-                            watchPollCount = myPageType.watchPollCount,
-                        )
-                        posts.value = myPageType.posts
-                    }
+    fun getPost() = viewModelScope.launch {
+        if (lastPostId == null || (lastPostId != 1 && canPaginate) && listState == ListState.IDLE) {
+            listState = if (lastPostId == null) ListState.LOADING else ListState.PAGINATING
+
+            myPageRepository.getMyPageType(lastPostId, type = uiState.value.myPagePollType).catch {
+                listState =
+                    if (lastPostId == null) ListState.ERROR else ListState.PAGINATION_EXHAUST
+            }.collect { result ->
+                if (result.posts.isEmpty()) {
+                    return@collect
                 }
+                uiState.update {
+                    uiState.value.copy(
+                        myPollCount = result.myPollCount,
+                        participateCount = result.participatePollCount,
+                        watchPollCount = result.watchPollCount,
+                    )
+                }
+                // postId가 1이 아닐경우, 계속 페이징이 가능하다.
+                canPaginate = result.posts.last().postId != 1
+                posts.addAll(result.posts.map(Post::toUiModel))
+                listState = ListState.IDLE
+                // 현재 시점기준, 마지막 post가 기준이 된다.
+                if (canPaginate) lastPostId = result.posts.last().postId
             }
         }
     }
 
-    init {
-        viewModelScope.launch {
-            selectMyPollType("MY_POLL")
-        }
+    enum class ListState {
+
+        NONE,
+
+        // 빈상태
+        EMPTY,
+
+        // 대기중
+        IDLE,
+
+        // 페이지 로딩중
+        LOADING,
+
+        // 페이지중
+        PAGINATING,
+
+        // 에러남,
+        ERROR,
+
+        // 페이지 끝
+        PAGINATION_EXHAUST,
     }
 }

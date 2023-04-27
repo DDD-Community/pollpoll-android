@@ -16,6 +16,7 @@
 
 package com.ddd.pollpoll.core.data
 
+import com.ddd.pollpoll.MyPagePollType
 import com.ddd.pollpoll.MyPageType
 import com.ddd.pollpoll.core.data.model.asExternalModel
 import com.ddd.pollpoll.core.network.remote.MyPageRemoteSource
@@ -24,14 +25,15 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface MyPageRepository {
-    suspend fun getMyPageType(type: String): Flow<MyPageType>
+    suspend fun getMyPageType(lastPostId: Int? = null, type: MyPagePollType): Flow<MyPageType>
 }
 
 class MyPageRepositoryImp @Inject constructor(
-    private val myPageRemoteSource: MyPageRemoteSource
+    private val myPageRemoteSource: MyPageRemoteSource,
 ) : MyPageRepository {
-    override suspend fun getMyPageType(type: String): Flow<MyPageType> = flow {
-        val result = myPageRemoteSource.getMyPage(type).asExternalModel()
-        emit(result)
-    }
+    override suspend fun getMyPageType(lastPostId: Int?, type: MyPagePollType): Flow<MyPageType> =
+        flow {
+            val result = myPageRemoteSource.getMyPage(lastPostId, type.name).asExternalModel()
+            emit(result)
+        }
 }

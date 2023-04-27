@@ -69,10 +69,10 @@ fun PollCard(
     post: PostUi,
 ) {
     var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
-    val timeDiff = post.pollEndAt - currentTime
+    val timeDiff = post.pollEndAt.endDate - currentTime
     val isPollEnd = (timeDiff) < 0
     val timeProgress =
-        timeDiff.absoluteValue.toFloat() / (post.pollEndAt - post.postCreatedAt).toFloat()
+        timeDiff.absoluteValue.toFloat() / (post.pollEndAt.endDate - post.postCreatedAt).toFloat()
 
     LaunchedEffect(key1 = Unit) {
         while (true) {
@@ -127,7 +127,7 @@ fun PollCard(
                     tint = iconColor,
                 )
                 Spacer(modifier = Modifier.size(3.dp))
-                TimeText(post.pollEndAt, currentTime)
+                TimeText(post.pollEndAt.endDate, currentTime)
             }
             Spacer(modifier = Modifier.size(8.dp))
 
