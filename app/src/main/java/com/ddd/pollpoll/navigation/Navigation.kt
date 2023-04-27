@@ -97,7 +97,7 @@ fun MainNavigation() {
         NavHost(
             modifier = Modifier.padding(paddingValues),
             navController = navController,
-            startDestination = "login_route",
+            startDestination = loginRoute,
         ) {
             loginScreen(
                 navigateToMainScreen = { navController.navigateToMain() },

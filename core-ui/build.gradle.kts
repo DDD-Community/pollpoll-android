@@ -74,4 +74,6 @@ dependencies {
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.kotlin.immutable)
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.lifecycle.runtime.ktx)
 }

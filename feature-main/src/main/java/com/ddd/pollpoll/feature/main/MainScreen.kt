@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.pollpoll.PollEndDate
+import com.ddd.pollpoll.PopularPost
 import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.core.modifer.shadow
 import com.ddd.pollpoll.core.ui.PollCardLazyList
@@ -85,36 +87,6 @@ private fun MainScreen(
     navigateToReadVote: (Int) -> Unit,
     lazyColumnListState: LazyListState,
     onSearchClick: () -> Unit = {},
-    test: PostUi = PostUi(
-        categoryName = "Cary Talley",
-        contents = "tractatos",
-        nickname = "Isaac Carroll",
-        participantCount = 4552,
-        pollEndAt = 5694,
-        pollId = 9692,
-        pollItemCount = 4886,
-        postCreatedAt = 3952,
-        postHits = 1606,
-        postId = 2683,
-        pollItems = null,
-        title = "iusto",
-        watcherCount = 3137,
-    ),
-    test2: Post = Post(
-        categoryName = "Krista Shields",
-        contents = "fames",
-        nickname = "Charmaine Donovan",
-        participantCount = 1723,
-        pollEndAt = 4587,
-        pollId = 4978,
-        pollItemCount = 2135,
-        postCreatedAt = 8718,
-        postHits = 7796,
-        postId = 2492,
-        pollItems = listOf(),
-        title = "consectetur",
-        watcherCount = 7757,
-    ),
 ) {
     LazyColumn(
         Modifier
@@ -137,31 +109,64 @@ fun PopularListScreen(popularUiState: PopularUiState) {
     val horizontalState = rememberPagerState()
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
-            Column() {
-                when (popularUiState) {
-                    PopularUiState.Loading -> {
-                    }
+            Column(Modifier.background(Color.White)) {
+                Spacer(modifier = Modifier.height(30.dp))
+                PollPagerIndicator(
+                    numberOfPages = 3,
+                    selectedPage = horizontalState.currentPage,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+                Spacer(modifier = Modifier.height(30.dp))
 
-                    is PopularUiState.Success -> {
-                        Spacer(modifier = Modifier.height(30.dp))
-                        PollPagerIndicator(
-                            numberOfPages = 3,
-                            selectedPage = horizontalState.currentPage,
-                            modifier = Modifier.padding(horizontal = 20.dp),
-                        )
-                        Spacer(modifier = Modifier.height(30.dp))
-
-                        HorizontalPager(state = horizontalState, pageCount = 3) { page ->
+                HorizontalPager(state = horizontalState, pageCount = 3) { page ->
+                    when (popularUiState) {
+                        is PopularUiState.Success -> {
                             when (page) {
-                                0 -> PopularScreen(topTitle = "참여가 많은 폴폴")
-                                1 -> PopularScreen(topTitle = "많이 구경 중인 폴폴")
-                                2 -> PopularScreen(topTitle = "곧 종료되는 폴폴")
+                                0 -> {
+                                    val result = popularUiState.categoryList.mostParticipatePost
+                                    PopularScreen(
+                                        topTitle = "참여가 많은 폴폴",
+                                        title = result.title,
+                                        type = if (result.isAB) PollCardType.AB else PollCardType.CHOICE,
+                                        participants = result.participantCount,
+                                        watcherCount = result.watcherCount,
+                                        endDate = result.pollEndAt,
+                                    )
+                                }
+
+                                1 -> {
+                                    val result = popularUiState.categoryList.mostWatchPost
+                                    PopularScreen(
+                                        topTitle = "많이 구경 중인 폴폴",
+                                        type = if (result.isAB) PollCardType.AB else PollCardType.CHOICE,
+                                        title = result.title,
+                                        participants = result.participantCount,
+                                        watcherCount = result.watcherCount,
+                                        endDate = result.pollEndAt,
+                                    )
+                                }
+
+                                2 -> {
+                                    val result = popularUiState.categoryList.endingSoonPost
+                                    PopularScreen(
+                                        topTitle = "곧 종료되는 폴폴",
+                                        type = if (result.isAB) PollCardType.AB else PollCardType.CHOICE,
+                                        title = result.title,
+                                        participants = result.participantCount,
+                                        watcherCount = result.watcherCount,
+                                        endDate = result.pollEndAt,
+                                    )
+                                }
                             }
                         }
-                        popularUiState.categoryList
-                    }
 
-                    is PopularUiState.Error -> {
+                        is PopularUiState.Loading -> {
+                            PopularScreen(
+                                isLoading = true,
+                            )
+                        }
+
+                        is PopularUiState.Error -> {}
                     }
                 }
                 Spacer(modifier = Modifier.height(30.dp))
@@ -172,8 +177,8 @@ fun PopularListScreen(popularUiState: PopularUiState) {
             imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle),
             contentDescription = null,
             modifier = Modifier
-                .offset(y = (-10).dp)
-                .align(Alignment.CenterHorizontally),
+                .align(Alignment.CenterHorizontally)
+                .offset(y = (-10).dp),
         )
     }
 }
@@ -185,6 +190,8 @@ fun PopularScreen(
     title: String = "사무실에서 손톱 깎는거 잘못이다/아니다",
     participants: Int = 0,
     watcherCount: Int = 0,
+    isLoading: Boolean = false,
+    endDate: PollEndDate = PollEndDate(0),
 ) {
     Spacer(modifier = Modifier.height(30.dp))
     Column(
@@ -198,7 +205,14 @@ fun PopularScreen(
             color = PollPollTheme.colors.gray_900,
         )
         Spacer(modifier = Modifier.height(12.dp))
-        PollPopularCard()
+        PollPopularCard(
+            modifier = Modifier,
+            type = type,
+            title = title,
+            participants = participants,
+            watcherCount = watcherCount,
+            state = if (isLoading) PollCardState.Loading else PollCardState.Success,
+        )
     }
 }
 
@@ -273,6 +287,64 @@ fun TopScreen(
                 is CategoryUiState.Error -> {}
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PopularListScreenPreview() {
+    PollPollTheme {
+        PopularListScreen(
+            PopularUiState.Success(
+                categoryList = PopularPost(
+                    mostParticipatePost = Post(
+                        categoryName = "Noreen Hood",
+                        contents = "facilisis",
+                        nickname = "Dale Kelly",
+                        participantCount = 9958,
+                        pollEndAt = PollEndDate(8622),
+                        pollId = 4760,
+                        pollItemCount = 2204,
+                        postCreatedAt = 1871,
+                        postHits = 3801,
+                        postId = 6697,
+                        pollItems = listOf(),
+                        title = "gubergren",
+                        watcherCount = 8388,
+                    ),
+                    mostWatchPost = Post(
+                        categoryName = "Basil Horne",
+                        contents = "pri",
+                        nickname = "Sallie Watkins",
+                        participantCount = 8429,
+                        pollEndAt = PollEndDate(3946),
+                        pollId = 3328,
+                        pollItemCount = 5216,
+                        postCreatedAt = 5874,
+                        postHits = 9078,
+                        postId = 5437,
+                        pollItems = listOf(),
+                        title = "mattis",
+                        watcherCount = 7583,
+                    ),
+                    endingSoonPost = Post(
+                        categoryName = "Basil Horne",
+                        contents = "pri",
+                        nickname = "Sallie Watkins",
+                        participantCount = 8429,
+                        pollEndAt = PollEndDate(3946),
+                        pollId = 3328,
+                        pollItemCount = 5216,
+                        postCreatedAt = 5874,
+                        postHits = 9078,
+                        postId = 5437,
+                        pollItems = listOf(),
+                        title = "mattis",
+                        watcherCount = 7583,
+                    ),
+                ),
+            ),
+        )
     }
 }
 

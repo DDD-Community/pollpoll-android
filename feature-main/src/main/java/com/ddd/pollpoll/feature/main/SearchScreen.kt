@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ddd.pollpoll.PollEndDate
 import com.ddd.pollpoll.core.ui.PollCardLazyList
 import com.ddd.pollpoll.designsystem.component.PollSearchBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
@@ -234,7 +235,7 @@ private val fakePost = persistentListOf<PostUi>(
         contents = "regione",
         nickname = "Haley Sloan",
         participantCount = 6706,
-        pollEndAt = 2140,
+        pollEndAt = PollEndDate(2140),
         pollId = 2143,
         pollItemCount = 3265,
         postCreatedAt = 4168,
@@ -249,7 +250,7 @@ private val fakePost = persistentListOf<PostUi>(
         contents = "regione",
         nickname = "Haley Sloan",
         participantCount = 6706,
-        pollEndAt = 2140,
+        pollEndAt = PollEndDate(2140),
         pollId = 2143,
         pollItemCount = 3265,
         postCreatedAt = 4168,
