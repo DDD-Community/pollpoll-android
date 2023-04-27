@@ -157,28 +157,6 @@ class ReadVoteViewModel @Inject constructor(
         voted.value = true
         return tempPostItemList
     }
-
-    private suspend fun selectMyPollType(type: String) {
-        myPageRepository.getMyPageType(type).asResult().collect { result ->
-            when (result) {
-                is Result.Error -> Log.e(
-                    "ReadVoteViewModel",
-                    "getMyPageType Error ${result.exception}, Type : $type",
-                )
-
-                Result.Loading -> Log.e("ReadVoteViewModel", "getMyPageType Loading, Type : $type")
-                is Result.Success -> {
-                    Log.e("ReadVoteViewModel", "getMyPageType Success ${result.data}, Type : $type")
-                    result.data?.let { myPageType ->
-                        val tempList = emptyList<Int>().toMutableList()
-                        for (post in myPageType.posts) {
-                            tempList.add(post.postId)
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 data class Vote(

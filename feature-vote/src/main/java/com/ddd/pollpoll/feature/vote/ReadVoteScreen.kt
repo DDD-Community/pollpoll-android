@@ -191,10 +191,10 @@ fun VoteContent(
         Text(text = "loading...")
     } else {
         var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
-        val timeDiff = lastPost.pollEndAt - currentTime
+        val timeDiff = lastPost.pollEndAt.endDate - currentTime
         val isPollEnd = (timeDiff) < 0
         val timeProgress =
-            timeDiff.absoluteValue.toFloat() / (lastPost.pollEndAt - lastPost.postCreatedAt).toFloat()
+            timeDiff.absoluteValue.toFloat() / (lastPost.pollEndAt.endDate - lastPost.postCreatedAt).toFloat()
 
         LaunchedEffect(key1 = Unit) {
             while (true) {
@@ -220,7 +220,7 @@ fun VoteContent(
                 color = PollPollTheme.colors.gray_700,
                 style = PollPollTheme.typography.heading04,
             )
-            VoteDueDateText(Date(lastPost.pollEndAt))
+            VoteDueDateText(Date(lastPost.pollEndAt.endDate))
             Spacer(modifier = Modifier.size(30.dp))
 
             if (timeDiff < 0) {
