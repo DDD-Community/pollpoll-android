@@ -40,6 +40,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -268,7 +271,7 @@ fun AddVoteCategoryScreen(
                     IconButton(onClick = { onDialogClick() }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = PollIcon.ChevronRight),
-                            contentDescription = "",
+                            contentDescription = "투표기간 설정하기 버튼",
                         )
                     }
                 }
@@ -342,7 +345,7 @@ fun ChoiceCategoryScreen(onClick: (Category) -> Unit = {}) {
             CategoryList.forEach {
                 PollIconButtonText(
                     iconRes = it.iconDrawable,
-                    contentDes = "",
+                    contentDescription = "${it.text} 버튼",
                     isClicked = false,
                     onClick = {
                         onClick(it)
@@ -496,11 +499,24 @@ fun SelectDateScreen(
     onClick: (VoteRadioButton) -> Unit,
 ) {
     Row(
-        modifier = Modifier.padding(vertical = 20.dp),
+        modifier = Modifier.padding(vertical = 20.dp).semantics(true) {
+            this.onClick(
+                label = "날짜 지정하기",
+                action = {
+                    onClick(selectedOption)
+                    true
+                },
+
+            )
+        },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.width(43.dp))
-        PollRadioButton(onClick = { onClick(selectedOption) }, selected = selectedOption == seleted)
+        PollRadioButton(
+            Modifier.clearAndSetSemantics {},
+            onClick = { onClick(selectedOption) },
+            selected = selectedOption == seleted,
+        )
         Spacer(modifier = Modifier.width(10.dp))
         Text(text = selectedOption.date)
     }
