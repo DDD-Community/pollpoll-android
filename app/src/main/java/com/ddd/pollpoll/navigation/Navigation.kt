@@ -30,9 +30,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -64,7 +64,7 @@ val bottomInvisibleList = listOf(
     loginRoute,
     insertVoteRoute,
     nickNameRoute,
-    openSourceRoute
+    openSourceRoute,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -150,14 +150,18 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
     if (currentRoute in bottomInvisibleList) {
     } else {
         Column(Modifier.background(Color.White)) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(PollPollTheme.colors.gray_200),
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
-                    .shadow(
-                        spotColor = Color(0x00000000),
-                        elevation = 24.dp,
-                    ),
+                    .padding(top = 7.dp)
+                    .background(Color.White),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 BottomNavBarItem(PollIcon.Home, "홈", mainRoute, currentRoute) {
@@ -197,8 +201,6 @@ fun BottomNavBarItem(
     ) {
         val color =
             if (currentRoute?.contains(route) == true) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_700
-
-        Spacer(modifier = Modifier.size(8.dp))
         Icon(
             painter = painterResource(resId),
             contentDescription = itemName,
@@ -206,5 +208,16 @@ fun BottomNavBarItem(
             tint = color,
         )
         Text(text = itemName, style = PollPollTheme.typography.desc, color = color)
+    }
+}
+
+@Preview
+@Composable
+fun BottomNavigationPreview() {
+    PollPollTheme {
+        BottomNavigation(
+            navController = rememberNavController(),
+            currentBackStack = null,
+        )
     }
 }
