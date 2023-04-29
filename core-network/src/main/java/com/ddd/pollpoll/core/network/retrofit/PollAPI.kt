@@ -16,7 +16,8 @@ interface PollAPI {
     @GET("/api/posts")
     suspend fun getPosts(
         @Query("lastPostId") lastPostId: Int? = null,
-        @Query("keyword") keyword: String? = null
+        @Query("keyword") keyword: String? = null,
+        @Query("categoryId") categoryId: Int? = null,
     ): Response<ApiResponse<GetPostResponse>>
 
     @GET("/api/posts/{postId}")
@@ -28,7 +29,7 @@ interface PollAPI {
     @PUT("/api/polls/{pollId}/participate")
     suspend fun putPoll(
         @Path("pollId") pollId: Int,
-        @Body pollItemIds: PutVoteRequest
+        @Body pollItemIds: PutVoteRequest,
     ): Response<ApiResponse<Unit>>
 //    suspend fun putPoll(@Path("pollId")pollId: Int, @Query("pollItemIds")pollItemIds: PutVoteRequest): Response<ApiResponse<Unit>>
 

@@ -76,8 +76,9 @@ fun PollCard(
     val timeProgress =
         timeDiff.absoluteValue.toFloat() / (post.pollEndAt.endDate - post.postCreatedAt).toFloat()
 
+    //시간이 지났을때, 리컴포지션 방지
     LaunchedEffect(key1 = Unit) {
-        while (true) {
+        while (!isPollEnd) {
             delay(1000)
             currentTime = System.currentTimeMillis()
         }

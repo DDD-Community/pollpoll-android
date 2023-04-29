@@ -2,6 +2,7 @@ package com.ddd.pollpoll.feature.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -48,8 +49,7 @@ internal fun MainScreenRoute(
     navigateToReadVote: (Int) -> Unit,
     navigateToSearch: () -> Unit,
 ) {
-    val categoryUiState = viewModel.categoryUiState.collectAsStateWithLifecycle().value
-    val popularUiState = viewModel.popularUiState.collectAsStateWithLifecycle().value
+    val mainUiState = viewModel.mainUiState.collectAsStateWithLifecycle().value
     val posts = viewModel.posts.toImmutableList()
     val lazyColumnListState = rememberLazyListState()
 
@@ -70,12 +70,14 @@ internal fun MainScreenRoute(
     }
 
     MainScreen(
-        categoryUiState,
-        popularUiState,
+        mainUiState.categoryUiState,
+        mainUiState.popularUiState,
+        mainUiState.selectedCategory,
         posts,
         navigateToReadVote,
         lazyColumnListState,
         navigateToSearch,
+        viewModel::selectCategory,
     )
 }
 
@@ -83,11 +85,14 @@ internal fun MainScreenRoute(
 private fun MainScreen(
     categoryUiState: CategoryUiState,
     popularUiState: PopularUiState,
+    selectedCategory: Int? = null,
     posts: ImmutableList<PostUi> = persistentListOf(),
     navigateToReadVote: (Int) -> Unit,
     lazyColumnListState: LazyListState,
     onSearchClick: () -> Unit = {},
+    onCategoryClicked: (Int) -> Unit = {},
 ) {
+    val categoryHorizontalState = rememberScrollState()
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -95,7 +100,13 @@ private fun MainScreen(
         state = lazyColumnListState,
     ) {
         item {
-            TopScreen(categoryUiState, onSearchClick = onSearchClick)
+            TopScreen(
+                selectedCategory,
+                categoryUiState,
+                onSearchClick = onSearchClick,
+                categoryHorizontalState,
+                onCategoryClicked = onCategoryClicked,
+            )
             Spacer(modifier = Modifier.height(20.dp))
             PopularListScreen(popularUiState)
         }
@@ -123,7 +134,7 @@ fun PopularListScreen(popularUiState: PopularUiState) {
                         is PopularUiState.Success -> {
                             when (page) {
                                 0 -> {
-                                    val result = popularUiState.categoryList.mostParticipatePost
+                                    val result = popularUiState.popularPostList.mostParticipatePost
                                     PopularScreen(
                                         topTitle = "참여가 많은 폴폴",
                                         title = result.title,
@@ -135,7 +146,7 @@ fun PopularListScreen(popularUiState: PopularUiState) {
                                 }
 
                                 1 -> {
-                                    val result = popularUiState.categoryList.mostWatchPost
+                                    val result = popularUiState.popularPostList.mostWatchPost
                                     PopularScreen(
                                         topTitle = "많이 구경 중인 폴폴",
                                         type = if (result.isAB) PollCardType.AB else PollCardType.CHOICE,
@@ -147,7 +158,7 @@ fun PopularListScreen(popularUiState: PopularUiState) {
                                 }
 
                                 2 -> {
-                                    val result = popularUiState.categoryList.endingSoonPost
+                                    val result = popularUiState.popularPostList.endingSoonPost
                                     PopularScreen(
                                         topTitle = "곧 종료되는 폴폴",
                                         type = if (result.isAB) PollCardType.AB else PollCardType.CHOICE,
@@ -219,10 +230,12 @@ fun PopularScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopScreen(
+    selectedCategory: Int?,
     categoryUiState: CategoryUiState = CategoryUiState.Success(listOf()),
     onSearchClick: () -> Unit = {},
+    categoryHorizontalState: ScrollState,
+    onCategoryClicked: (Int) -> Unit = {},
 ) {
-    val listState = rememberScrollState()
     Surface(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)) {
         Column(
             modifier = Modifier
@@ -272,11 +285,13 @@ fun TopScreen(
                 CategoryUiState.Loading -> {}
                 is CategoryUiState.Success -> {
                     // 충격적이게도 LazyRow로 하면 망가짐
-                    Row(modifier = Modifier.horizontalScroll(listState)) {
+                    Row(modifier = Modifier.horizontalScroll(categoryHorizontalState)) {
                         categoryUiState.categoryList.forEach {
                             PollCategoryButton(
                                 imageUrl = it.imageUrl,
                                 text = it.name,
+                                clicked = it.categoryId == selectedCategory,
+                                onClick = { onCategoryClicked(it.categoryId) },
                             )
                             Spacer(modifier = Modifier.width(20.dp))
                         }
@@ -296,7 +311,7 @@ fun PopularListScreenPreview() {
     PollPollTheme {
         PopularListScreen(
             PopularUiState.Success(
-                categoryList = PopularPost(
+                popularPostList = PopularPost(
                     mostParticipatePost = Post(
                         categoryName = "Noreen Hood",
                         contents = "facilisis",
@@ -366,7 +381,12 @@ fun MainScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun TopScreenPreview() {
+    val scrollState = rememberScrollState()
     PollPollTheme() {
-        TopScreen(categoryUiState = CategoryUiState.Loading)
+        TopScreen(
+            selectedCategory = 1,
+            categoryUiState = CategoryUiState.Loading,
+            categoryHorizontalState = scrollState,
+        )
     }
 }
