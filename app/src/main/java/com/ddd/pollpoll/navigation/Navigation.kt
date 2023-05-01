@@ -16,6 +16,7 @@
 
 package com.ddd.pollpoll.navigation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,11 +28,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
@@ -72,24 +77,53 @@ val bottomInvisibleList = listOf(
 fun MainNavigation() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
+    var scroll by remember { mutableStateOf(false) }
+
     Scaffold(
         bottomBar = {
             BottomNavigation(navController, currentBackStack)
         },
         floatingActionButton = {
             if (currentBackStack?.destination?.route == mainRoute) {
-                FloatingActionButton(
-                    shape = CircleShape,
-                    containerColor = PollPollTheme.colors.gray_700,
-                    onClick = {
-                        navController.navigateToInsertVote()
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(id = PollIcon.Insert),
-                        "",
-                        tint = PollPollTheme.colors.gray_050,
-                    )
+                Column {
+                    FloatingActionButton(
+                        shape = CircleShape,
+                        containerColor = PollPollTheme.colors.gray_700,
+                        onClick = {
+                            navController.navigateToInsertVote()
+                        },
+
+                        ) {
+                        Row(Modifier.then(if (!scroll) Modifier.padding(horizontal = 15.dp) else Modifier)) {
+                            Icon(
+                                painter = painterResource(id = PollIcon.Insert),
+                                "",
+                                tint = PollPollTheme.colors.gray_050,
+                            )
+                            AnimatedVisibility(modifier = Modifier.align(Alignment.CenterVertically) , visible = !scroll) {
+                                Text(
+                                    text = "투표 작성하기",
+                                    style = PollPollTheme.typography.body04,
+                                    color = PollPollTheme.colors.gray_050,
+                                )
+                            }
+                        }
+                    }
+                    if (scroll) {
+                        Spacer(modifier = Modifier.height(15.dp))
+                        FloatingActionButton(
+                            onClick = {
+                            },
+                            shape = CircleShape,
+                            modifier = Modifier.align(Alignment.End),
+                            containerColor = PollPollTheme.colors.gray_050
+                        ) {
+                            Icon(
+                                painter = painterResource(id = PollIcon.UP),
+                                "",
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -131,6 +165,7 @@ fun MainNavigation() {
                 navigateToSearch = {
                     navController.navigateToSearch()
                 },
+                scrollItem = { scroll = it }
             )
             SearchScreen(
                 navigateToReadVote = { postId ->

@@ -48,18 +48,22 @@ internal fun MainScreenRoute(
     viewModel: MainViewModel = hiltViewModel(),
     navigateToReadVote: (Int) -> Unit,
     navigateToSearch: () -> Unit,
+    scrollItem: (Boolean) -> Unit,
 ) {
     val mainUiState = viewModel.mainUiState.collectAsStateWithLifecycle().value
     val posts = viewModel.posts.toImmutableList()
     val lazyColumnListState = rememberLazyListState()
 
+    if (lazyColumnListState.firstVisibleItemIndex > 2) scrollItem(true) else scrollItem(false)
+
+
     val shouldStartPaginate = remember {
         derivedStateOf {
             viewModel.canPaginate && (
-                // 현재 보이는것보다
-                lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                    ?: -9
-                ) >= (lazyColumnListState.layoutInfo.totalItemsCount - 1)
+                    // 현재 보이는것보다
+                    lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                        ?: -9
+                    ) >= (lazyColumnListState.layoutInfo.totalItemsCount - 1)
         }
     }
 

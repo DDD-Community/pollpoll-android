@@ -17,7 +17,7 @@ fun NavController.navigateToMain() {
 fun NavGraphBuilder.MainScreen(
     navigateToReadVote: (Int) -> Unit,
     navigateToSearch: () -> Unit,
-) {
+    scrollItem  : (Boolean) -> Unit) {
     composable(
         route = mainRoute,
         arguments = listOf(),
@@ -25,6 +25,7 @@ fun NavGraphBuilder.MainScreen(
         MainScreenRoute(
             navigateToReadVote = navigateToReadVote,
             navigateToSearch = navigateToSearch,
+            scrollItem = scrollItem
         )
     }
 }

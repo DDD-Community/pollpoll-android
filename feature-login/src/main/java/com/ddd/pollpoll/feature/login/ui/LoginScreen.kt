@@ -18,6 +18,7 @@ package com.ddd.pollpoll.feature.login.ui
 
 import android.app.Activity
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -115,6 +117,8 @@ internal fun LoginScreen(
     navigateToMainScreen: () -> Unit = {},
     navigateToNickNameScreen: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+
     when (uiState) {
         is LoginUiState.HasNickName -> {
             navigateToMainScreen()
@@ -125,7 +129,8 @@ internal fun LoginScreen(
         }
 
         LoginUiState.Empty -> {}
-        is LoginUiState.Error -> {}
+        is LoginUiState.Error -> Toast.makeText(context, "로그인에 실패하였습니다" , Toast.LENGTH_SHORT).show()
+
         LoginUiState.Loading -> {}
     }
 
