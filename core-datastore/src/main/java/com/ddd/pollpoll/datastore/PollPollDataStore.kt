@@ -8,5 +8,9 @@ interface PollPollDataStore {
 
     suspend fun updateToken(name: String)
 
+    fun getNickName() : Flow<String>
+
+    suspend fun updateNickName(nickName : String)
+
     fun clear()
 }

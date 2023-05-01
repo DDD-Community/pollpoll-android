@@ -22,6 +22,16 @@ class PollPollDataStoreImpl @Inject constructor(
         }
     }
 
+    override fun getNickName(): Flow<String> = pollPollPreferences.data.map { preferences ->
+        preferences[KEY_TOKEN] ?: ""
+    }
+
+    override suspend fun updateNickName(nickName: String) {
+        pollPollPreferences.edit { preferences ->
+            preferences[NICKNAME_TOKEN] = nickName
+        }
+    }
+
     override fun clear() {
         // TODO
     }
@@ -29,6 +39,7 @@ class PollPollDataStoreImpl @Inject constructor(
     companion object {
         const val PREFERENCE_DATA_STORE_NAME = "pollpoll_preferences.pb"
         private val KEY_TOKEN = "key_token".toKey()
+        private val NICKNAME_TOKEN = "nickname_token".toKey()
 
         private fun String.toKey(): Preferences.Key<String> = stringPreferencesKey(this)
     }

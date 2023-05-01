@@ -21,6 +21,7 @@ import com.ddd.pollpoll.Nickname
 import com.ddd.pollpoll.core.data.model.asExternalModel
 import com.ddd.pollpoll.core.network.model.*
 import com.ddd.pollpoll.core.network.remote.NickNameRemoteSource
+import com.ddd.pollpoll.datastore.PollPollDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -36,6 +37,7 @@ interface NickNameRepository {
 
 class NickNameRepositoryImp @Inject constructor(
     private val nickNameRemoteSource: NickNameRemoteSource,
+    private val dataStore: PollPollDataStore
 ) : NickNameRepository {
     override suspend fun getNickNameRecommend(): Flow<Nickname> = flow {
         val result = nickNameRemoteSource.getNickNameRecommend().asExternalModel()
