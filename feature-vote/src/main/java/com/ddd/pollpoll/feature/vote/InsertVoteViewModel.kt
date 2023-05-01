@@ -31,7 +31,7 @@ class InsertVoteViewModel @Inject constructor(
 
     fun selectCategory(categoryId: Category) {
         _uiState.update {
-            it.copy(category = categoryId.categoryEnum, insertVoteStep = InsertVoteStep.InsertTitle)
+            it.copy(category = categoryId.categoryEnum)
         }
     }
 
@@ -48,20 +48,26 @@ class InsertVoteViewModel @Inject constructor(
     }
 
     fun navigateAddVoteCategory() {
-        _uiState.update { it.copy(insertVoteStep = InsertVoteStep.AddVoteCategory) }
+//        _uiState.update { it.copy(insertVoteStep = InsertVoteStep.AddVoteCategory) }
     }
 
     fun backAddVote() {
-        val insertVoteStep = when (_uiState.value.insertVoteStep) {
-            InsertVoteStep.AddVoteCategory -> InsertVoteStep.InsertTitle
-            InsertVoteStep.InsertTitle -> InsertVoteStep.SelectCategory
-            InsertVoteStep.SelectCategory -> InsertVoteStep.SelectCategory
-        }
-        _uiState.update {
-            it.copy(insertVoteStep = insertVoteStep)
-        }
+//        val insertVoteStep = when (_uiState.value.insertVoteStep) {
+//            InsertVoteStep.AddVoteCategory -> InsertVoteStep.InsertTitle
+//            InsertVoteStep.InsertTitle -> InsertVoteStep.SelectCategory
+//            InsertVoteStep.SelectCategory -> {
+//                cancelVote()
+//                InsertVoteStep.SelectCategory
+//            }
+//        }
+//        _uiState.update {
+//            it.copy(insertVoteStep = insertVoteStep)
+//        }
     }
 
+    fun cancelVote() {
+        _uiState.update { it.copy(isClosed = true) }
+    }
     fun insertPost() = viewModelScope.launch {
         val vote = Vote(
             category = _uiState.value.category,
@@ -99,8 +105,8 @@ data class InsertVoteUiState(
     val milliseconds: Long = 0,
     val multipleChoice: Boolean = false,
     val pollItems: ImmutableList<PollItem> = persistentListOf(PollItem(""), PollItem("")),
-    val insertVoteStep: InsertVoteStep = InsertVoteStep.SelectCategory,
     val isInsertSuccess: Boolean = false,
+    val isClosed: Boolean = false,
 ) {
     val isVoteNotEmpty: Boolean
         get() = title.isBlank() &&
@@ -111,9 +117,4 @@ data class InsertVoteUiState(
         get() = !pollItems.contains(PollItem(""))
 }
 
-sealed interface InsertVoteStep {
-
-    object SelectCategory : InsertVoteStep
-    object InsertTitle : InsertVoteStep
-    object AddVoteCategory : InsertVoteStep
-}
+// todo ViewState로 빼는게 맞을것 같음

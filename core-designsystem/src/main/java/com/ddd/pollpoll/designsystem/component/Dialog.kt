@@ -26,8 +26,10 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 @Composable
 fun PollAlertDialog(
     onDismissRequest: () -> Unit,
+    title : String = "등록하시겠습니까?",
+    content : String = "등록 한 시점부터 투표가 진행됩니다.",
     onCancelClicked: () -> Unit,
-    onConfirmClicked: () -> Unit
+    onConfirmClicked: () -> Unit,
 ) {
     CustomAlertDialog(onDismissRequest = onDismissRequest) {
         Box(Modifier.fillMaxSize()) {
@@ -35,13 +37,13 @@ fun PollAlertDialog(
                 Column(Modifier.padding(horizontal = 20.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "등록하시겠습니까?",
+                        text = title,
                         style = PollPollTheme.typography.body02,
                         color = PollPollTheme.colors.gray_700
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     Text(
-                        text = "등록 한 시점부터 투표가 진행됩니다.",
+                        text = content,
                         style = PollPollTheme.typography.body04,
                         color = PollPollTheme.colors.gray_700
                     )

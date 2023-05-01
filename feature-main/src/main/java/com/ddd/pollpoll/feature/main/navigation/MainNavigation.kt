@@ -7,7 +7,7 @@ import com.ddd.pollpoll.feature.main.MainScreenRoute
 
 // internal const val topicIdArg = "topicId"
 
- const val mainRoute = "main_route"
+const val mainRoute = "main_route"
 
 fun NavController.navigateToMain() {
 //    val encodedId = Uri.encode(topicId)
@@ -17,7 +17,8 @@ fun NavController.navigateToMain() {
 fun NavGraphBuilder.MainScreen(
     navigateToReadVote: (Int) -> Unit,
     navigateToSearch: () -> Unit,
-    scrollItem  : (Boolean) -> Unit) {
+    scrollItem: (Boolean) -> Unit,
+) {
     composable(
         route = mainRoute,
         arguments = listOf(),
@@ -25,7 +26,7 @@ fun NavGraphBuilder.MainScreen(
         MainScreenRoute(
             navigateToReadVote = navigateToReadVote,
             navigateToSearch = navigateToSearch,
-            scrollItem = scrollItem
+            scrollItem = scrollItem,
         )
     }
 }

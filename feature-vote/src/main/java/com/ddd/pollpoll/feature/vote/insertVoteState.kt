@@ -19,10 +19,14 @@ import kotlinx.coroutines.CoroutineScope
 internal class InsertVoteState @OptIn(ExperimentalMaterialApi::class) constructor(
     val bottomSheetState: ModalBottomSheetState,
     val coroutineScope: CoroutineScope,
-    val scrollState: ScrollState,
+    val isClosedState: Boolean
 ) {
+    var insertVoteStep  by mutableStateOf<InsertVoteStep>(InsertVoteStep.SelectCategory)
+    private set
+    var confirmDialogState by mutableStateOf(false)
+        private set
 
-    var dialogState by mutableStateOf(false)
+    var cancelDialogState by mutableStateOf(false)
         private set
 
     var progressState by mutableStateOf(0.0f)
@@ -32,8 +36,12 @@ internal class InsertVoteState @OptIn(ExperimentalMaterialApi::class) constructo
         progressState = progress
     }
 
-    fun setShowDialog(shouldShow: Boolean) {
-        dialogState = shouldShow
+    fun setShowingConfirmDialog(shouldShow: Boolean) {
+        confirmDialogState = shouldShow
+    }
+
+    fun setShowingCancelDialog(shouldShow: Boolean) {
+        cancelDialogState = shouldShow
     }
 }
 
@@ -42,9 +50,15 @@ internal class InsertVoteState @OptIn(ExperimentalMaterialApi::class) constructo
 internal fun rememberInsertVoteState(
     bottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    scrollState: ScrollState = rememberScrollState(),
-): InsertVoteState = remember(bottomSheetState, coroutineScope) {
-    InsertVoteState(bottomSheetState, coroutineScope, scrollState)
+    isClosedState: Boolean
+): InsertVoteState = remember(bottomSheetState, coroutineScope, isClosedState) {
+    InsertVoteState(bottomSheetState, coroutineScope, isClosedState)
 }
 
+
+sealed interface InsertVoteStep {
+    object SelectCategory : InsertVoteStep
+    object InsertTitle : InsertVoteStep
+    object AddVoteCategory : InsertVoteStep
+}
 
