@@ -19,8 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,12 +57,11 @@ internal fun MainScreenRoute(
     val lazyColumnListState = rememberLazyListState()
 
     // 왜 계속 호출할까?
-    val isScrolled by remember { derivedStateOf { lazyColumnListState.firstVisibleItemIndex > 2 } }
+    val isScrolled by remember { mutableStateOf(lazyColumnListState.firstVisibleItemIndex > 2) }
 
-//    snapshotFlow { isScrolled }.
-//    LaunchedEffect(key1 = isScrolled) {
-//        scrollItem(isScrolled)
-//    }
+    LaunchedEffect(key1 = isScrolled) {
+        scrollItem(isScrolled)
+    }
 
     val shouldStartPaginate = remember {
         derivedStateOf {
@@ -101,7 +100,7 @@ private fun MainScreen(
     navigateToReadVote: (Int) -> Unit,
     lazyColumnListState: LazyListState,
     onSearchClick: () -> Unit = {},
-    onCategoryClicked: (Int) -> Unit = {},
+    onCategoryClicked: (Int?) -> Unit = {},
 ) {
     val categoryHorizontalState = rememberScrollState()
     LazyColumn(
@@ -245,7 +244,7 @@ fun TopScreen(
     categoryUiState: CategoryUiState = CategoryUiState.Success(listOf()),
     onSearchClick: () -> Unit = {},
     categoryHorizontalState: ScrollState,
-    onCategoryClicked: (Int) -> Unit = {},
+    onCategoryClicked: (Int?) -> Unit = {},
 ) {
     Surface(shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)) {
         Column(

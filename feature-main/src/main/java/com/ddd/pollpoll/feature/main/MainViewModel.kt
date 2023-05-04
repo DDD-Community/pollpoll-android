@@ -96,7 +96,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun selectCategory(categoryId: Int) = viewModelScope.launch {
+    fun selectCategory(categoryId: Int?) = viewModelScope.launch {
         _mainUiState.update { it.copy(selectedCategory = categoryId) }
         refreshPost()
     }

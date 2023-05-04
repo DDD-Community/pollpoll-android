@@ -34,7 +34,7 @@ interface PollAPI {
 //    suspend fun putPoll(@Path("pollId")pollId: Int, @Query("pollItemIds")pollItemIds: PutVoteRequest): Response<ApiResponse<Unit>>
 
     @GET("/api/categories")
-    suspend fun getCategories(): Response<ApiResponse<GetCategoriesResponse>>
+    suspend fun getCategories(@Query("includeDefaultCategory")includeDefaultCategory: Boolean = true): Response<ApiResponse<GetCategoriesResponse>>
 
     @GET("/api/user/nickname-recommend")
     suspend fun getNickNameRecommend(): Response<ApiResponse<GetNicknameRecommendResponse>>
@@ -46,5 +46,8 @@ interface PollAPI {
     suspend fun getHasNickname(): Response<ApiResponse<GetHasNicknameResponse>>
 
     @GET("/api/user/my-page")
-    suspend fun getMyPage(@Query("lastPostId") lastPostId: Int? = null, @Query("type") type: String): Response<ApiResponse<GetMyPageResponse>>
+    suspend fun getMyPage(
+        @Query("lastPostId") lastPostId: Int? = null,
+        @Query("type") type: String,
+    ): Response<ApiResponse<GetMyPageResponse>>
 }
