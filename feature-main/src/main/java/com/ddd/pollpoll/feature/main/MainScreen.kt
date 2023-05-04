@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,7 +56,7 @@ internal fun MainScreenRoute(
     val lazyColumnListState = rememberLazyListState()
 
     // 왜 계속 호출할까?
-    val isScrolled by remember { mutableStateOf(lazyColumnListState.firstVisibleItemIndex > 2) }
+    val isScrolled by remember { derivedStateOf { lazyColumnListState.firstVisibleItemIndex > 2 } }
 
     LaunchedEffect(key1 = isScrolled) {
         scrollItem(isScrolled)

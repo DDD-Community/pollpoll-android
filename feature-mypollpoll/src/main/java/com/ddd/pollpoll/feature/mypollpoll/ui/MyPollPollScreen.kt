@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,9 +46,7 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon.Fire
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Writing
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.main.model.PostUi
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.absoluteValue
 
 @Composable
 internal fun MyPollPollRoute(
@@ -171,38 +171,81 @@ fun MyPollPollHeader(
     participatePollClicked: () -> Unit,
     watchPollClicked: () -> Unit,
 ) {
-    Column(modifier = Modifier) {
-        Row(
+    Column {
+        Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
                 .background(color = Color.White)
-                .padding(horizontal = 20.dp, vertical = 15.dp),
+                .padding(horizontal = 20.dp),
         ) {
-            PollRecord(
-                Writing,
-                "내가 쓴 투표",
-                uiState.myPagePollType == MyPagePollType.MY_POLL,
-                uiState.myPollCount,
-                myPollClicked,
-            )
-            Spacer(Modifier.weight(1f))
-            PollRecord(
-                Fire,
-                "참여한 투표",
-                uiState.myPagePollType == MyPagePollType.PARTICIPATE_POLL,
-                uiState.participateCount,
-                participatePollClicked,
-            )
-            Spacer(Modifier.weight(1f))
-            PollRecord(
-                Cloud,
-                "구경한 투표",
-                uiState.myPagePollType == MyPagePollType.WATCH_POLL,
-                uiState.watchPollCount,
-                watchPollClicked,
-            )
-        }
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
 
+            ) {
+                Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = PollPollTheme.typography.heading04.toSpanStyle().copy(
+                                color = PollPollTheme.colors.gray_900,
+                            ),
+                        ) {
+                            append(uiState.nickName)
+                        }
+                        withStyle(
+                            style = PollPollTheme.typography.body01.toSpanStyle().copy(
+                                color = PollPollTheme.colors.gray_500,
+                            ),
+                        ) {
+                            append(" 님,\n" + "쌓인 고민거리들 같이 해결해요!")
+                        }
+                    },
+                )
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PollPollTheme.colors.gray_050,
+                    ),
+                    border = BorderStroke(1.dp, PollPollTheme.colors.gray_200),
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 3.5.dp),
+                    onClick = { /*TODO*/ },
+                ) {
+                    Text(
+                        text = "닉네임수정",
+                        style = PollPollTheme.typography.body04,
+                        color = PollPollTheme.colors.gray_700,
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)),
+            ) {
+                PollRecord(
+                    Writing,
+                    "내가 쓴 투표",
+                    uiState.myPagePollType == MyPagePollType.MY_POLL,
+                    uiState.myPollCount,
+                    myPollClicked,
+                )
+                Spacer(Modifier.weight(1f))
+                PollRecord(
+                    Fire,
+                    "참여한 투표",
+                    uiState.myPagePollType == MyPagePollType.PARTICIPATE_POLL,
+                    uiState.participateCount,
+                    participatePollClicked,
+                )
+                Spacer(Modifier.weight(1f))
+                PollRecord(
+                    Cloud,
+                    "구경한 투표",
+                    uiState.myPagePollType == MyPagePollType.WATCH_POLL,
+                    uiState.watchPollCount,
+                    watchPollClicked,
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+        }
         Row(
             modifier = Modifier
                 .offset(y = (-10).dp)
@@ -220,11 +263,7 @@ fun MyPollPollHeader(
                 contentDescription = null,
             )
             if (uiState.myPagePollType != MyPagePollType.WATCH_POLL) {
-                Spacer(
-                    modifier = Modifier.weight(
-                        1f,
-                    ),
-                )
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
@@ -306,55 +345,15 @@ fun PollRecord(
     }
 }
 
-
 @Composable
-fun TimeText(expireDateTime: Long, currentTime: Long) {
-    val diff = expireDateTime - currentTime
-    val diffAbsoluteValue = diff.absoluteValue
-    val sdf = SimpleDateFormat("MM.dd HH:mm")
-
-    val diffSeconds: Long = (diffAbsoluteValue / 1000) % 60
-    val diffMinutes: Long = (diffAbsoluteValue / (60 * 1000)) % 60
-    val diffHours: Long = (diffAbsoluteValue / (60 * 60 * 1000)) % 24
-    val diffDays: Long = diffAbsoluteValue / (24 * 60 * 60 * 1000)
-
-    val hoursString = if (diffHours < 10) "0$diffHours" else "$diffHours"
-    val minuteString = if (diffMinutes < 10) "0$diffMinutes" else diffMinutes
-    val secondsString = if (diffSeconds < 10) "0$diffSeconds" else diffSeconds
-
-    if (diff < 0) {
-        Text(
-            text = "종료된 투표",
-            color = PollPollTheme.colors.gray_300,
-            style = PollPollTheme.typography.body03,
-        )
-    } else {
-        Text(
-            text = "${diffDays}일 $hoursString:$minuteString:$secondsString 남았어요!",
-            color = PollPollTheme.colors.gray_400,
-            style = PollPollTheme.typography.body03,
-        )
+fun MyPageBottomSheet() {
+    Column {
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(painter = painterResource(id = PollIcon.Close), contentDescription = "닉네임 수정 닫기")
+        }
+        Text(text = "글을 작성할 때 사용할 내 닉네임을 입력해주세요")
     }
 }
-
-@Composable
-fun HitsText(hits: Int) {
-    Text(
-        text = "조회수 $hits",
-        color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body03,
-    )
-}
-
-// Previews
-
-// modifier: Modifier = Modifier,
-// navigateToSettings: () -> Unit,
-// posts: GetPostResponse?,
-// uiState: MyPollPollUiState,
-// myPollClicked: () -> Unit,
-// participatePollClicked: () -> Unit,
-// watchPollClicked: () -> Unit,
 
 @Preview(showBackground = true)
 @Composable
@@ -364,7 +363,7 @@ private fun PollRecordPreview() {
             navigateToSettings = {},
             navigateToReadVote = {},
             posts = emptyList(),
-            uiState = MyPollPollUiState(MyPagePollType.MY_POLL, 0, 0, 0),
+            uiState = MyPollPollUiState("멋쟁이 다람쥐 102", MyPagePollType.MY_POLL, 0, 0, 0),
             myPollClicked = {},
             participatePollClicked = {},
             watchPollClicked = {},

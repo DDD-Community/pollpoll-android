@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -39,14 +40,14 @@ fun PollCoreTextField(
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
     textStyle: TextStyle,
-    textFieldColors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    textFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
     paddingValues: PaddingValues,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     focusedChanged: (FocusState) -> Unit = {},
     trailingIcon: @Composable (() -> Unit)? = null,
-    shape: Shape = TextFieldDefaults.filledShape,
-    placeholder: @Composable() (() -> Unit)? = null,
+    shape: Shape = TextFieldDefaults.shape,
+    placeholder: @Composable (() -> Unit)? = null,
     textFiledType: TextFieldType = TextFieldType.Filled,
 ) {
     PollCoreTextField(
@@ -89,8 +90,8 @@ internal fun PollCoreTextField(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = TextFieldDefaults.filledShape,
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    shape: Shape = TextFieldDefaults.shape,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
     selectionColors: TextSelectionColors = TextSelectionColors(Color.Black, Color.White),
     contentPadding: PaddingValues,
     textFiledType: TextFieldType,
@@ -105,7 +106,6 @@ internal fun PollCoreTextField(
         BasicTextField(
             value = value,
             modifier = modifier
-                .width(320.dp)
                 .defaultMinSize(
                     minWidth = 320.dp,
                     minHeight = 0.dp,
@@ -127,38 +127,38 @@ internal fun PollCoreTextField(
             @Composable { innerTextField ->
                 when (textFiledType) {
                     TextFieldType.Filled ->
-                        TextFieldDefaults.TextFieldDecorationBox(
+                        TextFieldDefaults.DecorationBox(
                             value = value,
-                            visualTransformation = visualTransformation,
                             innerTextField = innerTextField,
-                            placeholder = placeholder,
+                            enabled = enabled,
+                            singleLine = singleLine,
+                            visualTransformation = visualTransformation,
+                            interactionSource = interactionSource,
+                            isError = isError,
                             label = label,
+                            placeholder = placeholder,
                             leadingIcon = leadingIcon,
                             trailingIcon = trailingIcon,
                             supportingText = supportingText,
                             shape = shape,
-                            singleLine = singleLine,
-                            enabled = enabled,
-                            isError = isError,
-                            interactionSource = interactionSource,
                             colors = colors,
                             contentPadding = contentPadding,
                         )
 
                     TextFieldType.Outlined -> {
-                        TextFieldDefaults.OutlinedTextFieldDecorationBox(
+                        OutlinedTextFieldDefaults.DecorationBox(
                             value = value,
-                            visualTransformation = visualTransformation,
                             innerTextField = innerTextField,
-                            placeholder = placeholder,
+                            enabled = enabled,
+                            singleLine = singleLine,
+                            visualTransformation = visualTransformation,
+                            interactionSource = interactionSource,
+                            isError = isError,
                             label = label,
+                            placeholder = placeholder,
                             leadingIcon = leadingIcon,
                             trailingIcon = trailingIcon,
                             supportingText = supportingText,
-                            singleLine = singleLine,
-                            enabled = enabled,
-                            isError = isError,
-                            interactionSource = interactionSource,
                             colors = colors,
                             contentPadding = contentPadding,
                             container = {

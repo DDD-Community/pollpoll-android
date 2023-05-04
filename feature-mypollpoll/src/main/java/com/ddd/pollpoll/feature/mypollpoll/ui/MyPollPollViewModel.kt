@@ -24,9 +24,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.pollpoll.MyPagePollType
 import com.ddd.pollpoll.Post
-import com.ddd.pollpoll.core.data.CategoryRepository
 import com.ddd.pollpoll.core.data.MyPageRepository
-import com.ddd.pollpoll.core.data.PostRepository
 import com.ddd.pollpoll.feature.main.model.PostUi
 import com.ddd.pollpoll.feature.main.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,25 +34,25 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class MyPollPollUiState(
-    val myPagePollType: MyPagePollType,
-    val myPollCount: Int,
-    val participateCount: Int,
-    val watchPollCount: Int,
-
-)
-
 @HiltViewModel
 class MypollpollViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
 
     val uiState =
-        MutableStateFlow(MyPollPollUiState(myPagePollType = MyPagePollType.MY_POLL, 0, 0, 0))
+        MutableStateFlow(
+            MyPollPollUiState(
+                nickName = "",
+                myPagePollType = MyPagePollType.MY_POLL,
+                0,
+                0,
+                0,
+            ),
+        )
     val posts = mutableStateListOf<PostUi>()
     private var lastPostId: Int? by mutableStateOf(null)
     var canPaginate by mutableStateOf(false)
-    var listState by mutableStateOf(ListState.EMPTY)
+    var listState by mutableStateOf<ListState>(ListState.EMPTY)
 
     init {
         getPost()
@@ -82,6 +80,7 @@ class MypollpollViewModel @Inject constructor(
                 }
                 uiState.update {
                     uiState.value.copy(
+                        nickName = result.nickname,
                         myPollCount = result.myPollCount,
                         participateCount = result.participatePollCount,
                         watchPollCount = result.watchPollCount,
@@ -97,26 +96,22 @@ class MypollpollViewModel @Inject constructor(
         }
     }
 
-    enum class ListState {
-
-        NONE,
-
-        // 빈상태
-        EMPTY,
-
-        // 대기중
-        IDLE,
-
-        // 페이지 로딩중
-        LOADING,
-
-        // 페이지중
-        PAGINATING,
-
-        // 에러남,
-        ERROR,
-
-        // 페이지 끝
-        PAGINATION_EXHAUST,
+    sealed class ListState {
+        object NONE : ListState()
+        object EMPTY : ListState()
+        object IDLE : ListState()
+        object LOADING : ListState()
+        object PAGINATING : ListState()
+        object ERROR : ListState()
+        object PAGINATION_EXHAUST : ListState()
     }
 }
+
+data class MyPollPollUiState(
+    val nickName: String,
+    val myPagePollType: MyPagePollType,
+    val myPollCount: Int,
+    val participateCount: Int,
+    val watchPollCount: Int,
+
+)
