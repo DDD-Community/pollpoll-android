@@ -72,27 +72,20 @@ internal fun InsertVoteRoute(
     onInsertSucceed: () -> Unit,
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
-    if (uiState.isInsertSuccess) onInsertSucceed()
     InsertVoteScreen(
         modifier = modifier,
         insertVoteUiState = uiState,
         chooseCategory = viewModel::selectCategory,
         titleValueChange = viewModel::changeTitle,
         contentValueChange = viewModel::changeContent,
-        addVoteClicked = viewModel::navigateAddVoteCategory,
         onTextChanged = { index: Int, text: String ->
-            viewModel.changeVoteList(
-                index,
-                PollItem(text),
-            )
+            viewModel.changeVoteList(index, PollItem(text))
         },
         onAddCategory = viewModel::addVoteList,
-        onBackButtonClicked = viewModel::backAddVote,
-        onCloseButtonClicked = viewModel::cancelVote,
+        onCloseButtonClicked = onCloseButtonClicked,
         onInsertButtonClicked = viewModel::insertPost,
         onVoteDateSelected = viewModel::changeDate,
         onInsertSucceed = onInsertSucceed,
-
     )
 }
 
@@ -104,17 +97,15 @@ fun InsertVoteScreen(
     chooseCategory: (Category) -> Unit,
     titleValueChange: (String) -> Unit,
     contentValueChange: (String) -> Unit,
-    addVoteClicked: () -> Unit = {},
     onAddCategory: () -> Unit,
     onTextChanged: (index: Int, String) -> Unit,
-    onBackButtonClicked: () -> Unit = {},
     onCloseButtonClicked: () -> Unit = {},
     onInsertButtonClicked: () -> Unit = {},
     onVoteDateSelected: (Long) -> Unit = {},
     onInsertSucceed: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val insertAppState = rememberInsertVoteState(isClosedState = insertVoteUiState.isClosed)
+    val insertAppState = rememberInsertVoteState()
     var selectedOptionState by remember { mutableStateOf(VoteRadioList[2]) }
     var writeEnabledState by remember { mutableStateOf(false) }
     var contentEnabledState by remember { mutableStateOf(false) }
@@ -125,10 +116,13 @@ fun InsertVoteScreen(
             if (bottomSheetState.isVisible) {
                 coroutineScope.launch { bottomSheetState.hide() }
             } else {
-                onBackButtonClicked()
+                backInsertScreen()
             }
         }
     }
+
+    // 게시글 작성에 성공했는지
+    if (insertVoteUiState.isInsertSuccess) onInsertSucceed()
 
     if (insertAppState.confirmDialogState) {
         PollAlertDialog(
@@ -138,7 +132,7 @@ fun InsertVoteScreen(
         )
     }
 
-    if (insertAppState.isClosedState) {
+    if (insertAppState.cancelDialogState) {
         PollAlertDialog(
             onDismissRequest = { insertAppState.setShowingCancelDialog(false) },
             onCancelClicked = { insertAppState.setShowingCancelDialog(false) },
@@ -151,9 +145,12 @@ fun InsertVoteScreen(
     Scaffold(modifier = modifier, topBar = {
         VoteTopBar(
             insertAppState.progressState,
-            onBackButtonClicked = onBackButtonClicked,
-            onCloseButtonClicked = onCloseButtonClicked,
-
+            onBackButtonClicked = {
+                insertAppState.backInsertScreen()
+            },
+            onCloseButtonClicked = {
+                insertAppState.setShowingCancelDialog(true)
+            },
         )
     }) { scaffoldPadding ->
         PollModalBottomSheetLayout(
@@ -172,7 +169,10 @@ fun InsertVoteScreen(
             Surface(modifier = Modifier.padding(scaffoldPadding)) {
                 when (insertAppState.insertVoteStep) {
                     InsertVoteStep.SelectCategory -> {
-                        ChoiceCategoryScreen(onClick = chooseCategory)
+                        ChoiceCategoryScreen(onClick = {
+                            chooseCategory(it)
+                            insertAppState.navigateInsertTitle()
+                        })
                     }
 
                     InsertVoteStep.InsertTitle -> {
@@ -183,7 +183,7 @@ fun InsertVoteScreen(
                             titleValueChange = titleValueChange,
                             contentValueChange = contentValueChange,
                             progressBarChanged = { insertAppState.setProgressBar(it.progressBar) },
-                            addVoteClicked = addVoteClicked,
+                            addVoteClicked = { insertAppState.navigateAddVoteCategory() },
                             isWriteEnabled = writeEnabledState,
                             contentEnabled = contentEnabledState,
                             voteEnabled = voteEnabledState,
@@ -215,7 +215,7 @@ fun InsertVoteScreen(
                             },
                             onVoteButtonClicked = {
                                 writeEnabledState = true
-                                onBackButtonClicked()
+                                insertAppState.backInsertScreen()
                             },
                         )
                     }

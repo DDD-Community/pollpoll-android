@@ -54,11 +54,7 @@ android {
     kotlinOptions {
         //jvmTarget = "11"
     }
-//    testOptions {
-//        unitTests.all {
-//            it.useJUnitPlatform()
-//        }
-//    }
+
 }
 
 dependencies {
