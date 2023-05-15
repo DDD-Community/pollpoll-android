@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.compose.compiler.report)
 }
 
 android {
@@ -46,18 +47,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
-        freeCompilerArgs += listOf(
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$buildDir/compose",
-            "-P",
-            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose"
-        )
+        //jvmTarget = "11"
+//        freeCompilerArgs += listOf(
+//            "-P",
+//            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$buildDir/compose",
+//            "-P",
+//            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$buildDir/compose"
+//        )
     }
 }
 

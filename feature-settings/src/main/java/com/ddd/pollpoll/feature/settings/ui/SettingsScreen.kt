@@ -16,8 +16,8 @@
 
 package com.ddd.pollpoll.feature.settings.ui
 
-
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -36,17 +36,18 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 fun SettingsScreenRoute(
     modifier: Modifier = Modifier,
     navigateUp: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel(),
+    navigateToAboutLibraries: () -> Unit,
 ) {
-    SettingsScreen(navigateUp)
+    SettingsScreen(navigateUp, navigateToAboutLibraries)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navigateUp: () -> Unit) {
+fun SettingsScreen(navigateUp: () -> Unit, navigateToAboutLibraries: () -> Unit) {
     Column(
         modifier = Modifier
-            .background(color = PollPollTheme.colors.gray_050)
+            .background(color = PollPollTheme.colors.gray_050),
     ) {
         val settingCardModifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
         PollTopBar(
@@ -61,11 +62,11 @@ fun SettingsScreen(navigateUp: () -> Unit) {
                 IconButton(onClick = { navigateUp() }) {
                     Icon(
                         painter = painterResource(id = PollIcon.LeftArrow),
-                        contentDescription = ""
+                        contentDescription = "",
                     )
                 }
             },
-            actions = { }
+            actions = { },
         )
         SettingsCard(settingCardModifier) {
             SettingCardItem(
@@ -74,7 +75,7 @@ fun SettingsScreen(navigateUp: () -> Unit) {
                     .fillMaxWidth(),
                 PollIcon.Question,
                 "자주 묻는 질문",
-                null
+                null,
             )
         }
         Spacer(modifier = Modifier.size(10.dp))
@@ -82,12 +83,18 @@ fun SettingsScreen(navigateUp: () -> Unit) {
             SettingCardItem(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
-                    .fillMaxWidth(), PollIcon.Privacy, "개인정보 처리방침", null
+                    .fillMaxWidth(),
+                PollIcon.Privacy,
+                "개인정보 처리방침",
+                null,
             )
             SettingCardItem(
                 modifier = Modifier
                     .padding(top = (12.5).dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
-                    .fillMaxWidth(), PollIcon.TermsOfService, "이용약관", null
+                    .fillMaxWidth(),
+                PollIcon.TermsOfService,
+                "이용약관",
+                null,
             )
         }
         Spacer(modifier = Modifier.size(10.dp))
@@ -95,12 +102,21 @@ fun SettingsScreen(navigateUp: () -> Unit) {
             SettingCardItem(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
-                    .fillMaxWidth(), PollIcon.VersionInfo, "버전정보", "1.0.0"
+                    .fillMaxWidth(),
+                PollIcon.VersionInfo,
+                "버전정보",
+                "1.0.0",
             )
             SettingCardItem(
                 modifier = Modifier
                     .padding(top = (12.5).dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
-                    .fillMaxWidth(), PollIcon.TermsOfService, "오픈소스 라이선스", null
+                    .fillMaxWidth(),
+                PollIcon.TermsOfService,
+                "오픈소스 라이선스",
+                null,
+                onClick = {
+                    navigateToAboutLibraries()
+                },
             )
         }
         Spacer(modifier = Modifier.size(10.dp))
@@ -111,7 +127,7 @@ fun SettingsScreen(navigateUp: () -> Unit) {
                     .fillMaxWidth(),
                 PollIcon.Question,
                 "로그아웃",
-                null
+                null,
             )
         }
     }
@@ -120,11 +136,12 @@ fun SettingsScreen(navigateUp: () -> Unit) {
 @Composable
 fun SettingsCard(modifier: Modifier, content: @Composable ColumnScope.() -> Unit) {
     Card(
-        modifier = modifier, shape = RoundedCornerShape(12.dp),
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
-        content = content
+        content = content,
     )
 }
 
@@ -134,16 +151,18 @@ fun SettingCardItem(
     icResId: Int,
     label: String,
     subLabel: String?,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier.clickable {
+            onClick()
+        },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             painter = painterResource(id = icResId),
             contentDescription = "",
-            tint = PollPollTheme.colors.gray_300
+            tint = PollPollTheme.colors.gray_300,
         )
         Spacer(modifier = Modifier.size(15.dp))
         Text(text = label)
@@ -155,8 +174,7 @@ fun SettingCardItem(
         Icon(
             painter = painterResource(id = PollIcon.ChevronRight),
             contentDescription = "",
-            tint = PollPollTheme.colors.gray_400
+            tint = PollPollTheme.colors.gray_400,
         )
-
     }
 }

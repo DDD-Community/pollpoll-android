@@ -48,5 +48,5 @@ object PollIcon {
 
     val SearchEmpty = R.drawable.ic_search_empty
     val CloseButton = R.drawable.ic_close_button
-
+    val UP = R.drawable.ic_up
 }

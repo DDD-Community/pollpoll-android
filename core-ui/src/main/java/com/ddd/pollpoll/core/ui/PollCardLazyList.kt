@@ -27,21 +27,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ddd.pollpoll.Post
 import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import com.ddd.pollpoll.feature.main.model.PostUi
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.absoluteValue
 
 fun LazyListScope.PollCardLazyList(
-    posts: List<Post>,
+    posts: List<PostUi>,
     navigateToReadVote: (Int) -> Unit,
 ) {
     items(
@@ -66,10 +68,26 @@ fun PollCard(
     expireDate: Date = Date(),
     participantsCount: Int = 0,
     onClick: () -> Unit = {},
-    post: Post,
+    post: PostUi,
 ) {
+    var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
+    val timeDiff = post.pollEndAt.endDate - currentTime
+    val isPollEnd = (timeDiff) < 0
+    val timeProgress =
+        timeDiff.absoluteValue.toFloat() / (post.pollEndAt.endDate - post.postCreatedAt).toFloat()
+
+    //시간이 지났을때, 리컴포지션 방지
+    LaunchedEffect(key1 = Unit) {
+        while (!isPollEnd) {
+            delay(1000)
+            currentTime = System.currentTimeMillis()
+        }
+    }
+
     Card(
-        modifier = modifier,
+        modifier = modifier.semantics {
+            onClick(label = "투표를 하거나 투표보기", action = { true })
+        },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
@@ -105,75 +123,119 @@ fun PollCard(
 
             Spacer(modifier = Modifier.size(25.dp))
 
+            val iconColor = if (isPollEnd) PollPollTheme.colors.gray_300 else Color(0xff8477F8)
+
             Row() {
                 Icon(
                     painter = painterResource(id = PollIcon.Alarm),
                     contentDescription = "",
-                    tint = Color(0xff8477F8),
+                    tint = iconColor,
                 )
                 Spacer(modifier = Modifier.size(3.dp))
-                TimeProgressText(expireDate = Date(post.pollEndAt))
+                TimeText(post.pollEndAt.endDate, currentTime)
             }
             Spacer(modifier = Modifier.size(8.dp))
 
-            PollProgressBar()
+            val timeProgress =
+
+                if (isPollEnd) {
+                    PollProgressBar(progress = 0f)
+                } else {
+                    PollProgressBar(timeProgress)
+                }
 
             Spacer(modifier = Modifier.size(32.dp))
-
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { onClick() },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = PollPollTheme.colors.gray_050),
             ) {
-                Text(
-                    text = "지금 ",
-                    color = PollPollTheme.colors.gray_700,
-                    style = PollPollTheme.typography.body03,
-                )
-                Text(
-                    text = "${post.participantCount}명",
-                    color = PollPollTheme.colors.primary_500,
-                    style = PollPollTheme.typography.body03,
-                )
-                Text(
-                    text = " 참여 중이에요",
-                    color = PollPollTheme.colors.gray_700,
-                    style = PollPollTheme.typography.body03,
-                )
+                if (isPollEnd) {
+                    Text(
+                        text = "투표 결과 볼래요",
+                        color = PollPollTheme.colors.gray_700,
+                        style = PollPollTheme.typography.body03,
+                    )
+                } else {
+                    Text(
+                        text = "지금 ",
+                        color = PollPollTheme.colors.gray_700,
+                        style = PollPollTheme.typography.body03,
+                    )
+                    Text(
+                        text = "${post.participantCount}명",
+                        color = PollPollTheme.colors.primary_500,
+                        style = PollPollTheme.typography.body03,
+                    )
+                    Text(
+                        text = " 참여 중이에요",
+                        color = PollPollTheme.colors.gray_700,
+                        style = PollPollTheme.typography.body03,
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun TimeProgressText(expireDate: Date) {
-    // date gap millisceond to date
-    val expireDateTime = expireDate.time
-    var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
-
-    LaunchedEffect(key1 = Unit) {
-        while (true) {
-            delay(1000)
-            currentTime = System.currentTimeMillis()
-        }
-    }
-
-    val diff = (expireDateTime - currentTime).absoluteValue
+fun TimeText(expireDateTime: Long, currentTime: Long) {
+    val diff = expireDateTime - currentTime
+    val diffAbsoluteValue = diff.absoluteValue
     val sdf = SimpleDateFormat("MM.dd HH:mm")
 
-    val diffSeconds: Long = (diff / 1000) % 60
-    val diffMinutes: Long = (diff / (60 * 1000)) % 60
-    val diffHours: Long = (diff / (60 * 60 * 1000)) % 24
-    val diffDays: Long = diff / (24 * 60 * 60 * 1000)
+    val diffSeconds: Long = (diffAbsoluteValue / 1000) % 60
+    val diffMinutes: Long = (diffAbsoluteValue / (60 * 1000)) % 60
+    val diffHours: Long = (diffAbsoluteValue / (60 * 60 * 1000)) % 24
+    val diffDays: Long = diffAbsoluteValue / (24 * 60 * 60 * 1000)
 
     val hoursString = if (diffHours < 10) "0$diffHours" else "$diffHours"
     val minuteString = if (diffMinutes < 10) "0$diffMinutes" else diffMinutes
     val secondsString = if (diffSeconds < 10) "0$diffSeconds" else diffSeconds
 
-    Text(
-        text = "${diffDays}일 $hoursString:$minuteString:$secondsString 남았어요!",
-        color = PollPollTheme.colors.gray_400,
-        style = PollPollTheme.typography.body03,
-    )
+    if (diff < 0) {
+        Text(
+            text = "종료된 투표",
+            color = PollPollTheme.colors.gray_300,
+            style = PollPollTheme.typography.body03,
+        )
+    } else {
+        Text(
+            text = "${diffDays}일 $hoursString:$minuteString:$secondsString 남았어요!",
+            color = PollPollTheme.colors.gray_400,
+            style = PollPollTheme.typography.body03,
+        )
+    }
 }
+// @Composable
+// fun TimeProgressText(expireDate: Date) {
+//    // date gap millisceond to date
+//    val expireDateTime = expireDate.time
+//    var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
+//
+//    LaunchedEffect(key1 = Unit) {
+//        while (true) {
+//            delay(1000)
+//            currentTime = System.currentTimeMillis()
+//        }
+//    }
+//
+//    val diff = (expireDateTime - currentTime).absoluteValue
+//    val sdf = SimpleDateFormat("MM.dd HH:mm")
+//
+//    val diffSeconds: Long = (diff / 1000) % 60
+//    val diffMinutes: Long = (diff / (60 * 1000)) % 60
+//    val diffHours: Long = (diff / (60 * 60 * 1000)) % 24
+//    val diffDays: Long = diff / (24 * 60 * 60 * 1000)
+//
+//    val hoursString = if (diffHours < 10) "0$diffHours" else "$diffHours"
+//    val minuteString = if (diffMinutes < 10) "0$diffMinutes" else diffMinutes
+//    val secondsString = if (diffSeconds < 10) "0$diffSeconds" else diffSeconds
+//
+//    Text(
+//        text = "${diffDays}일 $hoursString:$minuteString:$secondsString 남았어요!",
+//        color = PollPollTheme.colors.gray_400,
+//        style = PollPollTheme.typography.body03,
+//    )
+// }

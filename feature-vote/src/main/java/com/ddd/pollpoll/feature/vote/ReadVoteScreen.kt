@@ -4,9 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +21,10 @@ import com.ddd.pollpoll.designsystem.component.PollLabel
 import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.reflect.KFunction1
 
@@ -134,11 +134,7 @@ fun VoteInfo(lastPost: Post?) {
         }
         Spacer(modifier = Modifier.size(5.dp))
         Row() {
-            Text(
-                text = Date(lastPost.postCreatedAt).convertMMddHHmm(),
-                color = PollPollTheme.colors.gray_400,
-                style = PollPollTheme.typography.body03,
-            )
+            TimeText(Date(lastPost.postCreatedAt))
             Text(
                 text = " | ",
                 color = PollPollTheme.colors.gray_400,
@@ -161,9 +157,14 @@ fun VoteInfo(lastPost: Post?) {
     }
 }
 
-fun Date.convertMMddHHmm(): String {
+@Composable
+fun TimeText(date: Date) {
     val sdf = SimpleDateFormat("MM.dd HH:mm")
-    return sdf.format(this)
+    Text(
+        text = sdf.format(date),
+        color = PollPollTheme.colors.gray_400,
+        style = PollPollTheme.typography.body03,
+    )
 }
 
 @Composable
@@ -189,6 +190,19 @@ fun VoteContent(
     if (lastPost == null) {
         Text(text = "loading...")
     } else {
+        var currentTime by remember { mutableStateOf(System.currentTimeMillis()) }
+        val timeDiff = lastPost.pollEndAt.endDate - currentTime
+        val isPollEnd = (timeDiff) < 0
+        val timeProgress =
+            timeDiff.absoluteValue.toFloat() / (lastPost.pollEndAt.endDate - lastPost.postCreatedAt).toFloat()
+
+        LaunchedEffect(key1 = Unit) {
+            while (true) {
+                delay(1000)
+                currentTime = System.currentTimeMillis()
+            }
+        }
+
         Column(
             modifier = Modifier
                 .border(
@@ -206,49 +220,97 @@ fun VoteContent(
                 color = PollPollTheme.colors.gray_700,
                 style = PollPollTheme.typography.heading04,
             )
-            VoteDueDateText(Date(lastPost.pollEndAt))
+            VoteDueDateText(Date(lastPost.pollEndAt.endDate))
             Spacer(modifier = Modifier.size(30.dp))
 
-            if (voted) {
-                // 투표가 완료된 리스트
-                VoteResults(afterVote)
+            if (timeDiff < 0) {
+                var total = 0f
+                for (post in lastPost.pollItems!!) {
+                    total += post.count.toFloat()
+                }
 
+                for (post in lastPost.pollItems!!) {
+                    if (total > 0) {
+                        VoteResultItem(
+                            Vote(
+                                0,
+                                post.name,
+                                post.count / total,
+                                post.count,
+                                false,
+                                {},
+                                post.pollItemId,
+                            ),
+                        )
+                    } else {
+                        VoteResultItem(
+                            Vote(
+                                0,
+                                post.name,
+                                0f,
+                                post.count,
+                                false,
+                                {},
+                                post.pollItemId,
+                            ),
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
                 PollButton(
                     shape = RoundedCornerShape(100.dp),
-                    onClick = { // 뷰모델에 있는 선택된것들로 최종 선택
-                        reVote()
-                    },
-                    enabled = selectedIndex.isNotEmpty(),
+                    onClick = { },
+                    enabled = false,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = "다시 투표하기",
+                        text = "종료된 투표",
                         color = Color.White,
                         style = PollPollTheme.typography.body03,
                     )
                 }
             } else {
-                // 투표가 완료되지 않은 리스트
-                // 클릭 가능한 아이템들
-                // 아이템 클릭한걸 뷰모델로 넘기고, 선택 혹은 이미 선택된거면 해제
-                for (beforeItem in beforeVote) {
-                    VoteItem(beforeItem, selectIndex)
-                    Spacer(modifier = Modifier.size(10.dp))
-                }
+                if (voted) {
+                    // 투표가 완료된 리스트
+                    VoteResults(afterVote)
 
-                PollButton(
-                    shape = RoundedCornerShape(100.dp),
-                    onClick = { // 뷰모델에 있는 선택된것들로 최종 선택
-                        vote(selectedIndex.toList())
-                    },
-                    enabled = selectedIndex.isNotEmpty(),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        text = "폴폴 참여하기",
-                        color = Color.White,
-                        style = PollPollTheme.typography.body03,
-                    )
+                    PollButton(
+                        shape = RoundedCornerShape(100.dp),
+                        onClick = { // 뷰모델에 있는 선택된것들로 최종 선택
+                            reVote()
+                        },
+                        enabled = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = "다시 투표하기",
+                            color = Color.White,
+                            style = PollPollTheme.typography.body03,
+                        )
+                    }
+                } else {
+                    // 투표가 완료되지 않은 리스트
+                    // 클릭 가능한 아이템들
+                    // 아이템 클릭한걸 뷰모델로 넘기고, 선택 혹은 이미 선택된거면 해제
+                    for (beforeItem in beforeVote) {
+                        VoteItem(beforeItem, selectIndex)
+                        Spacer(modifier = Modifier.size(10.dp))
+                    }
+
+                    PollButton(
+                        shape = RoundedCornerShape(100.dp),
+                        onClick = { // 뷰모델에 있는 선택된것들로 최종 선택
+                            vote(selectedIndex.toList())
+                        },
+                        enabled = selectedIndex.isNotEmpty(),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = "폴폴 참여하기",
+                            color = Color.White,
+                            style = PollPollTheme.typography.body03,
+                        )
+                    }
                 }
             }
         }

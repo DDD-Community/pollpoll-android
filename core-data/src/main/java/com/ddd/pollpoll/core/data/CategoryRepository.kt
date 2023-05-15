@@ -28,10 +28,14 @@ interface CategoryRepository {
 }
 
 class CategoryRepositoryImp @Inject constructor(
-    private val categoryRemoteSource: CategoryRemoteSource
+    private val categoryRemoteSource: CategoryRemoteSource,
 ) : CategoryRepository {
     override suspend fun getCategories(): Flow<List<Category>> = flow {
-        val result = categoryRemoteSource.getCategories().asExternalModel()
+        // categoryId가 7이 되어있기 때문에 null로 변환
+        val result = categoryRemoteSource.getCategories().asExternalModel().let { categoryList ->
+            categoryList.map { if (it.categoryId == 7) it.copy(categoryId = null) else it }
+        }
+
         emit(result)
     }
 }

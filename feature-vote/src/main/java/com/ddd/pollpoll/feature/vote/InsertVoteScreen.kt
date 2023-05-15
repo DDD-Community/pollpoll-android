@@ -32,6 +32,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,6 +61,7 @@ import com.ddd.pollpoll.designsystem.core.bottomseat.PollModalBottomSheetLayout
 import com.ddd.pollpoll.designsystem.core.grid.VerticalGrid
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -67,27 +72,20 @@ internal fun InsertVoteRoute(
     onInsertSucceed: () -> Unit,
 ) {
     val uiState: InsertVoteUiState by viewModel.uiState.collectAsStateWithLifecycle()
-    if (uiState.isInsertSuccess) onInsertSucceed()
     InsertVoteScreen(
         modifier = modifier,
         insertVoteUiState = uiState,
         chooseCategory = viewModel::selectCategory,
         titleValueChange = viewModel::changeTitle,
         contentValueChange = viewModel::changeContent,
-        addVoteClicked = viewModel::navigateAddVoteCategory,
         onTextChanged = { index: Int, text: String ->
-            viewModel.changeVoteList(
-                index,
-                PollItem(text),
-            )
+            viewModel.changeVoteList(index, PollItem(text))
         },
         onAddCategory = viewModel::addVoteList,
-        onBackButtonClicked = viewModel::backAddVote,
         onCloseButtonClicked = onCloseButtonClicked,
         onInsertButtonClicked = viewModel::insertPost,
         onVoteDateSelected = viewModel::changeDate,
         onInsertSucceed = onInsertSucceed,
-
     )
 }
 
@@ -99,39 +97,60 @@ fun InsertVoteScreen(
     chooseCategory: (Category) -> Unit,
     titleValueChange: (String) -> Unit,
     contentValueChange: (String) -> Unit,
-    addVoteClicked: () -> Unit = {},
     onAddCategory: () -> Unit,
     onTextChanged: (index: Int, String) -> Unit,
-    onBackButtonClicked: () -> Unit = {},
     onCloseButtonClicked: () -> Unit = {},
     onInsertButtonClicked: () -> Unit = {},
     onVoteDateSelected: (Long) -> Unit = {},
     onInsertSucceed: () -> Unit = {},
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val insertAppState = rememberInsertVoteState()
     var selectedOptionState by remember { mutableStateOf(VoteRadioList[2]) }
     var writeEnabledState by remember { mutableStateOf(false) }
     var contentEnabledState by remember { mutableStateOf(false) }
     var voteEnabledState by remember { mutableStateOf(false) }
 
-    BackHandler(enabled = !insertAppState.bottomSheetState.isVisible) {
-        onBackButtonClicked()
+    BackHandler(enabled = true) {
+        with(insertAppState) {
+            if (bottomSheetState.isVisible) {
+                coroutineScope.launch { bottomSheetState.hide() }
+            } else {
+                backInsertScreen()
+            }
+        }
     }
 
-    if (insertAppState.dialogState) {
+    // 게시글 작성에 성공했는지
+    if (insertVoteUiState.isInsertSuccess) onInsertSucceed()
+
+    if (insertAppState.confirmDialogState) {
         PollAlertDialog(
-            onDismissRequest = { insertAppState.setShowDialog(false) },
-            onCancelClicked = { insertAppState.setShowDialog(false) },
+            onDismissRequest = { insertAppState.setShowingConfirmDialog(false) },
+            onCancelClicked = { insertAppState.setShowingConfirmDialog(false) },
             onConfirmClicked = { onInsertButtonClicked() },
+        )
+    }
+
+    if (insertAppState.cancelDialogState) {
+        PollAlertDialog(
+            onDismissRequest = { insertAppState.setShowingCancelDialog(false) },
+            onCancelClicked = { insertAppState.setShowingCancelDialog(false) },
+            onConfirmClicked = { onCloseButtonClicked() },
+            title = "등록을 취소할까요?",
+            content = "지금까지 작성한 건 삭제가 됩니다.",
         )
     }
 
     Scaffold(modifier = modifier, topBar = {
         VoteTopBar(
             insertAppState.progressState,
-            onBackButtonClicked = onBackButtonClicked,
-            onCloseButtonClicked = onCloseButtonClicked,
-
+            onBackButtonClicked = {
+                insertAppState.backInsertScreen()
+            },
+            onCloseButtonClicked = {
+                insertAppState.setShowingCancelDialog(true)
+            },
         )
     }) { scaffoldPadding ->
         PollModalBottomSheetLayout(
@@ -148,9 +167,12 @@ fun InsertVoteScreen(
             sheetState = insertAppState.bottomSheetState,
         ) {
             Surface(modifier = Modifier.padding(scaffoldPadding)) {
-                when (insertVoteUiState.insertVoteStep) {
+                when (insertAppState.insertVoteStep) {
                     InsertVoteStep.SelectCategory -> {
-                        ChoiceCategoryScreen(onClick = chooseCategory)
+                        ChoiceCategoryScreen(onClick = {
+                            chooseCategory(it)
+                            insertAppState.navigateInsertTitle()
+                        })
                     }
 
                     InsertVoteStep.InsertTitle -> {
@@ -161,13 +183,17 @@ fun InsertVoteScreen(
                             titleValueChange = titleValueChange,
                             contentValueChange = contentValueChange,
                             progressBarChanged = { insertAppState.setProgressBar(it.progressBar) },
-                            addVoteClicked = addVoteClicked,
+                            addVoteClicked = { insertAppState.navigateAddVoteCategory() },
                             isWriteEnabled = writeEnabledState,
                             contentEnabled = contentEnabledState,
                             voteEnabled = voteEnabledState,
                             onContentDone = { voteEnabledState = true },
                             onTitleDone = { contentEnabledState = true },
-                            onVoteCompleteButtonClicked = { insertAppState.setShowDialog(true) },
+                            onVoteCompleteButtonClicked = {
+                                insertAppState.setShowingConfirmDialog(
+                                    true,
+                                )
+                            },
 
                         )
                     }
@@ -189,7 +215,7 @@ fun InsertVoteScreen(
                             },
                             onVoteButtonClicked = {
                                 writeEnabledState = true
-                                onBackButtonClicked()
+                                insertAppState.backInsertScreen()
                             },
                         )
                     }
@@ -215,7 +241,9 @@ fun AddVoteCategoryScreen(
 
     buttonEnabled = !voteList.contains(PollItem(""))
     Column(
-        Modifier.verticalScroll(scrollState).background(Color.White),
+        Modifier
+            .verticalScroll(scrollState)
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(Modifier.padding(20.dp)) {
@@ -268,7 +296,7 @@ fun AddVoteCategoryScreen(
                     IconButton(onClick = { onDialogClick() }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = PollIcon.ChevronRight),
-                            contentDescription = "",
+                            contentDescription = "투표기간 설정하기 버튼",
                         )
                     }
                 }
@@ -342,7 +370,7 @@ fun ChoiceCategoryScreen(onClick: (Category) -> Unit = {}) {
             CategoryList.forEach {
                 PollIconButtonText(
                     iconRes = it.iconDrawable,
-                    contentDes = "",
+                    contentDescription = "${it.text} 버튼",
                     isClicked = false,
                     onClick = {
                         onClick(it)
@@ -372,7 +400,11 @@ fun InsertContentScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    Box(Modifier.fillMaxSize().background(Color.White)) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.White),
+    ) {
         Column(
             Modifier
                 .padding(20.dp)
@@ -496,11 +528,26 @@ fun SelectDateScreen(
     onClick: (VoteRadioButton) -> Unit,
 ) {
     Row(
-        modifier = Modifier.padding(vertical = 20.dp),
+        modifier = Modifier
+            .padding(vertical = 20.dp)
+            .semantics(true) {
+                this.onClick(
+                    label = "날짜 지정하기",
+                    action = {
+                        onClick(selectedOption)
+                        true
+                    },
+
+                )
+            },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.width(43.dp))
-        PollRadioButton(onClick = { onClick(selectedOption) }, selected = selectedOption == seleted)
+        PollRadioButton(
+            Modifier.clearAndSetSemantics {},
+            onClick = { onClick(selectedOption) },
+            selected = selectedOption == seleted,
+        )
         Spacer(modifier = Modifier.width(10.dp))
         Text(text = selectedOption.date)
     }

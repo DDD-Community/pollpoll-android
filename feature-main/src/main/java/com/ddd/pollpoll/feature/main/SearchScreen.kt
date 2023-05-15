@@ -1,4 +1,4 @@
-package com.ddd.pollpoll.ui.feature
+package com.ddd.pollpoll.feature.main
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,12 +31,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddd.pollpoll.Post
+import com.ddd.pollpoll.PollEndDate
 import com.ddd.pollpoll.core.ui.PollCardLazyList
 import com.ddd.pollpoll.designsystem.component.PollSearchBar
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.icon.PollIcon.SearchEmpty
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
+import com.ddd.pollpoll.feature.main.model.PostUi
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SearchScreenRoute(
@@ -43,7 +48,7 @@ fun SearchScreenRoute(
     navigateToReadVote: (Int) -> Unit,
     backToMain: () -> Unit,
 ) {
-    val posts = viewModel.posts
+    val posts = viewModel.posts.toImmutableList()
     val lazyColumnListState = rememberLazyListState()
     val listState = viewModel.listState
     val shouldStartPaginate = remember {
@@ -71,7 +76,7 @@ fun SearchScreenRoute(
 @Composable
 fun SearchScreen(
     listState: ListState,
-    posts: List<Post>,
+    posts: ImmutableList<PostUi> = persistentListOf(),
     lazyColumnListState: LazyListState,
     navigateToReadVote: (Int) -> Unit,
     onBackButtonClicked: () -> Unit = {},
@@ -97,11 +102,7 @@ fun SearchScreen(
             ListState.NONE -> {}
             ListState.EMPTY -> {}
             ListState.PAGINATING -> {}
-            ListState.PAGINATION_EXHAUST -> Toast.makeText(
-                context,
-                "더이상 불러올 데이터가 없습니다.",
-                Toast.LENGTH_SHORT,
-            ).show()
+            ListState.PAGINATION_EXHAUST -> {}
         }
         if (shouldStartPaginate && listState == ListState.IDLE) {
             onPageStarted(textValue)
@@ -221,7 +222,7 @@ fun SearchScreenEmptyPreview() {
     PollPollTheme {
         SearchScreen(
             listState = ListState.IDLE,
-            posts = listOf(),
+            posts = persistentListOf(),
             lazyColumnListState = rememberLazyListState(),
             navigateToReadVote = {},
             shouldStartPaginate = false,
@@ -229,35 +230,34 @@ fun SearchScreenEmptyPreview() {
     }
 }
 
-private val fakePost = listOf<Post>(
-
-    Post(
+private val fakePost = persistentListOf<PostUi>(
+    PostUi(
         categoryName = "Trent McFadden",
         contents = "regione",
         nickname = "Haley Sloan",
         participantCount = 6706,
-        pollEndAt = 2140,
+        pollEndAt = PollEndDate(2140),
         pollId = 2143,
         pollItemCount = 3265,
         postCreatedAt = 4168,
         postHits = 3609,
         postId = 3571,
-        pollItems = listOf(),
+        pollItems = persistentListOf(),
         title = "mutat",
         watcherCount = 2567,
     ),
-    Post(
+    PostUi(
         categoryName = "Trent McFadden",
         contents = "regione",
         nickname = "Haley Sloan",
         participantCount = 6706,
-        pollEndAt = 2140,
+        pollEndAt = PollEndDate(2140),
         pollId = 2143,
         pollItemCount = 3265,
         postCreatedAt = 4168,
         postHits = 3609,
         postId = 3572,
-        pollItems = listOf(),
+        pollItems = persistentListOf(),
         title = "mutat",
         watcherCount = 2567,
     ),

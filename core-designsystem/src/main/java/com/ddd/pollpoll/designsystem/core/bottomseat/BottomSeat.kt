@@ -31,29 +31,6 @@ fun PollModalBottomSheetLayout(
     ) {
         content()
     }
-
-    // / TODO: 어떻게 개선하면 좋을까?
-//    val context = LocalContext.current
-//    Surface(modifier = Modifier.fillMaxSize(), color = Color.Black.copy(alpha = 0.5f)) {
-//        BoxWithConstraints() {
-//            val minHeight = with(Density(context)) { minHeight.toPx() }
-//            val yTranslation: Float by animateFloatAsState(if (isVisible) 0f else minHeight)
-//            Surface(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .wrapContentHeight()
-//                    .graphicsLayer(translationY = yTranslation)
-//                    .align(Alignment.BottomCenter),
-//                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-//                color = Color.White
-//            ) {
-//                Column() {
-//                    Spacer(modifier = Modifier.height(20.dp))
-//                    content()
-//                }
-//            }
-//        }
-//    }
 }
 
 @Preview(showBackground = true)

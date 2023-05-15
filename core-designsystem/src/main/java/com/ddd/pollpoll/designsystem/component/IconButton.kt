@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddd.pollpoll.designsystem.icon.PollIcon
@@ -30,13 +32,19 @@ import com.ddd.pollpoll.designsystem.theme.Shadow
 @Composable
 fun PollIconButtonText(
     @DrawableRes iconRes: Int = PollIcon.Love,
-    contentDes: String? = null,
+    contentDescription: String? = null,
     isClicked: Boolean = false,
     onClick: () -> Unit = {},
-    text: String = "구매"
+    text: String = "구매",
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        PollIconButton(iconRes, contentDes, isClicked, onClick = onClick)
+        PollIconButton(
+            modifier = Modifier,
+            iconRes,
+            contentDescription,
+            isClicked,
+            onClick = onClick,
+        )
         Spacer(modifier = Modifier.padding(top = 10.dp))
         Text(text = text, style = PollPollTheme.typography.heading05)
     }
@@ -44,34 +52,37 @@ fun PollIconButtonText(
 
 @Composable
 fun PollIconButton(
+    modifier: Modifier = Modifier,
     @DrawableRes iconRes: Int = PollIcon.Love,
     contentDes: String? = null,
     isClicked: Boolean = false,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     OutlinedIconButton(
-        modifier = Modifier.size(72.dp).drawBehind {
-            val width = size.width
-            val height = size.height
-            val center = size.center
+        modifier = modifier
+            .size(72.dp)
+            .drawBehind {
+                val center = size.center
 
-            drawIntoCanvas {
-                val paint = Paint().asFrameworkPaint().apply {
-                    setShadowLayer(10.dp.toPx(), 0.dp.toPx(), 0.dp.toPx(), Shadow.toArgb())
+                drawIntoCanvas {
+                    val paint = Paint()
+                        .asFrameworkPaint()
+                        .apply {
+                            setShadowLayer(10.dp.toPx(), 0.dp.toPx(), 0.dp.toPx(), Shadow.toArgb())
+                        }
+                    val canvas = it.nativeCanvas
+                    canvas.drawCircle(center.x, center.y, center.x, paint)
                 }
-                val canvas = it.nativeCanvas
-                canvas.drawCircle(center.x, center.y, center.x, paint)
-            }
-        },
+            },
         onClick = onClick,
         colors = IconButtonDefaults.outlinedIconButtonColors(
-            containerColor = if (isClicked) PollPollTheme.colors.primary_100 else Color.White
+            containerColor = if (isClicked) PollPollTheme.colors.primary_100 else Color.White,
 
         ),
         border = BorderStroke(
             width = 1.dp,
-            color = if (isClicked) PollPollTheme.colors.primary_500 else Color.White
-        )
+            color = if (isClicked) PollPollTheme.colors.primary_500 else Color.White,
+        ),
 
     ) {
         Image(painter = painterResource(id = iconRes), contentDescription = contentDes)

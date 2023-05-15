@@ -31,50 +31,42 @@ fun CoreRadioButton(
     onClick: (() -> Unit)? = {},
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     val dotRadius = animateDpAsState(
-        targetValue = if (selected) RadioButtonDotSize  else 0.dp,
-        animationSpec = tween(durationMillis = RadioAnimationDuration)
+        targetValue = if (selected) RadioButtonDotSize else 0.dp,
+        animationSpec = tween(durationMillis = RadioAnimationDuration), label = "",
     )
 
     val radioColor = radioColor(enabled, selected)
-    val selectableModifier =
-        if (onClick != null) {
-            Modifier.selectable(
-                selected = selected,
-                onClick = onClick,
-                enabled = enabled,
-                role = Role.RadioButton,
-                interactionSource = interactionSource,
-                indication = rememberRipple(
-                    bounded = false,
-                    radius = RadioRadius
-                )
-            )
-        } else {
-            Modifier
-        }
+    val selectableModifier = if (onClick != null) {
+        Modifier.selectable(
+            selected = selected,
+            onClick = onClick,
+            enabled = enabled,
+            role = Role.RadioButton,
+            interactionSource = interactionSource,
+            indication = rememberRipple(
+                bounded = false,
+                radius = RadioRadius,
+            ),
+        )
+    } else {
+        Modifier
+    }
 
     Canvas(
-        Modifier/*.then(
-            if (onClick != null) {
-                Modifier.minimumTouchTargetSize()
-            } else {
-                Modifier
-            }
-        )*/
-            .then(selectableModifier)
+        modifier.then(selectableModifier)
             .wrapContentSize(Alignment.Center)
             .padding(RadioButtonPadding)
-            .requiredSize(10.dp)
+            .requiredSize(10.dp),
     ) {
         // Draw the radio button
         val strokeWidth = RadioStrokeWidth.toPx()
         drawCircle(
             radioColor.value,
             radius = RadioRadius.toPx(),
-            style = Stroke(strokeWidth)
+            style = Stroke(strokeWidth),
         )
         if (dotRadius.value > 0.dp) {
             drawCircle(radioColor.value, dotRadius.value.toPx(), style = Fill)

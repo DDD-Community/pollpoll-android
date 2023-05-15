@@ -14,8 +14,10 @@
  * limitations under the License.
  */ // ktlint-disable filename
 
-package com.ddd.pollpoll.ui
+package com.ddd.pollpoll.navigation
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,12 +29,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -46,9 +51,17 @@ import com.ddd.pollpoll.feature.login.ui.navigation.loginScreen
 import com.ddd.pollpoll.feature.login.ui.navigation.navigateToNickNameScreen
 import com.ddd.pollpoll.feature.login.ui.navigation.nickNameRoute
 import com.ddd.pollpoll.feature.login.ui.navigation.nickNameScreen
+import com.ddd.pollpoll.feature.main.navigation.MainScreen
+import com.ddd.pollpoll.feature.main.navigation.SearchScreen
+import com.ddd.pollpoll.feature.main.navigation.mainRoute
+import com.ddd.pollpoll.feature.main.navigation.navigateToMain
+import com.ddd.pollpoll.feature.main.navigation.navigateToSearch
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollRoute
 import com.ddd.pollpoll.feature.mypollpoll.navigation.myPollPollScreen
+import com.ddd.pollpoll.feature.settings.ui.navigation.OpenSourceScreen
+import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToOpenSource
 import com.ddd.pollpoll.feature.settings.ui.navigation.navigateToSettings
+import com.ddd.pollpoll.feature.settings.ui.navigation.openSourceRoute
 import com.ddd.pollpoll.feature.settings.ui.navigation.settingsScreen
 import com.ddd.pollpoll.feature.vote.navigation.*
 
@@ -56,6 +69,7 @@ val bottomInvisibleList = listOf(
     loginRoute,
     insertVoteRoute,
     nickNameRoute,
+    openSourceRoute,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,24 +77,56 @@ val bottomInvisibleList = listOf(
 fun MainNavigation() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
+    var scroll by remember { mutableStateOf(false) }
+
     Scaffold(
         bottomBar = {
             BottomNavigation(navController, currentBackStack)
         },
         floatingActionButton = {
             if (currentBackStack?.destination?.route == mainRoute) {
-                FloatingActionButton(
-                    shape = CircleShape,
-                    containerColor = PollPollTheme.colors.gray_700,
-                    onClick = {
-                        navController.navigateToInsertVote()
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(id = PollIcon.Insert),
-                        "",
-                        tint = PollPollTheme.colors.gray_050,
-                    )
+                Column {
+                    FloatingActionButton(
+                        shape = CircleShape,
+                        containerColor = PollPollTheme.colors.gray_700,
+                        onClick = {
+                            navController.navigateToInsertVote()
+                        },
+
+                    ) {
+                        Row(Modifier.then(if (!scroll) Modifier.padding(horizontal = 15.dp) else Modifier)) {
+                            Icon(
+                                painter = painterResource(id = PollIcon.Insert),
+                                "",
+                                tint = PollPollTheme.colors.gray_050,
+                            )
+                            AnimatedVisibility(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                visible = !scroll,
+                            ) {
+                                Text(
+                                    text = "투표 작성하기",
+                                    style = PollPollTheme.typography.body04,
+                                    color = PollPollTheme.colors.gray_050,
+                                )
+                            }
+                        }
+                    }
+                    if (scroll) {
+                        Spacer(modifier = Modifier.height(15.dp))
+                        FloatingActionButton(
+                            onClick = {
+                            },
+                            shape = CircleShape,
+                            modifier = Modifier.align(Alignment.End),
+                            containerColor = PollPollTheme.colors.gray_050,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = PollIcon.UP),
+                                "",
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -88,7 +134,7 @@ fun MainNavigation() {
         NavHost(
             modifier = Modifier.padding(paddingValues),
             navController = navController,
-            startDestination = "login_route",
+            startDestination = loginRoute,
         ) {
             loginScreen(
                 navigateToMainScreen = { navController.navigateToMain() },
@@ -112,13 +158,19 @@ fun MainNavigation() {
             )
             settingsScreen(
                 navigateUp = { navController.navigateUp() },
+                navigateToAboutLibraries = { navController.navigateToOpenSource() },
             )
+            OpenSourceScreen()
             MainScreen(
                 navigateToReadVote = { postId ->
                     navController.navigateToReadVote(postId)
                 },
                 navigateToSearch = {
                     navController.navigateToSearch()
+                },
+                scrollItem = {
+                    Log.d("scroll", "scroll, $it")
+                    scroll = it
                 },
             )
             SearchScreen(
@@ -139,14 +191,18 @@ fun BottomNavigation(navController: NavHostController, currentBackStack: NavBack
     if (currentRoute in bottomInvisibleList) {
     } else {
         Column(Modifier.background(Color.White)) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(PollPollTheme.colors.gray_200),
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
-                    .shadow(
-                        spotColor = Color(0x00000000),
-                        elevation = 24.dp,
-                    ),
+                    .padding(top = 7.dp)
+                    .background(Color.White),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 BottomNavBarItem(PollIcon.Home, "홈", mainRoute, currentRoute) {
@@ -186,8 +242,6 @@ fun BottomNavBarItem(
     ) {
         val color =
             if (currentRoute?.contains(route) == true) PollPollTheme.colors.primary_500 else PollPollTheme.colors.gray_700
-
-        Spacer(modifier = Modifier.size(8.dp))
         Icon(
             painter = painterResource(resId),
             contentDescription = itemName,
@@ -195,5 +249,16 @@ fun BottomNavBarItem(
             tint = color,
         )
         Text(text = itemName, style = PollPollTheme.typography.desc, color = color)
+    }
+}
+
+@Preview
+@Composable
+fun BottomNavigationPreview() {
+    PollPollTheme {
+        BottomNavigation(
+            navController = rememberNavController(),
+            currentBackStack = null,
+        )
     }
 }
