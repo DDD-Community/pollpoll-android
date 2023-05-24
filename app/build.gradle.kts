@@ -103,6 +103,9 @@ dependencies {
     implementation(project(":core-designsystem"))
     implementation(project(":core-common"))
     implementation(project(":core-model"))
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.lifecycle.runtime.ktx)

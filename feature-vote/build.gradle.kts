@@ -53,6 +53,9 @@ dependencies {
     implementation(project(":core-ui"))
     androidTestImplementation(project(":core-testing"))
     implementation(project(":core-common"))
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
 
     // Core Android dependencies
     implementation(libs.androidx.activity.compose)
@@ -71,7 +74,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.compose.material)
 
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)

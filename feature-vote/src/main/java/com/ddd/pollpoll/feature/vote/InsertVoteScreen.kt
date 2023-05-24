@@ -21,7 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -89,7 +89,7 @@ internal fun InsertVoteRoute(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertVoteScreen(
     modifier: Modifier,
@@ -113,8 +113,8 @@ fun InsertVoteScreen(
 
     BackHandler(enabled = true) {
         with(insertAppState) {
-            if (bottomSheetState.isVisible) {
-                coroutineScope.launch { bottomSheetState.hide() }
+            if (bottomSheetState.bottomSheetState.isVisible) {
+                coroutineScope.launch { bottomSheetState.bottomSheetState.hide() }
             } else {
                 backInsertScreen()
             }
@@ -203,7 +203,7 @@ fun InsertVoteScreen(
                             insertVoteUiState.category.toCategory(),
                             onDialogClick = {
                                 insertAppState.coroutineScope.launch {
-                                    insertAppState.bottomSheetState.show()
+                                    insertAppState.bottomSheetState.bottomSheetState.show()
                                 }
                             },
                             selectedDate = selectedOptionState,

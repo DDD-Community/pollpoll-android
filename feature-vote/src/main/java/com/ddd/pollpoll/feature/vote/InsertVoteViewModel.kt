@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// todo release후 대대적인 리펙토링
 @HiltViewModel
 class InsertVoteViewModel @Inject constructor(
     private val postRepository: PostRepository,
@@ -93,7 +92,5 @@ data class InsertVoteUiState(
         get() = !pollItems.contains(PollItem(""))
 }
 
-sealed interface Insert
 
 
-// todo ViewState로 빼는게 맞을것 같음

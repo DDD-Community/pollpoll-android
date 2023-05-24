@@ -69,6 +69,9 @@ dependencies {
     implementation(project(":core-common"))
     implementation(project(":core-model"))
     androidTestImplementation(project(":core-testing"))
+    val composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
 
     // Core Android dependencies
     implementation(libs.androidx.activity.compose)

@@ -17,7 +17,7 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 fun PollProgressBar(
     progress: Float = 0.5f,
     color: androidx.compose.ui.graphics.Color = PollPollTheme.colors.primary_500,
-    trackColor: androidx.compose.ui.graphics.Color = PollPollTheme.colors.gray_300
+    trackColor: androidx.compose.ui.graphics.Color = PollPollTheme.colors.gray_300,
 ) {
     require(progress in 0f..1f, { "해당 프로그레스 바는 0f과 1f 사이여야합니다." })
     val animatedProgress: Float by animateFloatAsState(targetValue = progress)
@@ -25,7 +25,7 @@ fun PollProgressBar(
         Modifier
             .progressSemantics()
             .fillMaxWidth()
-            .height(2.dp)
+            .height(2.dp),
     ) {
         val strokeWidth = size.width
         val strokeHeight = size.height
@@ -35,19 +35,17 @@ fun PollProgressBar(
             color = trackColor,
             start = Offset(0f, strokeHeight),
             end = Offset(strokeWidth, strokeHeight),
-            strokeWidth = strokeHeight
+            strokeWidth = strokeHeight,
         )
 
         drawLine(
             color = color,
             start = Offset(0f, strokeHeight),
             end = Offset(endFraction, strokeHeight),
-            strokeWidth = strokeHeight
+            strokeWidth = strokeHeight,
         )
     }
 }
-
-
 
 @Preview
 @Composable

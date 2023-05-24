@@ -1,33 +1,30 @@
 package com.ddd.pollpoll.designsystem.core.bottomseat
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material3.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PollModalBottomSheetLayout(
     sheetContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: ModalBottomSheetState,
+    sheetState: BottomSheetScaffoldState,
     sheetShape: Shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    ModalBottomSheetLayout(
+    BottomSheetScaffold(
         sheetContent = sheetContent,
         modifier = modifier,
-        sheetState = sheetState,
-        sheetShape = sheetShape
+        scaffoldState = sheetState,
+        sheetShape = sheetShape,
     ) {
         content()
     }

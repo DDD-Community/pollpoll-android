@@ -1,9 +1,10 @@
 package com.ddd.pollpoll.feature.vote
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -14,8 +15,10 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.CoroutineScope
 
 @Stable
-internal class InsertVoteState @OptIn(ExperimentalMaterialApi::class) constructor(
-    val bottomSheetState: ModalBottomSheetState,
+internal class InsertVoteState @OptIn(
+    ExperimentalMaterial3Api::class,
+) constructor(
+    val bottomSheetState: BottomSheetScaffoldState,
     val coroutineScope: CoroutineScope,
 ) {
     var insertVoteStep by mutableStateOf<InsertVoteStep>(InsertVoteStep.SelectCategory)
@@ -61,10 +64,15 @@ internal class InsertVoteState @OptIn(ExperimentalMaterialApi::class) constructo
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun rememberInsertVoteState(
-    bottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+    bottomSheetState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = SheetState(
+            skipPartiallyExpanded = true,
+            initialValue = SheetValue.Hidden,
+        ),
+    ),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): InsertVoteState = remember(bottomSheetState, coroutineScope) {
     InsertVoteState(bottomSheetState, coroutineScope)
