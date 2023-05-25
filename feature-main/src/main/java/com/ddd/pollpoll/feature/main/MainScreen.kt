@@ -126,7 +126,7 @@ private fun MainScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PopularListScreen(popularUiState: PopularUiState) {
-    val horizontalState = rememberPagerState()
+    val horizontalState = rememberPagerState { 3 }
     Column() {
         Surface(shape = RoundedCornerShape(20.dp)) {
             Column(Modifier.background(Color.White)) {
@@ -138,7 +138,7 @@ fun PopularListScreen(popularUiState: PopularUiState) {
                 )
                 Spacer(modifier = Modifier.height(30.dp))
 
-                HorizontalPager(state = horizontalState, pageCount = 3) { page ->
+                HorizontalPager(state = horizontalState) { page ->
                     when (popularUiState) {
                         is PopularUiState.Success -> {
                             when (page) {

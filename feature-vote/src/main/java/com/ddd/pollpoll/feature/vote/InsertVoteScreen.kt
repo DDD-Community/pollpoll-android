@@ -5,11 +5,13 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -118,8 +120,8 @@ fun InsertVoteScreen(
 
     BackHandler(enabled = true) {
         with(insertAppState) {
-            if (bottomSheetState.bottomSheetState.isVisible) {
-                coroutineScope.launch { bottomSheetState.bottomSheetState.hide() }
+            if (bottomSheetState.isVisible) {
+                coroutineScope.launch { bottomSheetState.hide() }
             } else {
                 backInsertScreen()
             }
@@ -158,71 +160,81 @@ fun InsertVoteScreen(
             },
         )
     }) { scaffoldPadding ->
-        PollModalBottomSheetLayout(
-            sheetContent = {
-                Column() {
-                    VoteRadioList.forEach {
-                        SelectDateScreen(it, selectedOptionState, onClick = { voteDate ->
-                            selectedOptionState = voteDate
-                            onVoteDateSelected(voteDate.time)
-                        })
-                    }
+        Surface(modifier = Modifier.padding(scaffoldPadding)) {
+            when (insertAppState.insertVoteStep) {
+                InsertVoteStep.SelectCategory -> {
+                    ChoiceCategoryScreen(onClick = {
+                        chooseCategory(it)
+                        insertAppState.navigateInsertTitle()
+                    })
                 }
-            },
-            sheetState = insertAppState.bottomSheetState,
-        ) {
-            Surface(modifier = Modifier.padding(scaffoldPadding)) {
-                when (insertAppState.insertVoteStep) {
-                    InsertVoteStep.SelectCategory -> {
-                        ChoiceCategoryScreen(onClick = {
-                            chooseCategory(it)
-                            insertAppState.navigateInsertTitle()
-                        })
-                    }
 
-                    InsertVoteStep.InsertTitle -> {
-                        InsertContentScreen(
-                            insertVoteUiState.category.toCategory(),
-                            insertVoteUiState.title,
-                            insertVoteUiState.contents,
-                            titleValueChange = titleValueChange,
-                            contentValueChange = contentValueChange,
-                            progressBarChanged = { insertAppState.setProgressBar(it.progressBar) },
-                            addVoteClicked = { insertAppState.navigateAddVoteCategory() },
-                            isWriteEnabled = writeEnabledState,
-                            contentEnabled = contentEnabledState,
-                            voteEnabled = voteEnabledState,
-                            onContentDone = { voteEnabledState = true },
-                            onTitleDone = { contentEnabledState = true },
-                            onVoteCompleteButtonClicked = {
-                                insertAppState.setShowingConfirmDialog(
-                                    true,
-                                )
+                InsertVoteStep.InsertTitle -> {
+                    InsertContentScreen(
+                        insertVoteUiState.category.toCategory(),
+                        insertVoteUiState.title,
+                        insertVoteUiState.contents,
+                        titleValueChange = titleValueChange,
+                        contentValueChange = contentValueChange,
+                        progressBarChanged = { insertAppState.setProgressBar(it.progressBar) },
+                        addVoteClicked = { insertAppState.navigateAddVoteCategory() },
+                        isWriteEnabled = writeEnabledState,
+                        contentEnabled = contentEnabledState,
+                        voteEnabled = voteEnabledState,
+                        onContentDone = { voteEnabledState = true },
+                        onTitleDone = { contentEnabledState = true },
+                        onVoteCompleteButtonClicked = {
+                            insertAppState.setShowingConfirmDialog(
+                                true,
+                            )
+                        },
+
+                    )
+                }
+
+                InsertVoteStep.AddVoteCategory -> {
+                    AddVoteCategoryScreen(
+                        insertVoteUiState.category.toCategory(),
+                        onDialogClick = {
+                            insertAppState.coroutineScope.launch {
+                                insertAppState.openBottomSheet(true)
+                                insertAppState.bottomSheetState.show()
+                            }
+                        },
+                        selectedDate = selectedOptionState,
+                        onAddCategory = onAddCategory,
+                        onTextChanged = onTextChanged,
+                        voteList = insertVoteUiState.pollItems,
+                        progressBarChanged = {
+                            insertAppState.setProgressBar(it.progressBar)
+                        },
+                        onVoteButtonClicked = {
+                            writeEnabledState = true
+                            insertAppState.backInsertScreen()
+                        },
+                    )
+
+                    if (insertAppState.bottomState) {
+                        PollModalBottomSheetLayout(
+                            sheetState = insertAppState.bottomSheetState,
+                            onDismissRequest = {
+                                insertAppState.openBottomSheet(false)
                             },
 
-                        )
-                    }
-
-                    InsertVoteStep.AddVoteCategory -> {
-                        AddVoteCategoryScreen(
-                            insertVoteUiState.category.toCategory(),
-                            onDialogClick = {
-                                insertAppState.coroutineScope.launch {
-                                    insertAppState.bottomSheetState.bottomSheetState.show()
+                        ) {
+                            Column() {
+                                VoteRadioList.forEach {
+                                    SelectDateScreen(
+                                        it,
+                                        selectedOptionState,
+                                        onClick = { voteDate ->
+                                            selectedOptionState = voteDate
+                                            onVoteDateSelected(voteDate.time)
+                                        },
+                                    )
                                 }
-                            },
-                            selectedDate = selectedOptionState,
-                            onAddCategory = onAddCategory,
-                            onTextChanged = onTextChanged,
-                            voteList = insertVoteUiState.pollItems,
-                            progressBarChanged = {
-                                insertAppState.setProgressBar(it.progressBar)
-                            },
-                            onVoteButtonClicked = {
-                                writeEnabledState = true
-                                insertAppState.backInsertScreen()
-                            },
-                        )
+                            }
+                        }
                     }
                 }
             }
@@ -247,8 +259,10 @@ fun AddVoteCategoryScreen(
     buttonEnabled = !voteList.contains(PollItem(""))
     Column(
         Modifier
+            .fillMaxHeight()
             .verticalScroll(scrollState)
             .background(Color.White),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(Modifier.padding(20.dp)) {
@@ -313,6 +327,7 @@ fun AddVoteCategoryScreen(
                 color = PollPollTheme.colors.gray_400,
             )
         }
+        Spacer(modifier = Modifier.weight(1f))
         PollButton(
             Modifier
                 .fillMaxWidth()
@@ -417,7 +432,6 @@ fun InsertContentScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CategoryScreen(category)
-            Spacer(modifier = Modifier.height(24.dp))
             PollTextField(
                 text = title,
                 placeholderText = "제목을 입력해주세요",
@@ -469,7 +483,6 @@ fun InsertContentScreen(
 
 @Composable
 private fun ColumnScope.CategoryScreen(category: Category) {
-    Spacer(modifier = Modifier.height(36.dp))
     Row(
         modifier = Modifier.align(Alignment.Start),
         verticalAlignment = Alignment.CenterVertically,
@@ -477,6 +490,7 @@ private fun ColumnScope.CategoryScreen(category: Category) {
         Image(painter = painterResource(id = category.iconDrawable), contentDescription = "")
         Text(text = category.text)
     }
+    Spacer(modifier = Modifier.height(20.dp))
 }
 
 @Composable

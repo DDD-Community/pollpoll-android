@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.dependency.update)
     alias(libs.plugins.compose.compiler.report)
     id("com.mikepenz.aboutlibraries.plugin")
+    id("org.jetbrains.kotlin.plugin.parcelize") version "1.8.20"
 }
 
 // ./gradlew createModuleGraph

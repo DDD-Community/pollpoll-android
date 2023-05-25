@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.compose.compiler.report)
+    id("org.jetbrains.kotlin.plugin.parcelize") version "1.8.20"
 }
 
 android {
