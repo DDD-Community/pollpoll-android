@@ -32,7 +32,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +60,7 @@ import com.ddd.pollpoll.designsystem.core.bottomseat.PollModalBottomSheetLayout
 import com.ddd.pollpoll.designsystem.core.grid.VerticalGrid
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
-import kotlinx.coroutines.coroutineScope
+import com.theapache64.rebugger.Rebugger
 import kotlinx.coroutines.launch
 
 @Composable
@@ -104,8 +103,14 @@ fun InsertVoteScreen(
     onVoteDateSelected: (Long) -> Unit = {},
     onInsertSucceed: () -> Unit = {},
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val insertAppState = rememberInsertVoteState()
+
+    Rebugger(
+        trackMap = mapOf(
+            "insertAppState" to insertAppState,
+        ),
+    )
+
     var selectedOptionState by remember { mutableStateOf(VoteRadioList[2]) }
     var writeEnabledState by remember { mutableStateOf(false) }
     var contentEnabledState by remember { mutableStateOf(false) }

@@ -11,7 +11,7 @@ android {
     compileSdk = 33
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
         targetSdk = 33
 
         testInstrumentationRunner = "com.ddd.pollpoll.core.testing.HiltTestRunner"
@@ -102,4 +102,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
     implementation(libs.aboutlibraries.compose)
+
+    implementation(libs.rebugger)
 }
