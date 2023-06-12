@@ -21,7 +21,8 @@ class PollPollColors(
     gray_500: Color,
     gray_700: Color,
     gray_900: Color,
-    isLight: Boolean
+    accent: Color,
+    isLight: Boolean,
 ) {
     var primary_500 by mutableStateOf(primary_500)
         private set
@@ -59,6 +60,9 @@ class PollPollColors(
     var gray_900 by mutableStateOf(gray_900)
         private set
 
+    var accent by mutableStateOf(accent)
+        private set
+
     var isLight by mutableStateOf(isLight)
         private set
 
@@ -78,7 +82,8 @@ class PollPollColors(
         gray_500: Color = this.gray_500,
         gray_700: Color = this.gray_700,
         gray_900: Color = this.gray_900,
-        isLight: Boolean = this.isLight
+        isLight: Boolean = this.isLight,
+        accent : Color = this.accent
     ) = PollPollColors(
         primary_500 = primary_500,
         primary_300 = primary_300,
@@ -95,7 +100,8 @@ class PollPollColors(
         gray_500 = gray_500,
         gray_700 = gray_700,
         gray_900 = gray_900,
-        isLight = false
+        isLight = false,
+        accent = accent
     )
 
     fun updateColorsFrom(other: PollPollColors) {
@@ -115,5 +121,6 @@ class PollPollColors(
         gray_700 = other.gray_700
         gray_900 = other.gray_900
         isLight = false
+        accent = other.accent
     }
 }

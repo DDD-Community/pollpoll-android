@@ -33,13 +33,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.pollpoll.MyPagePollType
 import com.ddd.pollpoll.core.ui.PollCardLazyList
+import com.ddd.pollpoll.designsystem.component.PollButton
+import com.ddd.pollpoll.designsystem.component.PollOutLineTextField
 import com.ddd.pollpoll.designsystem.component.PollTopBar
+import com.ddd.pollpoll.designsystem.core.bottomseat.PollModalBottomSheetLayout
 import com.ddd.pollpoll.designsystem.icon.PollIcon
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Cloud
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Fire
@@ -58,6 +62,8 @@ internal fun MyPollPollRoute(
     val posts = viewModel.posts
     val uiState = viewModel.uiState.collectAsState().value
     val lazyColumnListState = rememberLazyListState()
+    val isNickNameDialogShow = remember { mutableStateOf(false) }
+
     val shouldStartPaginate = remember {
         derivedStateOf {
             viewModel.canPaginate && (
@@ -67,6 +73,11 @@ internal fun MyPollPollRoute(
                 ) >= (lazyColumnListState.layoutInfo.totalItemsCount - 1)
         }
     }
+//    LaunchedEffect(key1 = isNickNameDialogShow) {
+//        PollModalBottomSheetLayout(sheetState = a, onDismissRequest = { /*TODO*/ }) {
+////
+//        }
+//    }
 
     LaunchedEffect(key1 = shouldStartPaginate.value) {
         if (shouldStartPaginate.value && viewModel.listState == MypollpollViewModel.ListState.IDLE) {
@@ -83,6 +94,7 @@ internal fun MyPollPollRoute(
         { viewModel.changePollType(MyPagePollType.PARTICIPATE_POLL) },
         { viewModel.changePollType(MyPagePollType.WATCH_POLL) },
         lazyColumnListState = lazyColumnListState,
+        nickNameModifyClicked = {},
     )
 }
 
@@ -98,6 +110,7 @@ fun MypollpollScreen(
     participatePollClicked: () -> Unit,
     watchPollClicked: () -> Unit,
     lazyColumnListState: LazyListState,
+    nickNameModifyClicked: () -> Unit = {},
 ) {
     Scaffold(topBar = {
         Column(Modifier.background(Color.White)) {
@@ -139,6 +152,7 @@ fun MypollpollScreen(
                             myPollClicked,
                             participatePollClicked,
                             watchPollClicked,
+                            nickNameModifyClicked = nickNameModifyClicked,
                         )
                     }
                     item {
@@ -170,6 +184,7 @@ fun MyPollPollHeader(
     myPollClicked: () -> Unit,
     participatePollClicked: () -> Unit,
     watchPollClicked: () -> Unit,
+    nickNameModifyClicked: () -> Unit = {},
 ) {
     Column {
         Column(
@@ -206,7 +221,7 @@ fun MyPollPollHeader(
                     ),
                     border = BorderStroke(1.dp, PollPollTheme.colors.gray_200),
                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 3.5.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = nickNameModifyClicked,
                 ) {
                     Text(
                         text = "닉네임수정",
@@ -346,12 +361,42 @@ fun PollRecord(
 }
 
 @Composable
-fun MyPageBottomSheet() {
+fun MyPageBottomSheet(text: String = "", onValueChange: (String) -> Unit = {}) {
+    val isError = text.length > 15 || !text.matches(Regex("^[^!@#\$%^&*(),.?\":{}|<>]*\$"))
     Column {
-        IconButton(onClick = { /*TODO*/ }) {
+        Spacer(modifier = Modifier.height(30.dp))
+        IconButton(modifier = Modifier.align(Alignment.End), onClick = { /*TODO*/ }) {
             Icon(painter = painterResource(id = PollIcon.Close), contentDescription = "닉네임 수정 닫기")
         }
-        Text(text = "글을 작성할 때 사용할 내 닉네임을 입력해주세요")
+        Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            style = PollPollTheme.typography.heading04,
+            text = "글을 작성할 때 사용할\n 내 닉네임을 입력해주세요",
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        PollOutLineTextField(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
+            value = text,
+            onValueChange = {},
+            placeHolderText = "변경할 닉네임을 입력해주세요",
+            trailingIcon = {},
+        )
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(
+            modifier = Modifier.padding(start = 49.dp),
+            style = PollPollTheme.typography.body04,
+            text = if (isError) "사용할 수 없는 닉네임입니다" else "15자이내/특수문자 입력 불가",
+            color = if (isError) PollPollTheme.colors.accent else PollPollTheme.colors.gray_400,
+        )
+        Spacer(modifier = Modifier.height(40.dp))
+        PollButton(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 50.dp),
+            shape = RoundedCornerShape(20.dp),
+        ) {
+            Text(text = "입력 완료")
+        }
+        Spacer(modifier = Modifier.height(60.dp))
     }
 }
 
@@ -370,4 +415,10 @@ private fun PollRecordPreview() {
             lazyColumnListState = rememberLazyListState(),
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MyPageBottomSheetPreview() {
+    MyPageBottomSheet()
 }

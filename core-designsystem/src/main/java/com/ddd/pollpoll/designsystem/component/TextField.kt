@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -24,10 +23,46 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddd.pollpoll.designsystem.core.textfield.PollCoreTextField
+import com.ddd.pollpoll.designsystem.core.textfield.TextFieldType
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun PollOutLineTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    placeHolderText: String,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+) {
+    PollCoreTextField(
+        value = value,
+        textFieldColors = TextFieldDefaults.textFieldColors(
+            containerColor = PollPollTheme.colors.gray_050,
+        ),
+        onValueChange = onValueChange,
+        modifier = modifier,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+
+        placeholder = {
+            Text(
+                text = placeHolderText,
+                color = PollPollTheme.colors.gray_300,
+                style = PollPollTheme.typography.body02,
+            )
+        },
+        trailingIcon = trailingIcon,
+        textStyle = PollPollTheme.typography.heading05,
+        paddingValues = PaddingValues(horizontal = 15.dp, vertical = 12.dp),
+        textFiledType = TextFieldType.Outlined,
+    )
+}
+
 /**
- * 언제든 최적화 당할수 있음에 유의하며 사용할것!
+ * Insert에 사용되는 글자 제한이 있는 TextField입니다.
  *
  * @param text
  * @param placeholderText
@@ -37,7 +72,7 @@ import com.ddd.pollpoll.designsystem.theme.PollPollTheme
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PollTextField(
+fun PollInputTextField(
     text: String,
     placeholderText: String,
     onValueChange: (String) -> Unit = {},
@@ -91,14 +126,14 @@ fun PollTextFieldPreview() {
     PollPollTheme() {
         var text by remember { mutableStateOf("냐옹맨 ") }
         Column() {
-            PollTextField(
+            PollInputTextField(
                 text,
                 onValueChange = { text = it },
                 placeholderText = "제목을 입력해주세요",
                 maxLength = 50,
             )
 
-            PollTextField(
+            PollInputTextField(
                 text,
                 onValueChange = { text = it },
                 placeholderText = "제목을 입력해주세요",

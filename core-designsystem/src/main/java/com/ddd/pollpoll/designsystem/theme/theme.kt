@@ -27,7 +27,7 @@ fun lightColors() = PollPollColors(
     gray_700 = Gray700,
     gray_900 = Gray900,
     isLight = false,
-
+    accent = Accent,
 )
 
 // fun darkColors() = PollPollColors(

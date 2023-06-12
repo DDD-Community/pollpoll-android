@@ -24,4 +24,5 @@ internal val Gray500 = Color(0xFF757575)
 internal val Gray700 = Color(0xFF424242)
 internal val Gray900 = Color(0xFF0A0A0A)
 
+internal val Accent = Color(0xFFD80000)
 internal val Shadow = Color(0x33A0A0A0)

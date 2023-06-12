@@ -10,17 +10,56 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.parcelize.Parcelize
+
+class InsertVoteSaverState(insertVoteStep: InsertVoteStep) {
+    var insertVoteStep: InsertVoteStep by mutableStateOf(insertVoteStep)
+        private set
+
+    fun navigateAddVoteCategory() {
+        insertVoteStep = InsertVoteStep.AddVoteCategory
+    }
+
+    fun navigateInsertTitle() {
+        insertVoteStep = InsertVoteStep.InsertTitle
+    }
+
+    fun backInsertScreen() {
+        insertVoteStep = when (insertVoteStep) {
+            InsertVoteStep.AddVoteCategory -> InsertVoteStep.InsertTitle
+            InsertVoteStep.InsertTitle -> InsertVoteStep.SelectCategory
+            InsertVoteStep.SelectCategory -> InsertVoteStep.SelectCategory
+        }
+    }
+
+    companion object {
+        val Saver: Saver<InsertVoteSaverState, *> = listSaver(
+            save = { listOf(it.insertVoteStep) },
+            restore = {
+                InsertVoteSaverState(
+                    insertVoteStep = it[0],
+                )
+            },
+
+        )
+    }
+}
+
+@Composable
+fun rememberInsertVoteStepState() = rememberSaveable(saver = InsertVoteSaverState.Saver) {
+    InsertVoteSaverState(InsertVoteStep.SelectCategory)
+}
 
 internal class InsertVoteState @OptIn(
     ExperimentalMaterial3Api::class,
 ) constructor(
     val bottomSheetState: SheetState,
     val coroutineScope: CoroutineScope,
-    var insertVoteStep: InsertVoteStep,
 ) {
     var confirmDialogState by mutableStateOf(false)
         private set
@@ -49,25 +88,6 @@ internal class InsertVoteState @OptIn(
     fun setShowingCancelDialog(shouldShow: Boolean) {
         cancelDialogState = shouldShow
     }
-
-    fun navigateAddVoteCategory() {
-        insertVoteStep = InsertVoteStep.AddVoteCategory
-    }
-
-    fun navigateInsertTitle() {
-        insertVoteStep = InsertVoteStep.InsertTitle
-    }
-
-    fun backInsertScreen() {
-        insertVoteStep = when (insertVoteStep) {
-            InsertVoteStep.AddVoteCategory -> InsertVoteStep.InsertTitle
-            InsertVoteStep.InsertTitle -> InsertVoteStep.SelectCategory
-            InsertVoteStep.SelectCategory -> {
-                setShowingCancelDialog(true)
-                InsertVoteStep.SelectCategory
-            }
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,15 +98,8 @@ internal fun rememberInsertVoteState(
         skipHiddenState = false,
     ),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    insertVoteStep: InsertVoteStep = rememberInsertVoteStep(),
 ): InsertVoteState = remember(bottomSheetState, coroutineScope) {
-    InsertVoteState(bottomSheetState, coroutineScope, insertVoteStep)
-}
-
-@Composable
-fun rememberInsertVoteStep(): InsertVoteStep {
-      =  rememberSaveable { mutableStateOf(InsertVoteStep.SelectCategory) }
-
+    InsertVoteState(bottomSheetState, coroutineScope)
 }
 
 sealed interface InsertVoteStep : Parcelable {

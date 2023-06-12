@@ -34,6 +34,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +57,7 @@ import com.ddd.pollpoll.designsystem.component.PollButton
 import com.ddd.pollpoll.designsystem.component.PollIconButtonText
 import com.ddd.pollpoll.designsystem.component.PollProgressBar
 import com.ddd.pollpoll.designsystem.component.PollRadioButton
-import com.ddd.pollpoll.designsystem.component.PollTextField
+import com.ddd.pollpoll.designsystem.component.PollInputTextField
 import com.ddd.pollpoll.designsystem.component.PollTopBar
 import com.ddd.pollpoll.designsystem.core.bottomseat.PollModalBottomSheetLayout
 import com.ddd.pollpoll.designsystem.core.grid.VerticalGrid
@@ -106,24 +107,47 @@ fun InsertVoteScreen(
     onInsertSucceed: () -> Unit = {},
 ) {
     val insertAppState = rememberInsertVoteState()
+    val insetVoteStepState = rememberInsertVoteStepState()
 
     Rebugger(
         trackMap = mapOf(
             "insertAppState" to insertAppState,
         ),
     )
-
     var selectedOptionState by remember { mutableStateOf(VoteRadioList[2]) }
-    var writeEnabledState by remember { mutableStateOf(false) }
-    var contentEnabledState by remember { mutableStateOf(false) }
-    var voteEnabledState by remember { mutableStateOf(false) }
+    var writeEnabledState by rememberSaveable { mutableStateOf(false) }
+    var contentEnabledState by rememberSaveable { mutableStateOf(false) }
+    var voteEnabledState by rememberSaveable { mutableStateOf(false) }
+
+    if (insertAppState.bottomState) {
+        PollModalBottomSheetLayout(
+            sheetState = insertAppState.bottomSheetState,
+            onDismissRequest = {
+                insertAppState.openBottomSheet(false)
+            },
+
+        ) {
+            Column() {
+                VoteRadioList.forEach {
+                    SelectDateScreen(
+                        it,
+                        selectedOptionState,
+                        onClick = { voteDate ->
+                            selectedOptionState = voteDate
+                            onVoteDateSelected(voteDate.time)
+                        },
+                    )
+                }
+            }
+        }
+    }
 
     BackHandler(enabled = true) {
         with(insertAppState) {
-            if (bottomSheetState.isVisible) {
+            if (insertAppState.bottomSheetState.isVisible) {
                 coroutineScope.launch { bottomSheetState.hide() }
             } else {
-                backInsertScreen()
+                insetVoteStepState.backInsertScreen()
             }
         }
     }
@@ -153,7 +177,7 @@ fun InsertVoteScreen(
         VoteTopBar(
             insertAppState.progressState,
             onBackButtonClicked = {
-                insertAppState.backInsertScreen()
+                insetVoteStepState.backInsertScreen()
             },
             onCloseButtonClicked = {
                 insertAppState.setShowingCancelDialog(true)
@@ -161,11 +185,11 @@ fun InsertVoteScreen(
         )
     }) { scaffoldPadding ->
         Surface(modifier = Modifier.padding(scaffoldPadding)) {
-            when (insertAppState.insertVoteStep) {
+            when (insetVoteStepState.insertVoteStep) {
                 InsertVoteStep.SelectCategory -> {
                     ChoiceCategoryScreen(onClick = {
                         chooseCategory(it)
-                        insertAppState.navigateInsertTitle()
+                        insetVoteStepState.navigateInsertTitle()
                     })
                 }
 
@@ -177,7 +201,7 @@ fun InsertVoteScreen(
                         titleValueChange = titleValueChange,
                         contentValueChange = contentValueChange,
                         progressBarChanged = { insertAppState.setProgressBar(it.progressBar) },
-                        addVoteClicked = { insertAppState.navigateAddVoteCategory() },
+                        addVoteClicked = { insetVoteStepState.navigateAddVoteCategory() },
                         isWriteEnabled = writeEnabledState,
                         contentEnabled = contentEnabledState,
                         voteEnabled = voteEnabledState,
@@ -210,32 +234,9 @@ fun InsertVoteScreen(
                         },
                         onVoteButtonClicked = {
                             writeEnabledState = true
-                            insertAppState.backInsertScreen()
+                            insetVoteStepState.backInsertScreen()
                         },
                     )
-
-                    if (insertAppState.bottomState) {
-                        PollModalBottomSheetLayout(
-                            sheetState = insertAppState.bottomSheetState,
-                            onDismissRequest = {
-                                insertAppState.openBottomSheet(false)
-                            },
-
-                        ) {
-                            Column() {
-                                VoteRadioList.forEach {
-                                    SelectDateScreen(
-                                        it,
-                                        selectedOptionState,
-                                        onClick = { voteDate ->
-                                            selectedOptionState = voteDate
-                                            onVoteDateSelected(voteDate.time)
-                                        },
-                                    )
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -268,7 +269,7 @@ fun AddVoteCategoryScreen(
         Column(Modifier.padding(20.dp)) {
             CategoryScreen(category)
             voteList.forEachIndexed { index, it ->
-                PollTextField(text = it.name, placeholderText = "항목입력", onValueChange = {
+                PollInputTextField(text = it.name, placeholderText = "항목입력", onValueChange = {
                     onTextChanged(index, it)
                 })
                 Spacer(modifier = Modifier.height(20.dp))
@@ -432,7 +433,7 @@ fun InsertContentScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CategoryScreen(category)
-            PollTextField(
+            PollInputTextField(
                 text = title,
                 placeholderText = "제목을 입력해주세요",
                 onValueChange = titleValueChange,
@@ -447,7 +448,7 @@ fun InsertContentScreen(
                 maxLength = 50,
             )
             if (contentEnabled) {
-                PollTextField(
+                PollInputTextField(
                     text = content,
                     placeholderText = "내용을 입력해주세요",
                     onValueChange = contentValueChange,

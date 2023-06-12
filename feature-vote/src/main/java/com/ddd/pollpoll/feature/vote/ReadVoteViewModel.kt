@@ -20,7 +20,6 @@ class ReadVoteViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
-//    val posts = MutableStateFlow<GetPostResponse?>(null)
     val lastPost = MutableStateFlow<Post?>(null)
     val beforeVote = MutableStateFlow<List<Vote>>(emptyList())
     val afterVote = MutableStateFlow<List<Vote>>(emptyList())
