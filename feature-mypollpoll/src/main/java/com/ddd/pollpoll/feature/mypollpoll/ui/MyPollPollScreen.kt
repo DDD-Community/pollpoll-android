@@ -50,20 +50,27 @@ import com.ddd.pollpoll.designsystem.icon.PollIcon.Fire
 import com.ddd.pollpoll.designsystem.icon.PollIcon.Writing
 import com.ddd.pollpoll.designsystem.theme.PollPollTheme
 import com.ddd.pollpoll.feature.main.model.PostUi
-import java.util.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MyPollPollRoute(
     modifier: Modifier = Modifier,
     navigateToSettings: () -> Unit,
     navigateToReadVote: (Int) -> Unit,
-    viewModel: MypollpollViewModel = hiltViewModel(),
+    viewModel: MyPollPollViewModel = hiltViewModel(),
 ) {
     val posts = viewModel.posts
     val uiState = viewModel.uiState.collectAsState().value
     val lazyColumnListState = rememberLazyListState()
-    val isNickNameDialogShow = remember { mutableStateOf(false) }
-
+    var isNickNameDialogShow by remember { mutableStateOf(false) }
+    val sheetState = rememberStandardBottomSheetState(
+        initialValue = SheetValue.Hidden,
+        skipHiddenState = false,
+    )
+    var nickNameState by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
     val shouldStartPaginate = remember {
         derivedStateOf {
             viewModel.canPaginate && (
@@ -73,14 +80,26 @@ internal fun MyPollPollRoute(
                 ) >= (lazyColumnListState.layoutInfo.totalItemsCount - 1)
         }
     }
-//    LaunchedEffect(key1 = isNickNameDialogShow) {
-//        PollModalBottomSheetLayout(sheetState = a, onDismissRequest = { /*TODO*/ }) {
-////
-//        }
-//    }
+    if (isNickNameDialogShow) {
+        PollModalBottomSheetLayout(sheetState = sheetState, onDismissRequest = {
+            isNickNameDialogShow = false
+        }) {
+            MyPageBottomSheet(
+                text = nickNameState,
+                onTextChange = { nickNameState = it },
+                onCloseButtonClicked = {
+                    coroutineScope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        isNickNameDialogShow = false
+                    }
+                },
+            )
+        }
+    }
 
     LaunchedEffect(key1 = shouldStartPaginate.value) {
-        if (shouldStartPaginate.value && viewModel.listState == MypollpollViewModel.ListState.IDLE) {
+        if (shouldStartPaginate.value && viewModel.listState == MyPollPollViewModel.ListState.IDLE) {
             viewModel.getPost()
         }
     }
@@ -94,7 +113,13 @@ internal fun MyPollPollRoute(
         { viewModel.changePollType(MyPagePollType.PARTICIPATE_POLL) },
         { viewModel.changePollType(MyPagePollType.WATCH_POLL) },
         lazyColumnListState = lazyColumnListState,
-        nickNameModifyClicked = {},
+        nickNameModifyClicked = {
+            coroutineScope.launch {
+                isNickNameDialogShow = true
+                delay(500L)
+                sheetState.expand()
+            }
+        },
     )
 }
 
@@ -361,12 +386,27 @@ fun PollRecord(
 }
 
 @Composable
-fun MyPageBottomSheet(text: String = "", onValueChange: (String) -> Unit = {}) {
+fun MyPageBottomSheet(
+    text: String = "",
+    onTextChange: (String) -> Unit = {},
+    onCloseButtonClicked: () -> Unit = {},
+) {
     val isError = text.length > 15 || !text.matches(Regex("^[^!@#\$%^&*(),.?\":{}|<>]*\$"))
+    val errorText = if (text.isEmpty()) {
+        "15자이내/특수문자 입력 불가"
+    } else if (isError) {
+        "사용할 수 없는 닉네임입니다"
+    } else {
+        ""
+    }
+
     Column {
         Spacer(modifier = Modifier.height(30.dp))
-        IconButton(modifier = Modifier.align(Alignment.End), onClick = { /*TODO*/ }) {
-            Icon(painter = painterResource(id = PollIcon.Close), contentDescription = "닉네임 수정 닫기")
+        IconButton(modifier = Modifier.align(Alignment.End), onClick = onCloseButtonClicked) {
+            Icon(
+                painter = painterResource(id = PollIcon.Close),
+                contentDescription = "닉네임 수정 닫기",
+            )
         }
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -376,22 +416,31 @@ fun MyPageBottomSheet(text: String = "", onValueChange: (String) -> Unit = {}) {
         )
         Spacer(modifier = Modifier.height(20.dp))
         PollOutLineTextField(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 40.dp),
             value = text,
-            onValueChange = {},
+            onValueChange = onTextChange,
             placeHolderText = "변경할 닉네임을 입력해주세요",
             trailingIcon = {},
+            textFieldColors = TextFieldDefaults.colors(
+                focusedContainerColor = PollPollTheme.colors.gray_050,
+                unfocusedContainerColor = PollPollTheme.colors.gray_050,
+                disabledContainerColor = PollPollTheme.colors.gray_050,
+            ),
         )
         Spacer(modifier = Modifier.height(5.dp))
         Text(
             modifier = Modifier.padding(start = 49.dp),
             style = PollPollTheme.typography.body04,
-            text = if (isError) "사용할 수 없는 닉네임입니다" else "15자이내/특수문자 입력 불가",
+            text = errorText,
             color = if (isError) PollPollTheme.colors.accent else PollPollTheme.colors.gray_400,
         )
         Spacer(modifier = Modifier.height(40.dp))
         PollButton(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 50.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 50.dp),
             shape = RoundedCornerShape(20.dp),
         ) {
             Text(text = "입력 완료")

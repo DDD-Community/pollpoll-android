@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MypollpollViewModel @Inject constructor(
+class MyPollPollViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository,
 ) : ViewModel() {
 

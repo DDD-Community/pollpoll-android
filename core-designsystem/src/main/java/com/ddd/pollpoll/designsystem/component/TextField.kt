@@ -7,6 +7,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,12 +37,15 @@ fun PollOutLineTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    textFieldColors: TextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = PollPollTheme.colors.gray_050,
+        unfocusedContainerColor = PollPollTheme.colors.gray_050,
+        disabledContainerColor = PollPollTheme.colors.gray_050,
+    )
 ) {
     PollCoreTextField(
         value = value,
-        textFieldColors = TextFieldDefaults.textFieldColors(
-            containerColor = PollPollTheme.colors.gray_050,
-        ),
+        textFieldColors = textFieldColors,
         onValueChange = onValueChange,
         modifier = modifier,
         keyboardOptions = keyboardOptions,

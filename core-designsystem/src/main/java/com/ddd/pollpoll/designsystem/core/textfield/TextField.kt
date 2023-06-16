@@ -42,6 +42,7 @@ fun PollCoreTextField(
     textStyle: TextStyle,
     textFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
     paddingValues: PaddingValues,
+    isError: Boolean = false,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     focusedChanged: (FocusState) -> Unit = {},
@@ -55,6 +56,7 @@ fun PollCoreTextField(
         colors = textFieldColors,
         textStyle = textStyle,
         value = value,
+        isError = isError,
         onValueChange = onValueChange,
         placeholder = placeholder,
         contentPadding = paddingValues,
@@ -162,15 +164,11 @@ internal fun PollCoreTextField(
                             colors = colors,
                             contentPadding = contentPadding,
                             container = {
-                                TextFieldDefaults.OutlinedBorderContainerBox(
-                                    enabled,
-                                    isError,
-                                    interactionSource,
-                                    TextFieldDefaults.outlinedTextFieldColors(
-                                        focusedBorderColor = PollPollTheme.colors.gray_300,
-                                        containerColor = PollPollTheme.colors.gray_050,
-                                        unfocusedBorderColor = PollPollTheme.colors.gray_300,
-                                    ),
+                                OutlinedTextFieldDefaults.ContainerBox(
+                                    enabled = enabled,
+                                    isError = isError,
+                                    interactionSource = interactionSource,
+                                    colors = colors,
                                     shape = RoundedCornerShape(12.dp),
                                     focusedBorderThickness = 1.dp,
                                     unfocusedBorderThickness = 1.dp,
