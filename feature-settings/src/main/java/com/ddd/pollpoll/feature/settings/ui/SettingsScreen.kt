@@ -17,7 +17,6 @@
 package com.ddd.pollpoll.feature.settings.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -49,7 +48,9 @@ fun SettingsScreen(navigateUp: () -> Unit, navigateToAboutLibraries: () -> Unit)
         modifier = Modifier
             .background(color = PollPollTheme.colors.gray_050),
     ) {
-        val settingCardModifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+        val settingCardModifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
         PollTopBar(
             title = {
                 Text(text = "설정")
@@ -82,7 +83,7 @@ fun SettingsScreen(navigateUp: () -> Unit, navigateToAboutLibraries: () -> Unit)
         SettingsCard(settingCardModifier) {
             SettingCardItem(
                 modifier = Modifier
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
+                    .padding(20.dp)
                     .fillMaxWidth(),
                 PollIcon.Privacy,
                 "개인정보 처리방침",
@@ -90,18 +91,19 @@ fun SettingsScreen(navigateUp: () -> Unit, navigateToAboutLibraries: () -> Unit)
             )
             SettingCardItem(
                 modifier = Modifier
-                    .padding(top = (12.5).dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+                    .padding(20.dp)
                     .fillMaxWidth(),
                 PollIcon.TermsOfService,
                 "이용약관",
                 null,
             )
         }
+
         Spacer(modifier = Modifier.size(10.dp))
         SettingsCard(settingCardModifier) {
             SettingCardItem(
                 modifier = Modifier
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = (12.5).dp)
+                    .padding(20.dp)
                     .fillMaxWidth(),
                 PollIcon.VersionInfo,
                 "버전정보",
@@ -109,7 +111,7 @@ fun SettingsScreen(navigateUp: () -> Unit, navigateToAboutLibraries: () -> Unit)
             )
             SettingCardItem(
                 modifier = Modifier
-                    .padding(top = (12.5).dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+                    .padding(20.dp)
                     .fillMaxWidth(),
                 PollIcon.TermsOfService,
                 "오픈소스 라이선스",
@@ -153,28 +155,28 @@ fun SettingCardItem(
     subLabel: String?,
     onClick: () -> Unit = {},
 ) {
-    Row(
-        modifier = modifier.clickable {
-            onClick()
-        },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            painter = painterResource(id = icResId),
-            contentDescription = "",
-            tint = PollPollTheme.colors.gray_300,
-        )
-        Spacer(modifier = Modifier.size(15.dp))
-        Text(text = label)
-        Spacer(modifier = Modifier.weight(1f))
-        subLabel?.let {
-            Text(text = subLabel, color = PollPollTheme.colors.primary_500)
+    Surface(onClick = onClick, shape = RoundedCornerShape(12.dp)) {
+        Row(
+            modifier = Modifier.then(modifier),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(id = icResId),
+                contentDescription = "",
+                tint = PollPollTheme.colors.gray_300,
+            )
             Spacer(modifier = Modifier.size(15.dp))
+            Text(text = label)
+            Spacer(modifier = Modifier.weight(1f))
+            subLabel?.let {
+                Text(text = subLabel, color = PollPollTheme.colors.primary_500)
+                Spacer(modifier = Modifier.size(15.dp))
+            }
+            Icon(
+                painter = painterResource(id = PollIcon.ChevronRight),
+                contentDescription = "",
+                tint = PollPollTheme.colors.gray_400,
+            )
         }
-        Icon(
-            painter = painterResource(id = PollIcon.ChevronRight),
-            contentDescription = "",
-            tint = PollPollTheme.colors.gray_400,
-        )
     }
 }
