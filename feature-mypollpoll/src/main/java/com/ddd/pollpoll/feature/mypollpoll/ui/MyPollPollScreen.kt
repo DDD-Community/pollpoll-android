@@ -16,6 +16,12 @@
 
 package com.ddd.pollpoll.feature.mypollpoll.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -203,6 +209,7 @@ fun MypollpollScreen(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MyPollPollHeader(
     uiState: MyPollPollUiState,
@@ -286,24 +293,40 @@ fun MyPollPollHeader(
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
-        Row(
-            modifier = Modifier
-                .offset(y = (-10).dp)
-                .padding(horizontal = 45.dp),
-        ) {
-            if (uiState.myPagePollType != MyPagePollType.MY_POLL) {
-                Spacer(
-                    modifier = Modifier.weight(
-                        1f,
-                    ),
+        AnimatedContent(
+            targetState = uiState.myPagePollType,
+            label = "",
+            transitionSpec = {
+                slideIntoContainer(
+                    animationSpec = tween(),
+                    towards = if (this.initialState.ordinal < this.targetState.ordinal) {
+                        AnimatedContentTransitionScope.SlideDirection.Right
+                    } else {
+                        AnimatedContentTransitionScope.SlideDirection.Left
+                    },
+                ) togetherWith
+                    ExitTransition.None
+            },
+        ) { myPagePollType ->
+            Row(
+                modifier = Modifier
+                    .offset(y = (-10).dp)
+                    .padding(horizontal = 45.dp),
+            ) {
+                if (myPagePollType != MyPagePollType.MY_POLL) {
+                    Spacer(
+                        modifier = Modifier.weight(
+                            1f,
+                        ),
+                    )
+                }
+                Image(
+                    imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle),
+                    contentDescription = null,
                 )
-            }
-            Image(
-                imageVector = ImageVector.vectorResource(id = PollIcon.MyPollPollTriangle),
-                contentDescription = null,
-            )
-            if (uiState.myPagePollType != MyPagePollType.WATCH_POLL) {
-                Spacer(modifier = Modifier.weight(1f))
+                if (myPagePollType != MyPagePollType.WATCH_POLL) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
             }
         }
     }
