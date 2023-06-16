@@ -107,13 +107,13 @@ fun PollCard(
             Spacer(modifier = Modifier.size(15.dp))
 
             Text(
-                text = "${post.title}",
+                text = post.title,
                 color = PollPollTheme.colors.gray_900,
                 style = PollPollTheme.typography.heading05,
             )
             Spacer(modifier = Modifier.size(10.dp))
             Text(
-                text = "${post.contents}",
+                text = post.contents,
                 color = PollPollTheme.colors.gray_700,
                 style = PollPollTheme.typography.heading05,
                 fontWeight = FontWeight.Normal,
